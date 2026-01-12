@@ -495,7 +495,6 @@ body,
   display: flex;
   gap: 16px;
   overflow-x: auto;
-  padding: 0 24px;
   scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -517,7 +516,16 @@ body,
   justify-content: flex-end;
   padding: 16px;
   scroll-snap-align: start;
+  scroll-margin-left: 24px;
   flex-shrink: 0;
+}
+
+.featured-card:first-child {
+  margin-left: 24px;
+}
+
+.featured-card:last-child {
+  margin-right: 24px;
 }
 
 .featured-tag {
