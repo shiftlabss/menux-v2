@@ -1,6 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
 import ProductDetailModal from './ProductDetailModal';
+import OrderModal from './OrderModal';
+import ProcessingModal from './ProcessingModal';
+import OrderCodeModal from './OrderCodeModal';
+import ProfileModal from './ProfileModal';
 
 const imgLogo = "/logo-menux.svg";
 const imgVerify = "/verify-icon.svg";
@@ -15,6 +19,25 @@ export default function MenuHub() {
     const [activeSubcategory, setActiveSubcategory] = useState('');
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [cartCount, setCartCount] = useState(0);
+    const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [showOrderCode, setShowOrderCode] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+    const handleFinishOrder = () => {
+        setIsOrderModalOpen(false);
+        setIsProcessing(true);
+        setTimeout(() => {
+            setIsProcessing(false);
+            setShowOrderCode(true);
+        }, 5000);
+    };
+
+    const handleResetOrder = () => {
+        setShowOrderCode(false);
+        setCartCount(0);
+    };
 
     const banners = [
         {
@@ -142,6 +165,7 @@ export default function MenuHub() {
     const centerNavButton = (containerRef, buttonElement) => {
         if (!containerRef.current || !buttonElement) return;
         const container = containerRef.current;
+        if (!container) return;
         const scrollLeft = buttonElement.offsetLeft - (container.offsetWidth / 2) + (buttonElement.offsetWidth / 2);
         container.scrollTo({
             left: scrollLeft,
@@ -200,15 +224,17 @@ export default function MenuHub() {
 
     return (
         <div className="menu-hub-container">
+            {/* ... (header and scroll area content remains the same until Floating Maestro Tabbar) ... */}
             <header className="menu-header">
                 <img src={imgLogo} alt="Menux" style={{ height: '20px' }} />
                 <div className="header-right">
                     <div className="profile-trigger"></div>
-                    <button className="btn-profile-short">Meu perfil</button>
+                    <button className="btn-profile-short" onClick={() => setIsProfileOpen(true)}>Meu perfil</button>
                 </div>
             </header>
 
             <div className="menu-scroll-area" ref={scrollAreaRef}>
+                {/* ... content of scroll area ... */}
                 <div className="restaurant-banner"></div>
 
                 <div className="restaurant-info">
@@ -304,6 +330,28 @@ export default function MenuHub() {
                 </footer>
             </div>
 
+            {/* Floating Maestro Tabbar */}
+            {!selectedProduct && (
+                <>
+                    <div className={`floating-tabbar-container ${cartCount > 0 ? 'has-cart' : ''}`}>
+                        <div className="maestro-icon-wrapper">
+                            <img src="/icon-menux.svg" alt="Maestro" className="maestro-icon" />
+                        </div>
+                        <div className="maestro-text-group">
+                            <span className="maestro-title">Oi, eu posso te ajudar!</span>
+                            <span className="maestro-subtitle">Te ajudo a escolher o prato...</span>
+                        </div>
+                    </div>
+
+                    {cartCount > 0 && (
+                        <div className="cart-floating-button" onClick={() => setIsOrderModalOpen(true)}>
+                            <img src="/room-service.svg" alt="Cart" className="cart-icon" />
+                            <div className="cart-badge">{cartCount}</div>
+                        </div>
+                    )}
+                </>
+            )}
+
             <AnimatePresence>
                 {selectedProduct && (
                     <ProductDetailModal
@@ -311,11 +359,21 @@ export default function MenuHub() {
                         onClose={() => setSelectedProduct(null)}
                         onAddToCart={(item, obs) => {
                             console.log('Added to cart:', item, obs);
+                            setCartCount(prev => prev + 1); // Increment cart count
                             setSelectedProduct(null);
-                            alert('Produto adicionado ao pedido!');
                         }}
                     />
                 )}
+                {isOrderModalOpen && (
+                    <OrderModal
+                        cartItems={[]}
+                        onClose={() => setIsOrderModalOpen(false)}
+                        onFinish={handleFinishOrder}
+                    />
+                )}
+                {isProcessing && <ProcessingModal />}
+                {showOrderCode && <OrderCodeModal onReset={handleResetOrder} />}
+                {isProfileOpen && <ProfileModal onClose={() => setIsProfileOpen(false)} />}
             </AnimatePresence>
         </div>
     );

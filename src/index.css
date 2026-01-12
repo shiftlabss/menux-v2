@@ -853,6 +853,116 @@ body,
   margin-bottom: 16px;
 }
 
+/* Floating Maestro Tabbar */
+.floating-tabbar-container {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+  height: 61px;
+  background: black;
+  border: 1px solid #3C3C3C;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  z-index: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  max-width: 430px;
+  margin: 0 auto;
+}
+
+.maestro-icon-wrapper {
+  width: 43px;
+  height: 43px;
+  background: white;
+  border: 1px solid #E5E5E5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.maestro-icon {
+  width: 21px;
+  height: 23px;
+  /* Adjust based on actual aspect ratio */
+}
+
+.maestro-text-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.maestro-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  padding-bottom: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  /* SemiBold */
+  color: white;
+  line-height: 1.2;
+}
+
+.maestro-subtitle {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #868686;
+  line-height: 1.2;
+}
+
+/* Cart Button Styles */
+.cart-floating-button {
+  width: 61px;
+  height: 61px;
+  background: white;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 500;
+  cursor: pointer;
+}
+
+.cart-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #7A55FD;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Modifier for Floating Tabbar when Cart is present */
+.floating-tabbar-container.has-cart {
+  right: 96px;
+  /* 24px + 61px (btn) + 11px gap */
+  width: auto;
+  max-width: calc(100% - 120px);
+  /* Ensure it doesn't overlap */
+}
+
 .pd-price {
   font-family: 'Bricolage Grotesque', sans-serif;
   font-size: 16px;
@@ -908,6 +1018,561 @@ body,
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Order Modal Styles */
+.order-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 24px;
+  /* Adjusted padding */
+}
+
+.order-back-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  margin-top: auto;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.order-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: black;
+  flex: 1;
+  text-align: center;
+  margin-right: 24px;
+  /* Center title by offsetting back button width */
+}
+
+.order-items-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.order-item-card {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.order-item-image {
+  width: 60px;
+  height: 60px;
+  background: #D9D9D9;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.order-item-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.order-item-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+  line-height: 1.2;
+}
+
+.order-item-desc {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 13px;
+  color: #7D7D7D;
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+.order-item-price {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: black;
+  margin-top: 4px;
+}
+
+.order-item-extras {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.extra-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.extra-qty-badge {
+  background: #F0F0F0;
+  color: #000;
+  font-family: 'Geist', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.extra-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 13px;
+  color: #7D7D7D;
+}
+
+.order-item-qty-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 90px;
+  height: 32px;
+  border: 1px solid #E5E5E5;
+  border-radius: 100px;
+  padding: 0 8px;
+  flex-shrink: 0;
+}
+
+.qty-btn {
+  background: none;
+  border: none;
+  width: 20px;
+  /* larger touch target */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: black;
+  font-size: 16px;
+  padding: 0;
+}
+
+.qty-val {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: black;
+}
+
+/* Recommendations Section */
+.recommendations-wrapper {
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+
+.maestro-suggestion-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 24px;
+  text-decoration: none;
+  padding: 0 24px;
+}
+
+.maestro-link-text {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  color: #7A55FD;
+}
+
+.maestro-link-logo {
+  height: 14px;
+}
+
+.rec-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+  margin-left: 24px;
+  margin-bottom: 16px;
+}
+
+.rec-scroll-container {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 0 24px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.rec-card {
+  width: 140px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rec-img {
+  width: 140px;
+  height: 140px;
+  background: #E5E5E5;
+  /* Placeholder gray */
+  border-radius: 12px;
+}
+
+.rec-price {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: black;
+}
+
+.rec-desc {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 12px;
+  color: #7D7D7D;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.btn-finish-order {
+  width: 100%;
+  height: 59px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 100px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Footer Actions */
+.order-footer-actions {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: white;
+  margin-top: auto;
+  border-top: 1px solid #E5E5E5;
+}
+
+/* Processing Modal Styles */
+.processing-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  z-index: 2000;
+  /* Highest z-index to cover everything */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.processing-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 250px;
+}
+
+.processing-logo {
+  width: 42px;
+  /* Adjust based on exact visual perception */
+  margin-bottom: 24px;
+}
+
+.processing-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: black;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+
+.processing-subtitle {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  color: #7D7D7D;
+  line-height: 1.4;
+}
+
+/* Order Code Modal Styles */
+.order-code-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.order-code-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 250px;
+  flex: 1;
+  /* Push content to center but allow footer to be at bottom */
+  justify-content: center;
+}
+
+.order-code-logo {
+  width: 42px;
+  margin-bottom: 56px;
+}
+
+.order-code-display {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 64px;
+  font-weight: 500;
+  color: black;
+  line-height: 1;
+  margin-bottom: 24px;
+}
+
+.order-code-desc {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  color: #7D7D7D;
+  line-height: 1.4;
+  max-width: 160px;
+}
+
+.order-code-btn-container {
+  width: 100%;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.btn-back-menu {
+  width: 100%;
+  height: 59px;
+  background: #F5F5F5;
+  color: black;
+  border: none;
+  border-radius: 15px;
+  /* Different radius as per design */
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Profile Modal Styles */
+/* Profile Modal Styles */
+.profile-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  z-index: 2000;
+  overflow-y: auto;
+  /* padding-bottom: 20px; Removed to control spacing via content padding */
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid #E5E5E5;
+  flex-shrink: 0;
+  /* Prevent header from shrinking */
+}
+
+.profile-header-logo {
+  height: 24px;
+}
+
+.btn-profile-back {
+  background: black;
+  color: white;
+  height: 29px;
+  padding: 0 10px;
+  border-radius: 100px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  align-items: center;
+  flex: 1;
+  /* Grow to fill remaining height */
+}
+
+.profile-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  background-color: #D9D9D9;
+  border-radius: 50%;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.profile-camera-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: black;
+  margin-bottom: 8px;
+}
+
+.profile-since {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  color: #7D7D7D;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile-form-group {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.profile-label {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.profile-input-row {
+  display: flex;
+  gap: 12px;
+}
+
+.profile-input-ddi {
+  width: 80px;
+  height: 56px;
+  background: #F5F5F5;
+  border: none;
+  border-radius: 12px;
+  padding: 0 16px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  color: #7D7D7D;
+  text-align: center;
+}
+
+.profile-input {
+  width: 100%;
+  flex: 1;
+  height: 56px;
+  background: #F5F5F5;
+  border: none;
+  border-radius: 12px;
+  padding: 0 16px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  color: black;
+}
+
+.profile-danger-zone {
+  width: 100%;
+  background: #F5F5F5;
+  border-radius: 12px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  margin-bottom: 40px;
+  border: none;
+}
+
+.text-danger {
+  color: #FF4444;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.btn-save-profile {
+  width: 100%;
+  height: 59px;
+  background: #D0D0D0;
+  /* Disabled/Secondary state color from design */
+  color: #7A7A7A;
+  border: none;
+  border-radius: 100px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: auto;
   display: flex;
   align-items: center;
   justify-content: center;
