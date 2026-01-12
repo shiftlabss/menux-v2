@@ -431,11 +431,17 @@ body,
 .btn-profile-short {
   background: black;
   color: white;
-  padding: 6px 16px;
+  height: 29px;
+  padding: 0 10px;
   border-radius: 100px;
-  font-size: 13px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
   font-weight: 500;
   border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 .menu-scroll-area {
@@ -557,11 +563,17 @@ body,
 .btn-order-now {
   background: white;
   color: black;
-  border: none;
+  height: 29px;
+  padding: 0 10px;
   border-radius: 100px;
-  padding: 6px 14px;
-  font-size: 12px;
-  font-weight: 600;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 .category-nav {
@@ -621,12 +633,16 @@ body,
 .filter-pill {
   background: #F5F5F5;
   border: none;
-  padding: 8px 16px;
+  height: 29px;
+  padding: 0 10px;
   border-radius: 100px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   font-family: 'Bricolage Grotesque', sans-serif;
   color: #7E7E7E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   white-space: nowrap;
   cursor: pointer;
   outline: none;
