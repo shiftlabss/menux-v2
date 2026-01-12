@@ -296,9 +296,9 @@ export default function MenuHub() {
                     </div>
                 ))}
 
-                <footer style={{ padding: '60px 0 40px', textAlign: 'center', opacity: 0.4, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '11px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Este menu foi desenvolvido por</span>
-                    <img src={imgLogo} alt="Menux" style={{ height: '14px' }} />
+                <footer style={{ padding: '40px 0 60px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                    <span style={{ fontFamily: 'Geist, sans-serif', fontSize: '13px', color: '#A3A3A3' }}>Este menu foi desenvolvido pela</span>
+                    <img src={imgLogo} alt="Menux" style={{ height: '18px', marginTop: '2px', filter: 'brightness(0)' }} />
                 </footer>
             </div>
         </div>
