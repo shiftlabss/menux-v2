@@ -1,5 +1,6 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
+import ProductDetailModal from './ProductDetailModal';
 
 const imgLogo = "/logo-menux.svg";
 const imgVerify = "/verify-icon.svg";
@@ -13,6 +14,7 @@ export default function MenuHub() {
     const [activeCategory, setActiveCategory] = useState('entradas');
     const [activeSubcategory, setActiveSubcategory] = useState('');
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [selectedProduct, setSelectedProduct] = useState(null);
 
     const banners = [
         {
@@ -221,7 +223,7 @@ export default function MenuHub() {
                 <section className="featured-section">
                     <div className="featured-reel" ref={reelRef}>
                         {banners.map((b, i) => (
-                            <div key={i} className="featured-card" style={{ background: b.bg }}>
+                            <div key={i} className="featured-card" style={{ background: b.bg }} onClick={() => setSelectedProduct({ id: i, name: b.title, desc: "Descrição do prato em destaque...", price: b.price })}>
                                 <span className="featured-tag">{b.tag}</span>
                                 <h3 className="featured-title">{b.title}</h3>
                                 <div className="featured-footer">
@@ -278,7 +280,7 @@ export default function MenuHub() {
                                 <div key={subcategory.name} id={`sub-${subcategory.name.replace(/\s+/g, '-').toLowerCase()}`}>
                                     <p className="subcategory-label">{subcategory.subcategory_label || subcategory.name}</p>
                                     {subcategory.items.length > 0 ? subcategory.items.map(item => (
-                                        <div key={item.id} className="menu-item">
+                                        <div key={item.id} className="menu-item" onClick={() => setSelectedProduct(item)}>
                                             <div className="item-info">
                                                 <h4 className="item-name">{item.name}</h4>
                                                 <p className="item-desc">{item.desc}</p>
@@ -301,6 +303,20 @@ export default function MenuHub() {
                     <img src={imgLogo} alt="Menux" style={{ height: '18px', marginTop: '2px', filter: 'brightness(0)' }} />
                 </footer>
             </div>
+
+            <AnimatePresence>
+                {selectedProduct && (
+                    <ProductDetailModal
+                        product={selectedProduct}
+                        onClose={() => setSelectedProduct(null)}
+                        onAddToCart={(item, obs) => {
+                            console.log('Added to cart:', item, obs);
+                            setSelectedProduct(null);
+                            alert('Produto adicionado ao pedido!');
+                        }}
+                    />
+                )}
+            </AnimatePresence>
         </div>
     );
 }
