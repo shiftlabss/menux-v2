@@ -1248,7 +1248,8 @@ body,
   color: #7D7D7D;
   line-height: 1.3;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -1434,7 +1435,6 @@ body,
   align-items: center;
   justify-content: center;
   white-space: nowrap;
-  cursor: pointer;
 }
 
 .profile-content {
@@ -1646,6 +1646,12 @@ body,
   flex-shrink: 0;
 }
 
+.modal-header-avatar img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
 .btn-modal-back {
   cursor: pointer;
   padding: 0;
@@ -1683,11 +1689,11 @@ body,
 }
 
 .status-dot {
-  width: 4px;
-  /* Tamanho 4x4 solicitado */
-  height: 4px;
+  width: 6px;
+  height: 6px;
   background: #10B981;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .modal-header-close {
@@ -1705,7 +1711,8 @@ body,
 /* Welcome View Restoration - VOLTANDO AO ORIGINAL */
 .maestro-close-btn {
   position: absolute;
-  top: 24px;
+  top: 18px;
+  /* Centered within the header height */
   right: 24px;
   background: none;
   border: none;
@@ -1842,6 +1849,7 @@ body,
 
 .chat-bubble-wrapper.user {
   justify-content: flex-end;
+
 }
 
 /* Bolhas de chat refinadas */
@@ -1863,6 +1871,42 @@ body,
   background: #F5F5F5;
   color: black;
   border-radius: 18px 18px 18px 4px;
+}
+
+.chat-bubble.ai.typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 46.4px;
+  /* Matches single-line bubble height */
+}
+
+.chat-bubble.ai.typing span {
+  width: 6px;
+  height: 6px;
+  background: #8A8A8A;
+  border-radius: 50%;
+  animation: typing 1s infinite alternate;
+}
+
+.chat-bubble.ai.typing span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.chat-bubble.ai.typing span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  from {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
 }
 
 /* Wizard Content */
@@ -1993,7 +2037,6 @@ body,
   justify-content: center;
   text-align: center;
   padding-bottom: 80px;
-  /* Alinha o centro visual um pouco acima do centro real */
 }
 
 .loading-icon-wrapper {
@@ -2022,8 +2065,182 @@ body,
   font-family: 'Bricolage Grotesque', sans-serif;
   font-size: 20px;
   font-weight: 500;
-  /* Medium */
   color: black;
   width: 176px;
   margin: 0;
+}
+
+/* Wizard Results Screen */
+.wizard-results-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.wizard-results-header {
+  margin-bottom: 12px;
+}
+
+.wizard-results-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: black;
+  margin-bottom: 8px;
+}
+
+.wizard-results-subtitle {
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  color: #858585;
+  margin: 0;
+}
+
+.wizard-results-list {
+  flex: 1;
+  overflow-y: auto;
+  margin: 0 -24px;
+  padding: 0 24px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.wizard-result-item {
+  display: flex;
+  gap: 16px;
+  padding: 24px 0;
+  align-items: flex-start;
+}
+
+.wizard-result-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.wizard-result-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+  margin-bottom: 4px;
+}
+
+.wizard-result-desc {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 12px;
+  color: #858585;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.wizard-result-price {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+}
+
+.wizard-result-image {
+  width: 94px;
+  height: 94px;
+  background: #E0E0E0;
+  border-radius: 15px;
+  flex-shrink: 0;
+}
+
+.wizard-result-divider {
+  height: 1px;
+  background: #F5F5F5;
+  width: 100%;
+}
+
+.wizard-results-footer {
+  padding: 24px 0 0;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: white;
+  margin-top: auto;
+}
+
+.btn-chat-with-maestro {
+  flex: 1;
+  height: 59px;
+  background: #F5F5F5;
+  border: none;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+  cursor: pointer;
+
+  img {
+    width: 80px;
+  }
+}
+
+.menux-logo-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.menux-logo-text span {
+  width: 20px;
+  height: 20px;
+  background: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.33331 11.6667C3.33331 11.6667 3.74998 13.3333 5.41665 13.3333C7.08331 13.3333 7.49998 11.6667 7.49998 11.6667' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M9.16669 11.6667C9.16669 11.6667 9.58335 13.3333 11.25 13.3333C12.9167 13.3333 13.3333 11.6667 13.3333 11.6667' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='10' cy='10' r='8.33333' stroke='black' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat center;
+  background-size: contain;
+}
+
+.btn-order-cloche {
+  width: 59px;
+  height: 59px;
+  border: 1px solid #E5E5E5;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.cloche-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #7A55FD;
+  color: white;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 0 7px;
+  height: 23px;
+  min-width: 23px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-add-to-cart {
+  width: fit-content;
+}
+
+.wizard-result-price-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
 }

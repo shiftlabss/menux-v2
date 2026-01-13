@@ -70,13 +70,11 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar })
             exit={{ y: "100%" }}
             transition={{ ease: "easeOut", duration: 0.3 }}
         >
-            <div className="modal-header-back">
-                <button className="btn-modal-back" onClick={onClose}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+            <div className="profile-header">
+                <MenuxLogo height={24} />
+                <button className="btn-profile-back" onClick={onClose}>
+                    Voltar ao Cardápio
                 </button>
-                <div className="modal-header-text">
-                    <span className="modal-header-title">Seu Perfil</span>
-                </div>
             </div>
 
             <div className="profile-content">
