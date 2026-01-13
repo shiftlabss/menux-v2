@@ -44,15 +44,18 @@ const MENU_DATA = [
         name: 'Entradas',
         subcategories: [
             {
-                name: 'Entradas Frias', items: [
-                    { id: 101, name: "Carpaccio Tradicional", desc: "Lâminas de filé mignon, molho de alcaparras, parmesão e rúcula fresca.", price: "R$ 42,90" },
-                    { id: 102, name: "Tartare de Salmão", desc: "Salmão fresco, raspas de limão siciliano e torradas artesanais.", price: "R$ 46,90" },
+                name: 'Favoritos', items: [
+                    { id: 101, name: "Carpaccio de Carne", desc: "Lâminas de filé mignon, molho de alcaparras, parmesão e rúcula fresca.", price: "R$ 44,90", image: "/imgs-entrada/entrada-carpacio-de-carne.jpg" },
+                    { id: 102, name: "Ceviche Clássico", desc: "Peixe branco marinado no limão, cebola roxa e pimenta dedo de moça.", price: "R$ 42,90", image: "/imgs-entrada/entrada-ceviche.jpg" },
+                    { id: 105, name: "Burrata Artesanal", desc: "Burrata cremosa, tomates cereja confitados e pesto de manjericão.", price: "R$ 58,00", image: "/imgs-entrada/entrada-burrata.jpg" },
                 ]
             },
             {
-                name: 'Entradas Quentes', items: [
-                    { id: 103, name: "Bolinho de Bacalhau", desc: "6 unidades de bolinhos crocantes, seguindo a receita tradicional portuguesa.", price: "R$ 38,00" },
-                    { id: 104, name: "Bruschetta Pomodoro", desc: "Pão italiano tostado, tomates frescos, manjericão e azeite.", price: "R$ 32,00" },
+                name: 'Quentes', items: [
+                    { id: 103, name: "Bolinho de Costela", desc: "6 unidades de bolinhos crocantes de costela desfiada com cream cheese.", price: "R$ 38,00", image: "/imgs-entrada/entrada-bolinho-costela.jpg" },
+                    { id: 104, name: "Camarão Crocante", desc: "Camarões empanados na farinha panko com molho agridoce.", price: "R$ 62,00", image: "/imgs-entrada/entrada-camarão.jpg" },
+                    { id: 106, name: "Dadinho de Tapioca", desc: "Dadinhos de tapioca com queijo coalho servidos com geleia de pimenta.", price: "R$ 32,00", image: "/imgs-entrada/entrada-dadinho.jpg" },
+                    { id: 107, name: "Tábua de Frios", desc: "Seleção de queijos e embutidos artesanais, acompanhados de pães e antepastos.", price: "R$ 89,00", image: "/imgs-entrada/entrada-tabua.jpg" },
                 ]
             }
         ]

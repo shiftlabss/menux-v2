@@ -61,17 +61,17 @@ const DEFAULT_CATEGORIES = [
 
 const DEFAULT_PRODUCTS = [
     // ENTRADAS - Frias
-    { id: '1', name: 'Carpaccio de Carne', price: 'R$ 48,00', desc: 'Fatias finas de carne bovina crua marmorizada, finalizadas com lascas de parmesão, rúcula fresca e fios de azeite extravirgem.', categoryId: 'entradas', subcategoryId: 'frias', image: '' },
-    { id: '2', name: 'Burrata com Tomate Confit', price: 'R$ 52,00', desc: 'Burrata extremamente cremosa acompanhada de tomates cereja confitados no azeite de ervas e finalizada com pesto de manjericão artesanal.', categoryId: 'entradas', subcategoryId: 'frias', image: '' },
-    { id: '3', name: 'Ceviche de Peixe Branco', price: 'R$ 46,00', desc: 'Peixe branco fresco marinado em leite de tigre cítrico, cebola roxa crocante, coentro e um toque de pimenta dedo-de-moça.', categoryId: 'entradas', subcategoryId: 'frias', image: '' },
+    { id: '1', name: 'Carpaccio de Carne', price: 'R$ 48,00', desc: 'Fatias finas de carne bovina crua marmorizada, finalizadas com lascas de parmesão, rúcula fresca e fios de azeite extravirgem.', categoryId: 'entradas', subcategoryId: 'frias', image: '/imgs-entrada/entrada-carpacio-de-carne.jpg' },
+    { id: '2', name: 'Burrata com Tomate Confit', price: 'R$ 52,00', desc: 'Burrata extremamente cremosa acompanhada de tomates cereja confitados no azeite de ervas e finalizada com pesto de manjericão artesanal.', categoryId: 'entradas', subcategoryId: 'frias', image: '/imgs-entrada/entrada-burrata.jpg' },
+    { id: '3', name: 'Ceviche de Peixe Branco', price: 'R$ 46,00', desc: 'Peixe branco fresco marinado em leite de tigre cítrico, cebola roxa crocante, coentro e um toque de pimenta dedo-de-moça.', categoryId: 'entradas', subcategoryId: 'frias', image: '/imgs-entrada/entrada-ceviche.jpg' },
     // ENTRADAS - Quentes
-    { id: '4', name: 'Camarão Empanado', price: 'R$ 56,00', desc: 'Camarões selecionados empanados em farinha panko ultra crocante, servidos com nosso exclusivo molho agridoce da casa.', categoryId: 'entradas', subcategoryId: 'quentes', image: '' },
-    { id: '5', name: 'Dadinho de Tapioca', price: 'R$ 38,00', desc: 'Cubos crocantes de tapioca com queijo coalho, fritos até dourarem, acompanhados de geleia de pimenta levemente picante.', categoryId: 'entradas', subcategoryId: 'quentes', image: '' },
-    { id: '6', name: 'Bolinho de Costela', price: 'R$ 42,00', desc: 'Bolinhos recheados com costela bovina desfiada e suculenta, empanados e servidos com maionese defumada artesanal.', categoryId: 'entradas', subcategoryId: 'quentes', image: '' },
+    { id: '4', name: 'Camarão Empanado', price: 'R$ 56,00', desc: 'Camarões selecionados empanados em farinha panko ultra crocante, servidos com nosso exclusivo molho agridoce da casa.', categoryId: 'entradas', subcategoryId: 'quentes', image: '/imgs-entrada/entrada-camarão.jpg' },
+    { id: '5', name: 'Dadinho de Tapioca', price: 'R$ 38,00', desc: 'Cubos crocantes de tapioca com queijo coalho, fritos até dourarem, acompanhados de geleia de pimenta levemente picante.', categoryId: 'entradas', subcategoryId: 'quentes', image: '/imgs-entrada/entrada-dadinho.jpg' },
+    { id: '6', name: 'Bolinho de Costela', price: 'R$ 42,00', desc: 'Bolinhos recheados com costela bovina desfiada e suculenta, empanados e servidos com maionese defumada artesanal.', categoryId: 'entradas', subcategoryId: 'quentes', image: '/imgs-entrada/entrada-bolinho-costela.jpg' },
     // ENTRADAS - Compartilhar
-    { id: '7', name: 'Tábua de Frios', price: 'R$ 78,00', desc: 'Seleção premium de queijos finos, embutidos artesanais, frutas secas da estação, castanhas crocantes e torradas da casa.', categoryId: 'entradas', subcategoryId: 'compartilhar', image: '' },
-    { id: '8', name: 'Batata Rústica', price: 'R$ 34,00', desc: 'Batatas cortadas à mão, assadas com dentes de alho inteiros, alecrim fresco e uma pitada de páprica defumada especial.', categoryId: 'entradas', subcategoryId: 'compartilhar', image: '' },
-    { id: '9', name: 'Anéis de Cebola', price: 'R$ 32,00', desc: 'Anéis de cebola selecionados, empanados em massa leve e crocante, servidos com molho especial de ervas finas.', categoryId: 'entradas', subcategoryId: 'compartilhar', image: '' },
+    { id: '7', name: 'Tábua de Frios', price: 'R$ 78,00', desc: 'Seleção premium de queijos finos, embutidos artesanais, frutas secas da estação, castanhas crocantes e torradas da casa.', categoryId: 'entradas', subcategoryId: 'compartilhar', image: '/imgs-entrada/entrada-tabua.jpg' },
+    { id: '8', name: 'Batata Rústica', price: 'R$ 34,00', desc: 'Batatas cortadas à mão, assadas com dentes de alho inteiros, alecrim fresco e uma pitada de páprica defumada especial.', categoryId: 'entradas', subcategoryId: 'compartilhar', image: '/imgs-entrada/entrada-batatas.jpg' },
+    { id: '9', name: 'Anéis de Cebola', price: 'R$ 32,00', desc: 'Anéis de cebola selecionados, empanados em massa leve e crocante, servidos com molho especial de ervas finas.', categoryId: 'entradas', subcategoryId: 'compartilhar', image: '/imgs-entrada/entrada-cebolas.jpg' },
 
     // PRINCIPAIS - Massas
     { id: '10', name: 'Spaghetti à Bolonhesa', price: 'R$ 62,00', desc: 'Massa al dente envolvida em um robusto molho de carne bovina e tomates pelados, cozido lentamente por 6 horas.', categoryId: 'principais', subcategoryId: 'massas', image: '' },
