@@ -1,0 +1,74 @@
+import { Request, Response } from 'express';
+import { AppDataSource } from '@infrastructure/database/typeorm/data-source';
+import { Category } from '@domain/entities/Category';
+import { TypeOrmSystemParameterRepository } from '@infrastructure/repositories/TypeOrmSystemParameterRepository';
+import { SystemParameter } from '@domain/entities/SystemParameter';
+
+
+export class PizzasController {
+    private categoryRepository = AppDataSource.getRepository(Category);
+    private systemParameterRepository = new TypeOrmSystemParameterRepository();
+
+    // GET /pizzas
+    public index = async (req: Request, res: Response) => {
+        const systemParams = await this.systemParameterRepository.findByRestaurantId(req.user.restaurantId);
+        const pizzaCategoryId = systemParams?.pizzaCategoryId;
+
+        if (!pizzaCategoryId) {
+            return res.json([]);
+        }
+
+        const pizzasCat = await this.categoryRepository.findOne({
+            where: { id: pizzaCategoryId }
+        });
+
+        if (!pizzasCat) {
+            return res.json([]);
+        }
+
+        // 2. Find subcategories
+        const subCategories = await this.categoryRepository.find({
+            where: {
+                pai: pizzasCat.id
+            }
+        });
+
+        const subCategoryIds = subCategories.map(c => c.id);
+
+        // 3. Find items in those subcategories
+        const itemRepo = AppDataSource.getRepository('MenuItem');
+
+        let query = itemRepo.createQueryBuilder('item')
+            .where('item.categoryId IN (:...ids)', { ids: subCategoryIds.length > 0 ? subCategoryIds : ['00000000-0000-0000-0000-000000000000'] })
+            .andWhere('item.isActive = :isActive', { isActive: true });
+
+        const items = await query.getMany();
+
+        return res.json(items);
+    }
+
+    // GET /pizzas/categories
+    public listCategories = async (req: Request, res: Response) => {
+        const systemParams = await this.systemParameterRepository.findByRestaurantId(req.user.restaurantId);
+        const pizzaCategoryId = systemParams?.pizzaCategoryId;
+
+        if (!pizzaCategoryId) {
+            return res.json([]);
+        }
+
+        const pizzasCat = await this.categoryRepository.findOne({
+            where: { id: pizzaCategoryId }
+        });
+
+        if (!pizzasCat) {
+            return res.json([]);
+        }
+
+        const subCategories = await this.categoryRepository.find({
+            where: {
+                pai: pizzasCat.id
+            }
+        });
+
+        return res.json(subCategories);
+    }
