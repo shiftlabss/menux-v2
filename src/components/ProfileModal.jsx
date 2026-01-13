@@ -15,14 +15,60 @@ const MenuxFaceIcon = () => (
     <img src="/icon-menux.svg" alt="Menux Face" style={{ width: 20, height: 20 }} />
 );
 
-export default function ProfileModal({ onClose }) {
+import { useRef } from 'react';
+
+export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar }) {
+    const fileInputRef = useRef(null);
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 200;
+                    const MAX_HEIGHT = 200;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                    onUpdateAvatar(dataUrl);
+                };
+                img.src = reader.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const triggerFileInput = () => {
+        fileInputRef.current.click();
+    };
+
     return (
         <motion.div
             className="profile-modal-overlay"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            initial={{ y: "100%" }}
+            animate={{ y: "0%" }}
+            exit={{ y: "100%" }}
+            transition={{ ease: "easeOut", duration: 0.3 }}
         >
             <div className="profile-header">
                 <MenuxLogo />
@@ -33,10 +79,24 @@ export default function ProfileModal({ onClose }) {
 
             <div className="profile-content">
                 <div className="profile-avatar-section">
-                    <div className="profile-avatar">
+                    <div className="profile-avatar" onClick={triggerFileInput} style={{ cursor: 'pointer' }}>
+                        {currentAvatar && (
+                            <img
+                                src={currentAvatar}
+                                alt="Profile"
+                                style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
+                            />
+                        )}
                         <div className="profile-camera-icon">
                             <CameraIcon />
                         </div>
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                            accept="image/*"
+                            style={{ display: 'none' }}
+                        />
                     </div>
                     <div className="profile-name">Lucas</div>
                     <div className="profile-since">

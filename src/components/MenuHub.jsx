@@ -5,9 +5,115 @@ import OrderModal from './OrderModal';
 import ProcessingModal from './ProcessingModal';
 import OrderCodeModal from './OrderCodeModal';
 import ProfileModal from './ProfileModal';
+import MaestroModal from './MaestroModal';
 
 const imgLogo = "/logo-menux.svg";
 const imgVerify = "/verify-icon.svg";
+
+const BANNERS = [
+    {
+        tag: "Sabor Inigualável",
+        title: "Filé Mignon ao Poivre",
+        price: "R$ 84",
+        bg: "#D9D9D9"
+    },
+    {
+        tag: "Sugestão do Chef",
+        title: "Picanha Grelhada",
+        price: "R$ 69,90",
+        bg: "#E2E2E2"
+    },
+    {
+        tag: "Drink da Semana",
+        title: "Moscow Mule",
+        price: "R$ 34,00",
+        bg: "#D0D0D0"
+    }
+];
+
+const MENU_DATA = [
+    {
+        id: 'entradas',
+        name: 'Entradas',
+        subcategories: [
+            {
+                name: 'Entradas Frias', items: [
+                    { id: 101, name: "Carpaccio Tradicional", desc: "Lâminas de filé mignon, molho de alcaparras, parmesão e rúcula fresca.", price: "R$ 42,90" },
+                    { id: 102, name: "Tartare de Salmão", desc: "Salmão fresco, raspas de limão siciliano e torradas artesanais.", price: "R$ 46,90" },
+                ]
+            },
+            {
+                name: 'Entradas Quentes', items: [
+                    { id: 103, name: "Bolinho de Bacalhau", desc: "6 unidades de bolinhos crocantes, seguindo a receita tradicional portuguesa.", price: "R$ 38,00" },
+                    { id: 104, name: "Bruschetta Pomodoro", desc: "Pão italiano tostado, tomates frescos, manjericão e azeite.", price: "R$ 32,00" },
+                ]
+            }
+        ]
+    },
+    {
+        id: 'saladas',
+        name: 'Saladas',
+        subcategories: [
+            {
+                name: 'Leves e Frescas', items: [
+                    { id: 401, name: "Salada Caesar", desc: "Alface americana, croutons artesanais, molho caesar caseiro e lascas de grana padano.", price: "R$ 38,00" },
+                ]
+            }
+        ]
+    },
+    {
+        id: 'pratos-principais',
+        name: 'Pratos Principais',
+        subcategories: [
+            {
+                name: 'Carnes Bovinas',
+                items: [
+                    { id: 201, name: "Picanha Grelhada", desc: "Picanha bovina selecionada, grelhada no ponto da casa, finalizada com manteiga de ervas. Acompanha arroz branco, farofa e vinagrete.", price: "R$ 69,90" },
+                    { id: 202, name: "Contra Filé na Chapa", desc: "Contra filé bovino grelhado, preparado na chapa quente para preservar a suculência. Acompanha arroz temperado e batata frita.", price: "R$ 59,90" },
+                    { id: 203, name: "Filé Mignon ao Molho Madeira", desc: "Filé mignon bovino macio, servido com molho madeira e champignons frescos. Acompanha purê de batatas e arroz branco.", price: "R$ 74,90" },
+                    { id: 204, name: "Costela Bovina Assada", desc: "Costela bovina assada lentamente por várias horas até atingir textura macia. Servida com mandioca cozida e vinagrete.", price: "R$ 79,90" },
+                ]
+            },
+            {
+                name: 'Aves',
+                items: [
+                    { id: 205, name: "Frango Grelhado com Legumes", desc: "Peito de frango grelhado, temperado com ervas naturais, acompanhado de legumes salteados.", price: "R$ 44,90" },
+                    { id: 206, name: "Frango à Parmegiana", desc: "Filé de frango empanado, coberto com molho de tomate artesanal e queijo derretido. Acompanha arroz branco e batata frita.", price: "R$ 49,90" },
+                ]
+            },
+            {
+                name: 'Peixes',
+                items: [
+                    { id: 207, name: "Salmão Grelhado", desc: "Filé de salmão grelhado, finalizado com ervas frescas. Acompanha arroz com amêndoas e legumes no vapor.", price: "R$ 79,90" },
+                    { id: 208, name: "Tilápia Empanada", desc: "Filé de tilápia empanado e crocante, servido com arroz, feijão e salada da casa.", price: "R$ 46,90" },
+                ]
+            },
+            {
+                name: 'Massas',
+                items: [
+                    { id: 209, name: "Spaghetti à Bolonhesa", desc: "Massa spaghetti ao molho bolonhesa tradicional, preparada com carne bovina e tomate. Finalizada com queijo parmesão.", price: "R$ 39,90" },
+                    { id: 210, name: "Fettuccine Alfredo com Frango", desc: "Massa fettuccine ao molho cremoso à base de queijo, acompanhada de cubos de frango grelhado.", price: "R$ 45,90" },
+                ]
+            }
+        ]
+    },
+    {
+        id: 'bebidas',
+        name: 'Bebidas',
+        subcategories: [
+            { name: 'Sucos Naturais', items: [] },
+            { name: 'Drinks Autorais', items: [] }
+        ]
+    },
+    {
+        id: 'sobremesas',
+        name: 'Sobremesas',
+        subcategories: [
+            { name: 'Clássicas', items: [] },
+            { name: 'Doces Finos', items: [] }
+        ]
+    }
+];
 
 export default function MenuHub() {
     const scrollAreaRef = useRef(null);
@@ -24,6 +130,8 @@ export default function MenuHub() {
     const [isProcessing, setIsProcessing] = useState(false);
     const [showOrderCode, setShowOrderCode] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [userAvatar, setUserAvatar] = useState(null);
+    const [isMaestroOpen, setIsMaestroOpen] = useState(false);
 
     const handleFinishOrder = () => {
         setIsOrderModalOpen(false);
@@ -39,34 +147,12 @@ export default function MenuHub() {
         setCartCount(0);
     };
 
-    const banners = [
-        {
-            tag: "Sabor Inigualável",
-            title: "Filé Mignon ao Poivre",
-            price: "R$ 84",
-            bg: "#D9D9D9"
-        },
-        {
-            tag: "Sugestão do Chef",
-            title: "Picanha Grelhada",
-            price: "R$ 69,90",
-            bg: "#E2E2E2"
-        },
-        {
-            tag: "Drink da Semana",
-            title: "Moscow Mule",
-            price: "R$ 34,00",
-            bg: "#D0D0D0"
-        }
-    ];
-
     // Carousel Automático (Rolagem)
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentIndex((prev) => {
-                const next = (prev + 1) % banners.length;
+                const next = (prev + 1) % BANNERS.length;
                 if (reelRef.current) {
-                    // 313 (largura) + 16 (gap) = 329px por scroll
                     reelRef.current.scrollTo({
                         left: next * 329,
                         behavior: 'smooth'
@@ -76,91 +162,7 @@ export default function MenuHub() {
             });
         }, 4000);
         return () => clearInterval(timer);
-    }, [banners.length]);
-
-    const menuData = [
-        {
-            id: 'entradas',
-            name: 'Entradas',
-            subcategories: [
-                {
-                    name: 'Entradas Frias', items: [
-                        { id: 101, name: "Carpaccio Tradicional", desc: "Lâminas de filé mignon, molho de alcaparras, parmesão e rúcula fresca.", price: "R$ 42,90" },
-                        { id: 102, name: "Tartare de Salmão", desc: "Salmão fresco, raspas de limão siciliano e torradas artesanais.", price: "R$ 46,90" },
-                    ]
-                },
-                {
-                    name: 'Entradas Quentes', items: [
-                        { id: 103, name: "Bolinho de Bacalhau", desc: "6 unidades de bolinhos crocantes, seguindo a receita tradicional portuguesa.", price: "R$ 38,00" },
-                        { id: 104, name: "Bruschetta Pomodoro", desc: "Pão italiano tostado, tomates frescos, manjericão e azeite.", price: "R$ 32,00" },
-                    ]
-                }
-            ]
-        },
-        {
-            id: 'saladas',
-            name: 'Saladas',
-            subcategories: [
-                {
-                    name: 'Leves e Frescas', items: [
-                        { id: 401, name: "Salada Caesar", desc: "Alface americana, croutons artesanais, molho caesar caseiro e lascas de grana padano.", price: "R$ 38,00" },
-                    ]
-                }
-            ]
-        },
-        {
-            id: 'pratos-principais',
-            name: 'Pratos Principais',
-            subcategories: [
-                {
-                    name: 'Carnes Bovinas',
-                    items: [
-                        { id: 201, name: "Picanha Grelhada", desc: "Picanha bovina selecionada, grelhada no ponto da casa, finalizada com manteiga de ervas. Acompanha arroz branco, farofa e vinagrete.", price: "R$ 69,90" },
-                        { id: 202, name: "Contra Filé na Chapa", desc: "Contra filé bovino grelhado, preparado na chapa quente para preservar a suculência. Acompanha arroz temperado e batata frita.", price: "R$ 59,90" },
-                        { id: 203, name: "Filé Mignon ao Molho Madeira", desc: "Filé mignon bovino macio, servido com molho madeira e champignons frescos. Acompanha purê de batatas e arroz branco.", price: "R$ 74,90" },
-                        { id: 204, name: "Costela Bovina Assada", desc: "Costela bovina assada lentamente por várias horas até atingir textura macia. Servida com mandioca cozida e vinagrete.", price: "R$ 79,90" },
-                    ]
-                },
-                {
-                    name: 'Aves',
-                    items: [
-                        { id: 205, name: "Frango Grelhado com Legumes", desc: "Peito de frango grelhado, temperado com ervas naturais, acompanhado de legumes salteados.", price: "R$ 44,90" },
-                        { id: 206, name: "Frango à Parmegiana", desc: "Filé de frango empanado, coberto com molho de tomate artesanal e queijo derretido. Acompanha arroz branco e batata frita.", price: "R$ 49,90" },
-                    ]
-                },
-                {
-                    name: 'Peixes',
-                    items: [
-                        { id: 207, name: "Salmão Grelhado", desc: "Filé de salmão grelhado, finalizado com ervas frescas. Acompanha arroz com amêndoas e legumes no vapor.", price: "R$ 79,90" },
-                        { id: 208, name: "Tilápia Empanada", desc: "Filé de tilápia empanado e crocante, servido com arroz, feijão e salada da casa.", price: "R$ 46,90" },
-                    ]
-                },
-                {
-                    name: 'Massas',
-                    items: [
-                        { id: 209, name: "Spaghetti à Bolonhesa", desc: "Massa spaghetti ao molho bolonhesa tradicional, preparada com carne bovina e tomate. Finalizada com queijo parmesão.", price: "R$ 39,90" },
-                        { id: 210, name: "Fettuccine Alfredo com Frango", desc: "Massa fettuccine ao molho cremoso à base de queijo, acompanhada de cubos de frango grelhado.", price: "R$ 45,90" },
-                    ]
-                }
-            ]
-        },
-        {
-            id: 'bebidas',
-            name: 'Bebidas',
-            subcategories: [
-                { name: 'Sucos Naturais', items: [] },
-                { name: 'Drinks Autorais', items: [] }
-            ]
-        },
-        {
-            id: 'sobremesas',
-            name: 'Sobremesas',
-            subcategories: [
-                { name: 'Clássicas', items: [] },
-                { name: 'Doces Finos', items: [] }
-            ]
-        }
-    ];
+    }, []);
 
     const centerNavButton = (containerRef, buttonElement) => {
         if (!containerRef.current || !buttonElement) return;
@@ -197,44 +199,57 @@ export default function MenuHub() {
     };
 
     useEffect(() => {
+        const scrollContainer = scrollAreaRef.current;
+        if (!scrollContainer) return;
+
+        let ticking = false;
+
         const handleScroll = () => {
-            if (isProgrammaticScroll.current) return;
+            if (isProgrammaticScroll.current || ticking) return;
 
-            const scrollPos = scrollAreaRef.current.scrollTop + 200;
+            ticking = true;
+            requestAnimationFrame(() => {
+                const scrollPos = scrollContainer.scrollTop + 200;
 
-            menuData.forEach(cat => {
-                const element = document.getElementById(cat.id);
-                if (element && scrollPos >= element.offsetTop && scrollPos < element.offsetTop + element.offsetHeight) {
-                    if (activeCategory !== cat.id) {
-                        setActiveCategory(cat.id);
-                        setActiveSubcategory('');
-                        const tabButton = tabsRef.current?.querySelector(`[data-id="${cat.id}"]`);
-                        if (tabButton) centerNavButton(tabsRef, tabButton);
+                for (const cat of MENU_DATA) {
+                    const element = document.getElementById(cat.id);
+                    if (element && scrollPos >= element.offsetTop && scrollPos < element.offsetTop + element.offsetHeight) {
+                        if (activeCategory !== cat.id) {
+                            setActiveCategory(cat.id);
+                            setActiveSubcategory('');
+                            const tabButton = tabsRef.current?.querySelector(`[data-id="${cat.id}"]`);
+                            if (tabButton) centerNavButton(tabsRef, tabButton);
+                        }
+                        break;
                     }
                 }
+                ticking = false;
             });
         };
 
-        const scrollContainer = scrollAreaRef.current;
-        if (scrollContainer) {
-            scrollContainer.addEventListener('scroll', handleScroll);
-            return () => scrollContainer.removeEventListener('scroll', handleScroll);
-        }
+        scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+        return () => scrollContainer.removeEventListener('scroll', handleScroll);
     }, [activeCategory]);
 
     return (
         <div className="menu-hub-container">
-            {/* ... (header and scroll area content remains the same until Floating Maestro Tabbar) ... */}
             <header className="menu-header">
                 <img src={imgLogo} alt="Menux" style={{ height: '20px' }} />
                 <div className="header-right">
-                    <div className="profile-trigger"></div>
+                    <div className="profile-trigger">
+                        {userAvatar && (
+                            <img
+                                src={userAvatar}
+                                alt="Profile"
+                                style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
+                            />
+                        )}
+                    </div>
                     <button className="btn-profile-short" onClick={() => setIsProfileOpen(true)}>Meu perfil</button>
                 </div>
             </header>
 
             <div className="menu-scroll-area" ref={scrollAreaRef}>
-                {/* ... content of scroll area ... */}
                 <div className="restaurant-banner"></div>
 
                 <div className="restaurant-info">
@@ -248,13 +263,13 @@ export default function MenuHub() {
 
                 <section className="featured-section">
                     <div className="featured-reel" ref={reelRef}>
-                        {banners.map((b, i) => (
+                        {BANNERS.map((b, i) => (
                             <div key={i} className="featured-card" style={{ background: b.bg }} onClick={() => setSelectedProduct({ id: i, name: b.title, desc: "Descrição do prato em destaque...", price: b.price })}>
                                 <span className="featured-tag">{b.tag}</span>
                                 <h3 className="featured-title">{b.title}</h3>
                                 <div className="featured-footer">
                                     <span className="featured-price">{b.price}</span>
-                                    <button className="btn-order-now">Pedir agora</button>
+                                    <button className="btn-order-now">Adicionar ao pedido</button>
                                 </div>
                             </div>
                         ))}
@@ -263,7 +278,7 @@ export default function MenuHub() {
 
                 <nav className="category-nav">
                     <div className="category-tabs" ref={tabsRef}>
-                        {menuData.map(cat => (
+                        {MENU_DATA.map(cat => (
                             <button
                                 key={cat.id}
                                 data-id={cat.id}
@@ -285,7 +300,7 @@ export default function MenuHub() {
                         >
                             Todos
                         </button>
-                        {menuData.find(c => c.id === activeCategory)?.subcategories.map(sub => (
+                        {MENU_DATA.find(c => c.id === activeCategory)?.subcategories.map(sub => (
                             <button
                                 key={sub.name}
                                 data-sub={sub.name}
@@ -298,7 +313,7 @@ export default function MenuHub() {
                     </div>
                 </nav>
 
-                {menuData.map(category => (
+                {MENU_DATA.map(category => (
                     <div key={category.id} id={category.id}>
                         <div className="menu-list">
                             <h3 className="section-label">{category.name}</h3>
@@ -333,7 +348,11 @@ export default function MenuHub() {
             {/* Floating Maestro Tabbar */}
             {!selectedProduct && (
                 <>
-                    <div className={`floating-tabbar-container ${cartCount > 0 ? 'has-cart' : ''}`}>
+                    <div
+                        className={`floating-tabbar-container ${cartCount > 0 ? 'has-cart' : ''}`}
+                        onClick={() => setIsMaestroOpen(true)}
+                        style={{ cursor: 'pointer' }}
+                    >
                         <div className="maestro-icon-wrapper">
                             <img src="/icon-menux.svg" alt="Maestro" className="maestro-icon" />
                         </div>
@@ -358,8 +377,7 @@ export default function MenuHub() {
                         product={selectedProduct}
                         onClose={() => setSelectedProduct(null)}
                         onAddToCart={(item, obs) => {
-                            console.log('Added to cart:', item, obs);
-                            setCartCount(prev => prev + 1); // Increment cart count
+                            setCartCount(prev => prev + 1);
                             setSelectedProduct(null);
                         }}
                     />
@@ -373,7 +391,16 @@ export default function MenuHub() {
                 )}
                 {isProcessing && <ProcessingModal />}
                 {showOrderCode && <OrderCodeModal onReset={handleResetOrder} />}
-                {isProfileOpen && <ProfileModal onClose={() => setIsProfileOpen(false)} />}
+                {isProfileOpen && (
+                    <ProfileModal
+                        onClose={() => setIsProfileOpen(false)}
+                        currentAvatar={userAvatar}
+                        onUpdateAvatar={setUserAvatar}
+                    />
+                )}
+                {isMaestroOpen && (
+                    <MaestroModal onClose={() => setIsMaestroOpen(false)} />
+                )}
             </AnimatePresence>
         </div>
     );

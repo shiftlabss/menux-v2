@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@200..800&family=Geist:wght@100..900&display=swap');
+/* Fonts are loaded in index.html to avoid blocking CSS parsing */
 
 :root {
   --primary-black: #000000;
@@ -1564,7 +1564,6 @@ body,
   width: 100%;
   height: 59px;
   background: #D0D0D0;
-  /* Disabled/Secondary state color from design */
   color: #7A7A7A;
   border: none;
   border-radius: 100px;
@@ -1573,6 +1572,475 @@ body,
   font-weight: 500;
   cursor: pointer;
   margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Maestro Modal Styles */
+.maestro-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 3000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.maestro-modal-container {
+  width: 100%;
+  max-width: 430px;
+  height: calc(100% - 40px);
+  background: white;
+  border-radius: 20px 20px 0 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  /* Regra de padding 24px em tudo */
+  overflow: hidden;
+}
+
+.maestro-close-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  /* Remove padding interno do botão para alinhar 100% */
+  z-index: 3001;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.maestro-welcome-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: -60px;
+  /* Offset to push upwards slightly */
+}
+
+.maestro-welcome-icon-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid #E5E5E5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.maestro-welcome-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: black;
+  line-height: 1.1;
+  max-width: 220px;
+  margin-bottom: 12px;
+}
+
+.maestro-welcome-desc {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  color: #7D7D7D;
+  line-height: 1.4;
+  max-width: 260px;
+  margin-bottom: 32px;
+}
+
+.maestro-welcome-btn {
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 100px;
+  width: 290px;
+  /* Tamanho fixo aumentado */
+  height: 48px;
+  /* Altura aumentada para comportar 16px */
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  gap: 10px;
+}
+
+.maestro-footer-input {
+  padding: 24px 0 40px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: white;
+  /* Ensure background is solid white at bottom */
+}
+
+.maestro-input-wrapper {
+  flex: 1;
+  background: #F5F5F5;
+  border-radius: 20px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+}
+
+
+.maestro-input-field {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  color: black;
+}
+
+.maestro-input-field::placeholder {
+  color: #A3A3A3;
+}
+
+.maestro-send-btn {
+  width: 64px;
+  height: 64px;
+  background: black;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Wizard Styles */
+.wizard-header {
+  padding: 0 0 32px;
+  /* Remove padding lateral, usa o do container */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.wizard-close-inline {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: -8px;
+  /* Offset padding to align with edge */
+}
+
+.wizard-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: -40px;
+  /* Push content slightly up */
+}
+
+.wizard-assistant-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wizard-avatar-mini {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid #F0F0F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+}
+
+.wizard-status-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.wizard-assistant-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  /* Tamanho mais próximo do print */
+  font-weight: 700;
+  /* Mais negrito como no Figma */
+  color: black;
+  line-height: 1.1;
+}
+
+.wizard-status-online {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 12px;
+  color: #A3A3A3;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.wizard-status-online::before {
+  height: 6px;
+  background: #10B981;
+  border-radius: 50%;
+}
+
+.wizard-step-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wizard-question {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: black;
+  text-align: center;
+  margin-bottom: 40px;
+  max-width: 200px;
+}
+
+/* Step 1: Counter */
+.wizard-counter {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.wizard-counter-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #E5E5E5;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  color: black;
+}
+
+.wizard-counter-value {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 48px;
+  font-weight: 600;
+}
+
+/* Step 2 & 3: Options Grid */
+.wizard-options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+.wizard-option-card {
+  height: 56px;
+  border: 1px solid #E5E5E5;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #7D7D7D;
+  cursor: pointer;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.wizard-option-card.active {
+  border-color: black;
+  color: black;
+  background: white;
+  box-shadow: inset 0 0 0 1px black;
+}
+
+/* Loading Screen */
+.wizard-loading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.wizard-loading-text {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: black;
+  margin-top: 24px;
+  max-width: 160px;
+}
+
+/* Results Screen */
+.wizard-results-header {
+  text-align: left;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.wizard-results-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: black;
+  line-height: 1.1;
+}
+
+.wizard-results-subtitle {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 12px;
+  color: #7D7D7D;
+  margin-top: 4px;
+}
+
+.wizard-results-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+.wizard-result-item {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.wizard-result-info {
+  flex: 1;
+}
+
+.wizard-result-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: black;
+}
+
+.wizard-result-desc {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 12px;
+  color: #7D7D7D;
+  margin-top: 4px;
+  line-height: 1.3;
+}
+
+.wizard-result-price {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: black;
+  margin-top: 8px;
+}
+
+.wizard-result-image {
+  width: 80px;
+  height: 80px;
+  background: #E5E5E5;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.wizard-footer {
+  padding: 24px 0 40px;
+  width: 100%;
+}
+
+.btn-wizard-action {
+  width: 100%;
+  height: 59px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 100px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.wizard-results-footer-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 0 40px;
+}
+
+.btn-talk-maestro {
+  flex: 1;
+  height: 56px;
+  background: #F5F5F5;
+  border-radius: 100px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: black;
+  cursor: pointer;
+}
+
+.wizard-cart-mini {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid #E5E5E5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.wizard-cart-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: #7A55FD;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
