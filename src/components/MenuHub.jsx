@@ -53,7 +53,7 @@ const MENU_DATA = [
             {
                 name: 'Quentes', items: [
                     { id: 103, name: "Bolinho de Costela", desc: "6 unidades de bolinhos crocantes de costela desfiada com cream cheese.", price: "R$ 38,00", image: "/imgs-entrada/entrada-bolinho-costela.jpg" },
-                    { id: 104, name: "Camarão Crocante", desc: "Camarões empanados na farinha panko com molho agridoce.", price: "R$ 62,00", image: "/imgs-entrada/entrada-camarão.jpg" },
+                    { id: 104, name: "Camarão Crocante", desc: "Camarões empanados na farinha panko com molho agridoce.", price: "R$ 62,00", image: "/imgs-entrada/entrada-camarao.jpg" },
                     { id: 106, name: "Dadinho de Tapioca", desc: "Dadinhos de tapioca com queijo coalho servidos com geleia de pimenta.", price: "R$ 32,00", image: "/imgs-entrada/entrada-dadinho.jpg" },
                     { id: 107, name: "Tábua de Frios", desc: "Seleção de queijos e embutidos artesanais, acompanhados de pães e antepastos.", price: "R$ 89,00", image: "/imgs-entrada/entrada-tabua.jpg" },
                 ]
