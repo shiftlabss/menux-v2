@@ -456,6 +456,9 @@ body,
   height: 140px;
   background: #D9D9D9;
   position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .restaurant-info {
@@ -472,6 +475,9 @@ body,
   border: 4px solid white;
   border-radius: 50%;
   margin-bottom: 12px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .restaurant-name-row {
@@ -726,6 +732,9 @@ body,
   background: #D9D9D9;
   border-radius: 15px;
   flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .menu-divider-large {
@@ -774,6 +783,8 @@ body,
   height: 29px;
   background: white;
   border-radius: 50%;
+  border: none;
+  /* Correcting the visible border */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1047,21 +1058,22 @@ body,
 
 .order-title {
   font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 18px;
+  /* Slightly larger for header */
+  font-weight: 500;
   color: black;
-  flex: 1;
-  text-align: center;
-  margin-right: 24px;
-  /* Center title by offsetting back button width */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
 }
 
 .order-items-list {
   display: flex;
   flex-direction: column;
   padding: 0 24px;
-  gap: 24px;
-  margin-top: 16px;
+  gap: 32px;
+  margin-top: 32px;
 }
 
 .order-item-card {
@@ -1071,9 +1083,9 @@ body,
 }
 
 .order-item-image {
-  width: 60px;
-  height: 60px;
-  background: #D9D9D9;
+  width: 80px;
+  height: 80px;
+  background: #F2F2F2;
   border-radius: 12px;
   flex-shrink: 0;
 }
@@ -1093,64 +1105,67 @@ body,
 }
 
 .order-item-desc {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 13px;
-  color: #7D7D7D;
-  margin-top: 2px;
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  color: #8A8A8A;
+  margin-top: 4px;
   line-height: 1.2;
 }
 
 .order-item-price {
   font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   color: black;
-  margin-top: 4px;
+  margin-top: 8px;
 }
 
 .order-item-extras {
-  margin-top: 8px;
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 .extra-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 12px;
 }
 
 .extra-qty-badge {
-  background: #F0F0F0;
-  color: #000;
+  background: #F2F2F2;
+  color: #8A8A8A;
   font-family: 'Geist', sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  width: 18px;
-  height: 18px;
+  font-size: 12px;
+  font-weight: 500;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .extra-name {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 13px;
-  color: #7D7D7D;
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  color: #8A8A8A;
 }
 
 .order-item-qty-control {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 90px;
-  height: 32px;
+  width: 82px;
+  height: 38px;
   border: 1px solid #E5E5E5;
-  border-radius: 100px;
-  padding: 0 8px;
+  border-radius: 20px;
+  padding: 0 10px;
   flex-shrink: 0;
+  background: white;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.03);
 }
 
 .qty-btn {
@@ -1193,12 +1208,13 @@ body,
 
 .maestro-link-text {
   font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 500;
   color: #7A55FD;
 }
 
 .maestro-link-logo {
-  height: 14px;
+  height: 20px;
 }
 
 .rec-title {
@@ -1220,32 +1236,31 @@ body,
 }
 
 .rec-card {
-  width: 140px;
+  width: 156px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
 .rec-img {
-  width: 140px;
-  height: 140px;
-  background: #E5E5E5;
-  /* Placeholder gray */
-  border-radius: 12px;
+  width: 156px;
+  height: 156px;
+  background: #F2F2F2;
+  border-radius: 20px;
 }
 
 .rec-price {
   font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: black;
 }
 
 .rec-desc {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 12px;
-  color: #7D7D7D;
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  color: #8A8A8A;
   line-height: 1.3;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -1265,6 +1280,26 @@ body,
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-secondary-order {
+  width: 100%;
+  height: 59px;
+  background: #F5F5F5;
+  color: black;
+  border: none;
+  border-radius: 15px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-finish-order:active,
+.btn-secondary-order:active {
+  opacity: 0.8;
 }
 
 /* Footer Actions */
@@ -1272,10 +1307,9 @@ body,
   padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   background: white;
   margin-top: auto;
-  border-top: 1px solid #E5E5E5;
 }
 
 /* Processing Modal Styles */
@@ -1605,19 +1639,23 @@ body,
   overflow: hidden;
 }
 
+.maestro-modal-container .modal-header {
+  margin: -24px -24px 24px -24px;
+  width: calc(100% + 48px);
+}
+
 /* Standard Modal Header - REUSABLE & EDGE-TO-EDGE */
 .modal-header,
 .modal-header-back {
-  margin: -24px -24px 24px -24px;
-  /* Compensate container padding to go edge-to-edge */
-  padding: 14px 24px;
-  /* 14px top border of modal */
+  margin: 0px;
+  padding: 18px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: calc(100% + 48px);
-  border-bottom: 1px solid #EEEEEE;
+  width: 100%;
+  border-bottom: 1px solid #F2F2F2;
   flex-shrink: 0;
+  position: relative;
 }
 
 .modal-header-back {
@@ -1638,7 +1676,6 @@ body,
   /* Bolinha de 35x35 conforme solicitado */
   height: 35px;
   border-radius: 50%;
-  border: 1px solid #F2F2F2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1656,6 +1693,7 @@ body,
   cursor: pointer;
   padding: 0;
   color: black;
+  border: none;
 }
 
 .modal-header-text {
@@ -2241,6 +2279,412 @@ body,
 
 .wizard-result-price-wrapper {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 16px;
+}
+
+/* MENUX STUDIO ADMIN PANEL */
+.admin-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.admin-container {
+  background: #FFF;
+  width: 100%;
+  max-width: 500px;
+  max-height: 80vh;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.admin-header {
+  padding: 24px;
+  border-bottom: 1px solid #EEE;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-header h2 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 20px;
+  margin: 0;
+}
+
+.admin-header p {
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  color: #8A8A8A;
+  margin: 4px 0 0 0;
+}
+
+.admin-close-btn {
+  background: #F5F5F5;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.admin-tabs {
+  display: flex;
+  background: #F5F5F5;
+  padding: 4px;
+  gap: 4px;
+}
+
+.admin-tabs button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-tabs button.active {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.admin-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-field label {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.admin-field input,
+.admin-field select,
+.admin-field textarea {
+  padding: 12px;
+  border: 1px solid #DDD;
+  border-radius: 12px;
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+}
+
+.admin-row {
+  display: flex;
+  gap: 12px;
+}
+
+.admin-row input {
+  flex: 1;
+}
+
+.admin-save-btn {
+  background: #000;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.admin-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #F9F9F9;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+}
+
+/* REFINEMENTS FOR ADMIN PANEL */
+.admin-btn-add {
+  background: #000;
+  color: #FFF;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.admin-btn-remove {
+  background: #F2F2F2;
+  color: #000;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding-bottom: 2px;
+  /* Visual center fix for × */
+}
+
+.admin-image-upload {
+  width: 100%;
+  height: 100px;
+  border: 2px dashed #EEE;
+  border-radius: 12px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #FAFAFA;
+}
+
+.admin-image-upload.small {
+  height: 60px;
+}
+
+.admin-image-upload input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.admin-image-upload img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  z-index: 1;
+}
+
+.admin-image-upload span {
+  font-family: 'Geist', sans-serif;
+  font-size: 12px;
+  color: #8A8A8A;
+}
+
+.admin-list-scroll {
+  max-height: 250px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.admin-list-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.admin-list-scroll::-webkit-scrollbar-thumb {
+  background: #EEE;
+  border-radius: 10px;
+}
+
+/* SUB-CATEGORY PREVIEW STYLES */
+.category-group-preview {
+  margin-bottom: 16px;
+  background: #FFF;
+  border: 1px solid #F0F0F0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.category-item {
+  background: #FAFAFA !important;
+  border-radius: 0 !important;
+  border-bottom: 1px solid #F0F0F0 !important;
+}
+
+.subcategory-list-preview {
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sub-item {
+  background: transparent !important;
+  padding: 4px 0 !important;
+  margin: 0 !important;
+}
+
+.sub-item span {
+  color: #666;
+  font-size: 13px;
+}
+
+/* ADMIN PANEL UX REFINEMENTS */
+.admin-section-box {
+  background: #F9F9F9;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid #EEE;
+}
+
+.admin-section-title {
+  display: block;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #666;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.admin-empty-text {
+  text-align: center;
+  padding: 20px;
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  color: #A3A3A3;
+}
+
+.admin-hint-text {
+  font-family: 'Geist', sans-serif;
+  font-size: 12px;
+  color: #CCC;
+  font-style: italic;
+  padding-left: 12px;
+}
+
+.admin-btn-add {
+  padding: 0 16px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+/* ADMIN PANEL FOOTER & RESET */
+.admin-footer {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #EEE;
+  text-align: center;
+}
+
+.admin-reset-btn {
+  background: transparent;
+  color: #FF4D4D;
+  border: 1px solid #FF4D4D;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-family: 'Geist', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-reset-btn:hover {
+  background: #FF4D4D;
+  color: #FFF;
+}
+
+.admin-footer-hint {
+  font-family: 'Geist', sans-serif;
+  font-size: 11px;
+  color: #A3A3A3;
+  margin-top: 8px;
+}
+
+/* PRODUCT EDITING STYLES */
+.editing-banner {
+  background: #EBF5FF;
+  border: 1px solid #C2E0FF;
+  padding: 10px 16px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.editing-banner span {
+  font-family: 'Geist', sans-serif;
+  font-size: 13px;
+  color: #0052CC;
+}
+
+.admin-cancel-btn {
+  background: #FFF;
+  border: 1px solid #DDD;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #666;
+}
+
+.product-list-item {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.product-list-item:hover {
+  background: #F5F5F5;
+}
+
+.prod-list-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.prod-thumb {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: #EEE;
+}
+
+.prod-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.prod-text strong {
+  font-size: 14px;
+}
+
+.prod-text span {
+  font-size: 12px;
+  color: #666;
 }

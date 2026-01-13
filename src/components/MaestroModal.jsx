@@ -81,8 +81,8 @@ const mockResults = [
     }
 ];
 
-export default function MaestroModal({ onClose }) {
-    const [view, setView] = useState('welcome'); // welcome, wizard, chat
+export default function MaestroModal({ onClose, initialView = 'welcome' }) {
+    const [view, setView] = useState(initialView); // welcome, wizard, chat
     const [step, setStep] = useState(1);
     const [peopleCount, setPeopleCount] = useState(1);
     const [orderStyle, setOrderStyle] = useState(null);

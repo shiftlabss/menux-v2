@@ -1,60 +1,98 @@
 import { motion } from 'framer-motion';
 
-export default function OrderModal({ cartItems, onClose, onFinish }) {
+const TrashIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6" />
+    </svg>
+);
+
+const PlusIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 5v14M5 12h14" />
+    </svg>
+);
+
+const MinusIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M5 12h14" />
+    </svg>
+);
+
+export default function OrderModal({ cartItems = [], onUpdateQty, onOpenChat, onClose, onFinish }) {
+    const isEmpty = cartItems.length === 0;
+
+    const handleMaestroClick = (e) => {
+        e.preventDefault();
+        onOpenChat();
+    };
+
     return (
         <motion.div
-            className="product-modal-overlay"
+            className="product-modal-overlay order-modal-container"
             initial={{ y: "100%" }}
             animate={{ y: "0%" }}
             exit={{ y: "100%" }}
-            transition={{ ease: "easeOut", duration: 0.3 }}
+            transition={{ type: "spring", damping: 30, stiffness: 300 }}
         >
             <div className="modal-header-back">
                 <button className="btn-modal-back" onClick={onClose}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                 </button>
-                <div className="modal-header-text">
-                    <span className="modal-header-title">Seu pedido</span>
-                </div>
+                <span className="order-title">Seu pedido</span>
             </div>
 
             <div className="order-items-list">
-                {cartItems && cartItems.length > 0 ? (
+                {isEmpty ? (
+                    <div className="empty-cart-message" style={{ textAlign: 'center', padding: '40px 20px', color: '#8A8A8A', fontFamily: 'Geist, sans-serif' }}>
+                        Seu carrinho está vazio. Adicione algum item do cardápio!
+                    </div>
+                ) : (
                     cartItems.map((item, index) => (
-                        <div key={index} className="order-item-card">
+                        <div key={item.id || index} className="order-item-card">
                             <div className="order-item-image"></div>
                             <div className="order-item-details">
                                 <span className="order-item-name">{item.name}</span>
-                                <span className="order-item-desc">Observação: {item.obs || 'Nenhuma'}</span>
+                                <span className="order-item-desc">{item.desc}</span>
                                 <span className="order-item-price">{item.price}</span>
+
+                                {item.extras && item.extras.length > 0 && (
+                                    <div className="order-item-extras">
+                                        {item.extras.map(extra => (
+                                            <div key={extra.id} className="extra-row">
+                                                <div className="extra-qty-badge">{extra.qty}</div>
+                                                <span className="extra-name">{extra.name}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                             <div className="order-item-qty-control">
-                                <button className="qty-btn">-</button>
-                                <span className="qty-val">1</span>
-                                <button className="qty-btn">+</button>
+                                <button className="qty-btn" onClick={() => onUpdateQty(item.id, item.obs, -1)}>
+                                    {item.qty === 1 ? <TrashIcon /> : <MinusIcon />}
+                                </button>
+                                <span className="qty-val">{item.qty}</span>
+                                <button className="qty-btn" onClick={() => onUpdateQty(item.id, item.obs, 1)}>
+                                    <PlusIcon />
+                                </button>
                             </div>
                         </div>
                     ))
-                ) : (
-                    <div style={{ textAlign: 'center', color: '#7E7E7E', marginTop: 40 }}>
-                        Seu carrinho está vazio.
-                    </div>
                 )}
             </div>
 
             <div className="recommendations-wrapper">
-                <a href="#" className="maestro-suggestion-link">
-                    <img src="/icon-menux.svg" alt="Maestro" className="maestro-link-logo" />
-                    <span className="maestro-link-text">Sugestão do Maestro para acompanhar</span>
+                <a href="#" className="maestro-suggestion-link" onClick={handleMaestroClick}>
+                    <span className="maestro-link-text">Quer mais algo? Fale com o </span>
+                    <img src="/logo-menux.svg" alt="Menux" className="maestro-link-logo" style={{ filter: 'invert(29%) sepia(34%) saturate(7460%) hue-rotate(245deg) brightness(101%) contrast(101%)' }} />
                 </a>
 
-                <h3 className="rec-title">Combina muito bem com</h3>
+                <h3 className="rec-title">Peça também</h3>
                 <div className="rec-scroll-container">
                     {[1, 2, 3].map(i => (
                         <div key={i} className="rec-card">
                             <div className="rec-img"></div>
-                            <div className="rec-price">R$ 12,00</div>
-                            <div className="rec-desc">Refrigerante lata 350ml</div>
+                            <div className="rec-price">R$ 28.00</div>
+                            <div className="rec-desc">Água mineral sem Gás Crist...</div>
                         </div>
                     ))}
                 </div>
@@ -62,7 +100,10 @@ export default function OrderModal({ cartItems, onClose, onFinish }) {
 
             <div className="order-footer-actions">
                 <button className="btn-finish-order" onClick={onFinish}>
-                    Confirmar pedido
+                    Concluir e Chamar Garçom
+                </button>
+                <button className="btn-secondary-order" onClick={onClose}>
+                    Voltar ao Cardápio
                 </button>
             </div>
         </motion.div>
