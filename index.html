@@ -7,14 +7,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Menux AI - Cardápio Digital</title>
 
-  <!-- Preconexão para Ganho de Velocidade -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- Link Consolidado e Robusto -->
+  <!-- Versão de Máxima Compatibilidade (sem variable font complexa) -->
   <link
-    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@10..48,200..800&family=Geist:wght@100..900&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@300;400;500;600;700;800&family=Geist:wght@300;400;500;600;700;800;900&display=swap"
     rel="stylesheet">
+
+  <style>
+    /* Backup de segurança direto no HTML para evitar atrasos de rede */
+    html,
+    body {
+      font-family: 'Bricolage Grotesque', sans-serif !important;
+    }
+
+    .menux-logo-text,
+    .maestro-title,
+    .featured-title {
+      font-family: 'Geist', sans-serif !important;
+    }
+  </style>
 </head>
 
 <body>
