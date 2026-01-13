@@ -9,12 +9,13 @@ export default function OrderModal({ cartItems, onClose, onFinish }) {
             exit={{ y: "100%" }}
             transition={{ ease: "easeOut", duration: 0.3 }}
         >
-            <div className="order-modal-header">
-                <button className="order-back-btn" onClick={onClose}>
+            <div className="modal-header-back">
+                <button className="btn-modal-back" onClick={onClose}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                 </button>
-                <div className="order-title">Seu pedido</div>
-                <div style={{ width: 24 }}></div> {/* Spacer for alignment */}
+                <div className="modal-header-text">
+                    <span className="modal-header-title">Seu pedido</span>
+                </div>
             </div>
 
             <div className="order-items-list">
