@@ -14,7 +14,7 @@ const DEFAULT_BRANDING = {
 const DEFAULT_CATEGORIES = [
     {
         id: 'entradas',
-        name: 'ENTRADAS',
+        name: 'Entradas',
         subcategories: [
             { id: 'frias', name: 'Frias' },
             { id: 'quentes', name: 'Quentes' },
@@ -23,7 +23,7 @@ const DEFAULT_CATEGORIES = [
     },
     {
         id: 'principais',
-        name: 'PRATOS PRINCIPAIS',
+        name: 'Pratos Principais',
         subcategories: [
             { id: 'massas', name: 'Massas' },
             { id: 'carnes', name: 'Carnes' },
@@ -32,7 +32,7 @@ const DEFAULT_CATEGORIES = [
     },
     {
         id: 'lanches',
-        name: 'LANCHES',
+        name: 'Lanches',
         subcategories: [
             { id: 'hamburgueres', name: 'Hambúrgueres' },
             { id: 'sanduiches', name: 'Sanduíches' },
@@ -41,7 +41,7 @@ const DEFAULT_CATEGORIES = [
     },
     {
         id: 'sobremesas',
-        name: 'SOBREMESAS',
+        name: 'Sobremesas',
         subcategories: [
             { id: 'classicas', name: 'Clássicas' },
             { id: 'quentes-doce', name: 'Quentes' },
@@ -50,7 +50,7 @@ const DEFAULT_CATEGORIES = [
     },
     {
         id: 'bebidas',
-        name: 'BEBIDAS & DRINKS',
+        name: 'Bebidas & Drinks',
         subcategories: [
             { id: 'nao-alcoolicas', name: 'Não Alcoólicas' },
             { id: 'drinks-classicos', name: 'Drinks Clássicos' },
@@ -135,7 +135,16 @@ export const StudioProvider = ({ children }) => {
     const [categories, setCategories] = useState(() => {
         const saved = localStorage.getItem('menux_studio_categories');
         const parsed = saved ? JSON.parse(saved) : null;
-        return (parsed && parsed.length > 0) ? parsed : DEFAULT_CATEGORIES;
+        if (parsed && parsed.length > 0) {
+            // Force Title Case on legacy uppercase categories
+            return parsed.map(cat => ({
+                ...cat,
+                name: cat.name === cat.name.toUpperCase()
+                    ? cat.name.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())
+                    : cat.name
+            }));
+        }
+        return DEFAULT_CATEGORIES;
     });
 
     const [products, setProducts] = useState(() => {

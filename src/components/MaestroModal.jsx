@@ -100,13 +100,24 @@ export default function MaestroModal({ onClose, initialView = 'welcome' }) {
     const handleNextStep = () => {
         if (step === 3) {
             setStep(4);
-            // Simulate AI searching/loading
-            setTimeout(() => {
+            // Simulate AI searching
+            // Safety timeout to prevent infinite loading
+            const safetyTimeout = setTimeout(() => {
                 setStep(5);
-            }, 2500);
+            }, 3000);
+            return () => clearTimeout(safetyTimeout);
         } else {
             setStep(step + 1);
         }
+    };
+
+    const handlePrevStep = () => {
+        if (step > 1) setStep(step - 1);
+        else setView('welcome');
+    };
+
+    const handleRefineSearch = () => {
+        setStep(2); // Go back to "Style" question
     };
 
     const handleSendMessage = async () => {
@@ -243,11 +254,16 @@ export default function MaestroModal({ onClose, initialView = 'welcome' }) {
     const renderWizardSteps = () => (
         <div className="wizard-step-content">
             {(step <= 3) && (
-                <ModalHeader
-                    title="Assistente Menux"
-                    status="Sempre online"
-                    icon={<img src="/icon-menux.svg" alt="Menux" style={{ width: '20px' }} />}
-                />
+                <div className="modal-header-nav-wrapper">
+                    <button className="wizard-back-btn" onClick={handlePrevStep}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+                    </button>
+                    <ModalHeader
+                        title="Assistente Menux"
+                        status="Sempre online"
+                        icon={<img src="/icon-menux.svg" alt="Menux" style={{ width: '20px' }} />}
+                    />
+                </div>
             )}
 
             <div className="wizard-main-content">
@@ -332,12 +348,11 @@ export default function MaestroModal({ onClose, initialView = 'welcome' }) {
                         </div>
 
                         <div className="wizard-results-footer">
+                            <button className="btn-chat-with-maestro secondary" onClick={handleRefineSearch} style={{ marginRight: '8px', background: '#F5F5F5', color: '#666' }}>
+                                Refinar busca
+                            </button>
                             <button className="btn-chat-with-maestro" onClick={() => setView('chat')}>
                                 Falar com o <span className="menux-logo-text"><img src="/logo-menux.svg" alt="Menux" id="logo-menux-order" /></span>
-                            </button>
-                            <button className="btn-order-cloche">
-                                <ClocheIcon />
-                                <span className="cloche-badge">2</span>
                             </button>
                         </div>
                     </div>

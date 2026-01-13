@@ -5,6 +5,7 @@ import Login from './components/Login'
 import Register from './components/Register'
 import Verification from './components/Verification'
 import MenuHub from './components/MenuHub'
+import StudioView from './components/StudioView'
 import './index.css'
 
 function App() {
@@ -28,7 +29,25 @@ function App() {
         )}
 
         {step === 'hub' && (
-          <MenuHub key="hub" />
+          <MenuHub
+            key="hub"
+            onOpenStudio={() => setStep('studio')}
+            userName={userName}
+            phone={phone}
+            onAuth={() => setStep('login')}
+            onLogout={() => {
+              setUserName('');
+              setPhone('');
+              setStep('onboarding');
+            }}
+          />
+        )}
+
+        {step === 'studio' && (
+          <StudioView
+            key="studio"
+            onClose={() => setStep('hub')}
+          />
         )}
 
         {step === 'login' && (
@@ -72,7 +91,13 @@ function App() {
             isReturningUser={isReturningUser}
             onBack={() => isReturningUser ? setStep('login') : setStep('register')}
             onChangePhone={() => setStep('login')}
-            onFinish={() => alert(isReturningUser ? 'Login realizado!' : `Cadastro Finalizado! Bem-vindo, ${userName}!`)}
+            onFinish={() => {
+              // Simulate Auth Success (usually save token)
+              if (isReturningUser) {
+                setUserName("Usuário Retorno"); // Simulated name fetch
+              }
+              setStep('hub');
+            }}
           />
         )}
       </AnimatePresence>

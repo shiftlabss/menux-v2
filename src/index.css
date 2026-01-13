@@ -435,6 +435,18 @@ body,
   height: 29px;
   background: #D9D9D9;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Geist', sans-serif;
+  color: #666;
+  font-weight: 600;
+  overflow: hidden;
+}
+
+.profile-trigger.guest {
+  background: #EEEEEE;
+  border: 1px dashed #CCCCCC;
 }
 
 .btn-profile-short {
@@ -617,6 +629,7 @@ body,
 }
 
 .category-tab {
+  display: inline-block;
   background: none;
   border: none;
   padding: 16px 0;
@@ -2708,4 +2721,149 @@ body,
 .prod-text span {
   font-size: 12px;
   color: #666;
+}
+
+/* STUDIO VIEW (FULL PAGE) */
+.studio-view-container {
+  position: fixed;
+  inset: 0;
+  background: #F8F9FB;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.studio-header {
+  background: #FFF;
+  padding: 20px 24px;
+  border-bottom: 1px solid #EEE;
+}
+
+.studio-header-info {
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.studio-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 16px;
+  transition: color 0.2s;
+}
+
+.studio-back-btn:hover {
+  color: #000;
+}
+
+.studio-title-group h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 28px;
+  margin: 0;
+  font-weight: 700;
+  color: #1A1A1A;
+}
+
+.studio-title-group p {
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  color: #666;
+  margin: 4px 0 0 0;
+}
+
+.studio-tabs {
+  background: #FFF;
+  display: flex;
+  gap: 32px;
+  padding: 0 24px;
+  border-bottom: 1px solid #EEE;
+}
+
+.studio-tabs button {
+  background: none;
+  border: none;
+  padding: 16px 0;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #999;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.studio-tabs button.active {
+  color: #000;
+}
+
+.studio-tabs button.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #000;
+  border-radius: 10px 10px 0 0;
+}
+
+.studio-content-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 24px;
+}
+
+.studio-form-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+  background: #FFF;
+  padding: 32px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.full-list {
+  max-height: none !important;
+}
+
+.studio-footer-actions {
+  max-width: 1000px;
+  margin: 32px auto 0;
+  width: 100%;
+  padding: 24px;
+  background: #FFF0F0;
+  border: 1px solid #FFD6D6;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.studio-footer-actions p {
+  margin: 0;
+  font-family: 'Geist', sans-serif;
+  font-size: 13px;
+  color: #D32F2F;
+}
+
+@media (max-width: 768px) {
+  .studio-form-container {
+    padding: 20px;
+  }
+
+  .studio-tabs {
+    gap: 16px;
+    overflow-x: auto;
+  }
 }

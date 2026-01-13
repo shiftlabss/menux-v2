@@ -6,7 +6,6 @@ import ProcessingModal from './ProcessingModal';
 import OrderCodeModal from './OrderCodeModal';
 import ProfileModal from './ProfileModal';
 import MaestroModal from './MaestroModal';
-import AdminPanel from './AdminPanel';
 import { useStudio } from '../context/StudioContext';
 
 const imgLogo = "/logo-menux.svg";
@@ -123,7 +122,7 @@ const MENU_DATA = [
     }
 ];
 
-export default function MenuHub() {
+export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogout }) {
     const scrollAreaRef = useRef(null);
     const tabsRef = useRef(null);
     const pillsRef = useRef(null);
@@ -142,9 +141,20 @@ export default function MenuHub() {
     const [userAvatar, setUserAvatar] = useState(null);
     const [isMaestroOpen, setIsMaestroOpen] = useState(false);
     const [maestroInitialView, setMaestroInitialView] = useState('welcome');
-    const [isAdminOpen, setIsAdminOpen] = useState(false);
+    const [activeOrderCode, setActiveOrderCode] = useState(null);
 
-    // Studio Context for dynamic data
+    // Cart Persistence
+    useEffect(() => {
+        const savedCart = localStorage.getItem('menux_cart');
+        if (savedCart) setCart(JSON.parse(savedCart));
+
+        const savedCode = localStorage.getItem('menux_active_order');
+        if (savedCode) setActiveOrderCode(savedCode);
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('menux_cart', JSON.stringify(cart));
+    }, [cart]);
     const { branding, categories: dynamicCategories, products: dynamicProducts } = useStudio();
 
     // Memoize the data merging to prevent infinite render loops
@@ -176,7 +186,14 @@ export default function MenuHub() {
     // Logic for long press on logo
     const pressTimer = useRef(null);
     const handleLongPressStart = () => {
-        pressTimer.current = setTimeout(() => setIsAdminOpen(true), 800);
+        pressTimer.current = setTimeout(() => {
+            const pin = window.prompt("Digite o PIN de acesso (1234):");
+            if (pin === "1234") {
+                onOpenStudio();
+            } else if (pin !== null) {
+                alert("PIN Incorreto");
+            }
+        }, 800);
     };
     const handleLongPressEnd = () => {
         if (pressTimer.current) clearTimeout(pressTimer.current);
@@ -225,7 +242,11 @@ export default function MenuHub() {
         setIsProcessing(true);
         setTimeout(() => {
             setIsProcessing(false);
+            const newCode = "#" + Math.floor(Math.random() * 900 + 100);
+            setActiveOrderCode(newCode);
+            localStorage.setItem('menux_active_order', newCode);
             setShowOrderCode(true);
+            setCart([]); // Clear cart after order
         }, 5000);
     };
 
@@ -255,6 +276,23 @@ export default function MenuHub() {
             left: scrollLeft,
             behavior: 'smooth'
         });
+    };
+
+    const handleBannerClick = (index) => {
+        // Find the actual product in MENU_DATA based on the banner title or similar logic
+        // For now, let's map index to some mocked featured items or real items if available
+        // To be safe and precise, we will just open a generic product modal with banner info
+        // BUT, the user reported clicking 3rd opens 1st. This is because we might have passed a wrong index or item object.
+        const banner = BANNERS[index];
+        if (banner) {
+            setSelectedProduct({
+                id: `banner-${index}`,
+                name: banner.title,
+                desc: "Prato em destaque, preparado especialmente pelo chef.",
+                price: banner.price,
+                image: banner.image // Assuming banners might have images later, or use background
+            });
+        }
     };
 
     const scrollToSection = (id, type, value, event) => {
@@ -314,16 +352,25 @@ export default function MenuHub() {
             <header className="menu-header">
                 <img src={imgLogo} alt="Menux" style={{ height: '20px' }} />
                 <div className="header-right">
-                    <div className="profile-trigger">
-                        {userAvatar && (
+                    <div className={`profile-trigger ${!userName ? 'guest' : ''}`}>
+                        {userName && userAvatar ? (
                             <img
                                 src={userAvatar}
                                 alt="Profile"
                                 style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
                             />
+                        ) : (
+                            <span style={{ fontSize: '12px' }}>{userName ? userName[0].toUpperCase() : '?'}</span>
                         )}
                     </div>
-                    <button className="btn-profile-short" onClick={() => setIsProfileOpen(true)}>Meu perfil</button>
+                    {activeOrderCode && (
+                        <button className="btn-profile-short" style={{ background: '#E8F5E9', color: '#2E7D32', border: '1px solid #C8E6C9', marginRight: '6px' }} onClick={() => setShowOrderCode(true)}>
+                            Pedido {activeOrderCode}
+                        </button>
+                    )}
+                    <button className="btn-profile-short" onClick={() => userName ? setIsProfileOpen(true) : onAuth()}>
+                        {userName ? 'Meu perfil' : 'Entrar'}
+                    </button>
                 </div>
             </header>
 
@@ -352,7 +399,7 @@ export default function MenuHub() {
                 <section className="featured-section">
                     <div className="featured-reel" ref={reelRef}>
                         {BANNERS.map((b, i) => (
-                            <div key={i} className="featured-card" style={{ background: b.bg }} onClick={() => setSelectedProduct({ id: i, name: b.title, desc: "Descrição do prato em destaque...", price: b.price })}>
+                            <div key={i} className="featured-card" style={{ background: b.bg }} onClick={() => handleBannerClick(i)}>
                                 <span className="featured-tag">{b.tag}</span>
                                 <h3 className="featured-title">{b.title}</h3>
                                 <div className="featured-footer">
@@ -373,7 +420,7 @@ export default function MenuHub() {
                                 className={`category-tab ${activeCategory === cat.id ? 'active' : ''}`}
                                 onClick={(e) => scrollToSection(cat.id, 'category', cat.id, e)}
                             >
-                                {cat.name}
+                                {cat.name.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                             </button>
                         ))}
                     </div>
@@ -404,10 +451,12 @@ export default function MenuHub() {
                 {currentCategories.map(category => (
                     <div key={category.id} id={category.id} className="menu-section-visible-check">
                         <div className="menu-list">
-                            <h3 className="section-label">{category.name}</h3>
+                            <h3 className="section-label">{category.name.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</h3>
                             {category.subcategories.map(subcategory => (
                                 <div key={subcategory.name} id={`sub-${subcategory.name.replace(/\s+/g, '-').toLowerCase()}`}>
-                                    <p className="subcategory-label">{subcategory.subcategory_label || subcategory.name}</p>
+                                    <p className="subcategory-label">
+                                        {(subcategory.subcategory_label || subcategory.name).toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                                    </p>
                                     {subcategory.items.length > 0 ? subcategory.items.map(item => (
                                         <div key={item.id} className="menu-item" onClick={() => setSelectedProduct(item)}>
                                             <div className="item-info">
@@ -480,12 +529,15 @@ export default function MenuHub() {
                     />
                 )}
                 {isProcessing && <ProcessingModal />}
-                {showOrderCode && <OrderCodeModal onReset={handleResetOrder} />}
+                {showOrderCode && <OrderCodeModal code={activeOrderCode} onReset={() => setShowOrderCode(false)} />}
                 {isProfileOpen && (
                     <ProfileModal
                         onClose={() => setIsProfileOpen(false)}
                         currentAvatar={userAvatar}
                         onUpdateAvatar={setUserAvatar}
+                        userName={userName}
+                        phone={phone}
+                        onLogout={onLogout}
                     />
                 )}
                 {isMaestroOpen && (
@@ -494,8 +546,6 @@ export default function MenuHub() {
                         initialView={maestroInitialView}
                     />
                 )}
-
-                <AdminPanel isOpen={isAdminOpen} onClose={() => setIsAdminOpen(false)} />
             </AnimatePresence>
         </div>
     );
