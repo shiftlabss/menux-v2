@@ -400,6 +400,9 @@ body,
   flex-direction: column;
   background-color: var(--white);
   overflow: hidden;
+  /* GPU Acceleration */
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .menu-header {
@@ -419,6 +422,12 @@ body,
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.menu-section-visible-check {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 500px;
+  /* Placeholder size for faster initial calc */
 }
 
 .profile-trigger {
@@ -449,6 +458,9 @@ body,
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   position: relative;
+  /* Performance */
+  will-change: scroll-position;
+  contain: size layout style;
 }
 
 .restaurant-banner {
@@ -696,6 +708,12 @@ body,
   gap: 16px;
   padding: 16px 0;
   border-bottom: 1px solid #F0F0F0;
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+  will-change: transform;
+}
+
+.menu-item:active {
+  transform: scale(0.98);
 }
 
 .item-info {
@@ -727,13 +745,16 @@ body,
 }
 
 .item-image {
-  width: 110px;
-  height: 110px;
-  background: #D9D9D9;
-  border-radius: 15px;
+  width: 88px;
+  height: 88px;
+  background-color: #F5F5F5;
+  border-radius: 12px;
   flex-shrink: 0;
   background-size: cover;
   background-position: center;
+  /* GPU Acceleration */
+  transform: translateZ(0);
+  will-change: transform;
   background-repeat: no-repeat;
 }
 

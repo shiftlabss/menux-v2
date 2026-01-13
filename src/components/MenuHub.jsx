@@ -281,43 +281,33 @@ export default function MenuHub() {
     };
 
     useEffect(() => {
-        const scrollContainer = scrollAreaRef.current;
-        if (!scrollContainer) return;
-
-        let ticking = false;
-
-        const handleScroll = () => {
-            if (isProgrammaticScroll.current || ticking) return;
-
-            ticking = true;
-            requestAnimationFrame(() => {
-                const scrollPos = scrollContainer.scrollTop + 200;
-
-                for (const cat of currentCategories) {
-                    const element = document.getElementById(cat.id);
-                    if (element && scrollPos >= element.offsetTop && scrollPos < element.offsetTop + element.offsetHeight) {
-                        // Use a direct check against the state variable without re-attaching the effect
-                        setActiveCategory(prev => {
-                            if (prev !== cat.id) {
-                                // Side effects inside state updaters are generally bad, 
-                                // but for a simple UI sync like centering a button it's a common shortcut
-                                // to avoid extra refs in this specific layout.
-                                const tabButton = tabsRef.current?.querySelector(`[data-id="${cat.id}"]`);
-                                if (tabButton) centerNavButton(tabsRef, tabButton);
-                                return cat.id;
-                            }
-                            return prev;
-                        });
-                        break;
-                    }
-                }
-                ticking = false;
-            });
+        const observerOptions = {
+            root: scrollAreaRef.current,
+            rootMargin: '-10% 0px -80% 0px', // Trigger when section is near the top
+            threshold: 0
         };
 
-        scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
-        return () => scrollContainer.removeEventListener('scroll', handleScroll);
-    }, [currentCategories]); // Only re-attach if the menu items change
+        const observer = new IntersectionObserver((entries) => {
+            if (isProgrammaticScroll.current) return;
+
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const categoryId = entry.target.id;
+                    setActiveCategory(categoryId);
+                    setActiveSubcategory('');
+                    const tabButton = tabsRef.current?.querySelector(`[data-id="${categoryId}"]`);
+                    if (tabButton) centerNavButton(tabsRef, tabButton);
+                }
+            });
+        }, observerOptions);
+
+        const sections = currentCategories.map(cat => document.getElementById(cat.id)).filter(Boolean);
+        sections.forEach(section => observer.observe(section));
+
+        return () => {
+            sections.forEach(section => observer.unobserve(section));
+        };
+    }, [currentCategories]);
 
     return (
         <div className="menu-hub-container">
@@ -412,7 +402,7 @@ export default function MenuHub() {
                 </nav>
 
                 {currentCategories.map(category => (
-                    <div key={category.id} id={category.id}>
+                    <div key={category.id} id={category.id} className="menu-section-visible-check">
                         <div className="menu-list">
                             <h3 className="section-label">{category.name}</h3>
                             {category.subcategories.map(subcategory => (
