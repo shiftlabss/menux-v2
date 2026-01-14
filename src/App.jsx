@@ -6,7 +6,6 @@ import Register from './components/Register'
 import Verification from './components/Verification'
 import MenuHub from './components/MenuHub'
 import StudioView from './components/StudioView'
-import { LanguageProvider } from './context/LanguageContext'
 import './index.css'
 
 function AppContent() {
@@ -108,9 +107,7 @@ function AppContent() {
 
 function App() {
   return (
-    <LanguageProvider>
-      <AppContent />
-    </LanguageProvider>
+    <AppContent />
   )
 }
 

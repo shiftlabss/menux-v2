@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import { useRef } from 'react';
-import { useLanguage } from '../context/LanguageContext';
 
 const MenuxLogo = ({ height = 24 }) => (
     <img src="/logo-menux.svg" alt="Menux" style={{ height }} />
@@ -17,17 +16,7 @@ const MenuxFaceIcon = () => (
     <img src="/icon-menux.svg" alt="Menux Face" style={{ width: 20, height: 20 }} />
 );
 
-const FlagIcon = ({ lang }) => {
-    const flags = {
-        pt: "🇧🇷",
-        en: "🇺🇸",
-        es: "🇪🇸"
-    };
-    return <span style={{ fontSize: '18px', marginRight: '8px' }}>{flags[lang]}</span>;
-}
-
 export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, userName, phone, onLogout }) {
-    const { t, language, changeLanguage } = useLanguage();
     const fileInputRef = useRef(null);
 
     const handleFileChange = (event) => {
@@ -83,7 +72,7 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
             <div className="profile-header">
                 <MenuxLogo height={24} />
                 <button className="btn-profile-back" onClick={onClose}>
-                    {t('profile', 'backToMenu')}
+                    Voltar ao Cardápio
                 </button>
             </div>
 
@@ -108,42 +97,15 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
                             style={{ display: 'none' }}
                         />
                     </div>
-                    <div className="profile-name">{userName || t('profile', 'guest')}</div>
+                    <div className="profile-name">{userName || "Visitante"}</div>
                     <div className="profile-since">
                         <MenuxFaceIcon />
-                        <span>{t('profile', 'usingSince')}</span>
+                        <span>Há 3 meses usando menuxIA</span>
                     </div>
                 </div>
 
                 <div className="profile-form-group">
-                    <label className="profile-label">{t('profile', 'language')}</label>
-                    <div className="lang-switcher" style={{ display: 'flex', gap: '8px' }}>
-                        {['pt', 'en', 'es'].map(lang => (
-                            <button
-                                key={lang}
-                                onClick={() => changeLanguage(lang)}
-                                style={{
-                                    flex: 1,
-                                    padding: '10px',
-                                    borderRadius: '12px',
-                                    border: language === lang ? '2px solid #000' : '1px solid #E5E5E5',
-                                    background: language === lang ? '#F5F5F5' : 'white',
-                                    fontWeight: language === lang ? '600' : '400',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}
-                            >
-                                <FlagIcon lang={lang} />
-                                {lang.toUpperCase()}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="profile-form-group">
-                    <label className="profile-label">{t('profile', 'phone')}</label>
+                    <label className="profile-label">Seu Telefone*</label>
                     <div className="profile-input-row">
                         <input type="text" className="profile-input-ddi" defaultValue="+55" readOnly />
                         <input type="text" className="profile-input" value={phone || "(00) 00000-0000"} readOnly />
@@ -151,19 +113,19 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
                 </div>
 
                 <div className="profile-form-group">
-                    <label className="profile-label">{t('profile', 'name')}</label>
-                    <input type="text" className="profile-input" value={userName || t('profile', 'guest')} readOnly />
+                    <label className="profile-label">Seu Nome*</label>
+                    <input type="text" className="profile-input" value={userName || "Visitante"} readOnly />
                 </div>
 
                 <div className="profile-form-group">
-                    <label className="profile-label">{t('profile', 'dangerZone')}</label>
+                    <label className="profile-label">Zona de Perigo</label>
                     <button className="profile-danger-zone" onClick={() => {
-                        if (window.confirm(t('profile', 'deleteAccount') + "?")) {
+                        if (window.confirm("Deletar minha conta?")) {
                             onLogout();
                             onClose();
                         }
                     }}>
-                        <span className="text-danger">{t('profile', 'deleteAccount')}</span>
+                        <span className="text-danger">Deletar minha conta</span>
                         <MenuxLogo height={17} />
                     </button>
                 </div>
@@ -172,7 +134,7 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
                     alert('As alterações foram salvas (Simulação).');
                     onClose();
                 }}>
-                    {t('profile', 'saveChanges')}
+                    Salvar ajustes
                 </button>
             </div>
         </motion.div>

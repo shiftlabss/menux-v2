@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
-import { useLanguage } from '../context/LanguageContext';
+const imgLogo = "/logo-menux.svg";
 
 const CloseIcon = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -85,19 +85,20 @@ const mockResults = [
     }
 ];
 
-const ProductCard = ({ product, onAdd }) => (
-    <div className="chat-product-card">
-        <div className="chat-card-image" style={{ backgroundImage: product.image ? `url(${product.image})` : 'none' }}></div>
-        <div className="chat-card-content">
-            <h4 className="chat-card-title">{product.name}</h4>
-            <span className="chat-card-price">{product.price}</span>
-            <button className="chat-card-add-btn" onClick={() => onAdd(product)}>{t('maestro', 'add')}</button>
+const ProductCard = ({ product, onAdd }) => {
+    return (
+        <div className="chat-product-card">
+            <div className="chat-card-image" style={{ backgroundImage: product.image ? `url(${product.image})` : 'none' }}></div>
+            <div className="chat-card-content">
+                <h4 className="chat-card-title">{product.name}</h4>
+                <span className="chat-card-price">{product.price}</span>
+                <button className="chat-card-add-btn" onClick={() => onAdd(product)}>Adicionar</button>
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 export default function MaestroModal({ onClose, initialView = 'welcome', products = [], staticMenuData = [], onAddToCart }) {
-    const { t, tData } = useLanguage();
     // Carrega o estado inicial do localStorage ou usa o padrão
     // Sempre inicia no Welcome para oferecer opções, mas carrega o estado salvo
     const [view, setView] = useState(initialView);
@@ -260,9 +261,9 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                 <div className="maestro-welcome-icon-circle">
                     <img src="/icon-menux.svg" alt="Menux" style={{ width: '28px' }} />
                 </div>
-                <h2 className="maestro-welcome-title">{t('maestro', 'welcomeTitle')}</h2>
-                <p className="maestro-welcome-desc">{t('maestro', 'welcomeDesc')}</p>
-                <button className="maestro-welcome-btn" onClick={handleStartWizard}>{t('maestro', 'discoverBtn')}</button>
+                <h2 className="maestro-welcome-title">Sua experiência começa aqui!</h2>
+                <p className="maestro-welcome-desc">Descubra pratos que combinam com seu paladar. Em poucos passos, encontramos a escolha ideal para você.</p>
+                <button className="maestro-welcome-btn" onClick={handleStartWizard}>Descubra o prato ideal para hoje!</button>
             </div>
             <div className="maestro-footer-input">
                 {messages.length > 0 ? (
@@ -282,7 +283,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                             fontFamily: 'Bricolage Grotesque, sans-serif'
                         }}
                     >
-                        {t('maestro', 'continueChat')}
+                        Continuar conversa
                     </button>
                 ) : (
                     <>
@@ -290,7 +291,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                             <input
                                 type="text"
                                 className="maestro-input-field"
-                                placeholder={t('maestro', 'askPlaceholder')}
+                                placeholder="Qual o melhor vinho para hoje?"
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
@@ -308,8 +309,8 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
     const renderChat = () => (
         <div className="chat-view-container">
             <ModalHeader
-                title={t('maestro', 'assistantName')}
-                status={t('maestro', 'alwaysOnline')}
+                title="Menux Maestro"
+                status="Sempre online"
                 icon={<img src="/icon-menux.svg" alt="Menux" style={{ width: '20px' }} />}
             />
             <div className="chat-messages-area">
@@ -360,7 +361,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                     <input
                         type="text"
                         className="maestro-input-field"
-                        placeholder={t('maestro', 'askPlaceholder')}
+                        placeholder="Qual o melhor vinho para hoje?"
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
@@ -381,8 +382,8 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                     </button>
                     <ModalHeader
-                        title={t('maestro', 'assistantName')}
-                        status={t('maestro', 'alwaysOnline')}
+                        title="Menux Maestro"
+                        status="Sempre online"
                         icon={<img src="/icon-menux.svg" alt="Menux" style={{ width: '20px' }} />}
                     />
                 </div>
@@ -391,7 +392,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
             <div className="wizard-main-content">
                 {step === 1 && (
                     <>
-                        <h2 className="wizard-question" dangerouslySetInnerHTML={{ __html: t('maestro', 'wizard').people }}></h2>
+                        <h2 className="wizard-question" dangerouslySetInnerHTML={{ __html: "Quantas <strong>pessoas</strong> vão comer?" }}></h2>
                         <div className="wizard-counter">
                             <button className="wizard-counter-btn" onClick={() => setPeopleCount(Math.max(1, peopleCount - 1))}>−</button>
                             <span className="wizard-counter-value">{peopleCount}</span>
@@ -402,7 +403,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
 
                 {step === 2 && (
                     <>
-                        <h2 className="wizard-question" dangerouslySetInnerHTML={{ __html: t('maestro', 'wizard').style }}></h2>
+                        <h2 className="wizard-question" dangerouslySetInnerHTML={{ __html: "Qual o <strong>estilo</strong> do pedido?" }}></h2>
                         <div className="wizard-options-grid">
                             {['Leve', 'Para compartilhar', 'Muita fome', 'Rápido'].map(opt => (
                                 <button
@@ -410,7 +411,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                                     className={`wizard-option-card ${orderStyle === opt ? 'active' : ''}`}
                                     onClick={() => setOrderStyle(opt)}
                                 >
-                                    {t('maestro', 'options')[opt] || opt}
+                                    {opt}
                                 </button>
                             ))}
                         </div>
@@ -419,7 +420,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
 
                 {step === 3 && (
                     <>
-                        <h2 className="wizard-question" dangerouslySetInnerHTML={{ __html: t('maestro', 'wizard').referRestriction }}></h2>
+                        <h2 className="wizard-question" dangerouslySetInnerHTML={{ __html: "Possui ou tem preferência por alguma <strong>restrição alimentar</strong>?" }}></h2>
                         <div className="wizard-options-grid">
                             {['Sem Glúten', 'Vegetariano', 'Sem Lactose', 'Nenhuma'].map(opt => (
                                 <button
@@ -427,7 +428,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                                     className={`wizard-option-card ${dietaryRestriction === opt ? 'active' : ''}`}
                                     onClick={() => setDietaryRestriction(opt)}
                                 >
-                                    {t('maestro', 'options')[opt] || opt}
+                                    {opt}
                                 </button>
                             ))}
                         </div>
@@ -439,7 +440,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                         <div className="loading-icon-wrapper">
                             <img src="/icon-menux.svg" alt="Menux" style={{ width: '32px' }} />
                         </div>
-                        <p className="wizard-loading-text">{t('maestro', 'wizard').loading}</p>
+                        <p className="wizard-loading-text">Analisando suas preferências...</p>
                     </div>
                 )}
 
@@ -447,8 +448,8 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                     <div className="wizard-results-container">
                         <div className="wizard-results-header">
                             <div>
-                                <h2 className="wizard-results-title" dangerouslySetInnerHTML={{ __html: t('maestro', 'wizard').resultsTitle }}></h2>
-                                <p className="wizard-results-subtitle">{t('maestro', 'wizard').resultsSubtitle}</p>
+                                <h2 className="wizard-results-title" dangerouslySetInnerHTML={{ __html: "Aqui estão nossas <strong>sugestões</strong>" }}></h2>
+                                <p className="wizard-results-subtitle">Com base no que você me disse, acho que você vai adorar estas opções:</p>
                             </div>
                         </div>
                         <div className="wizard-results-list">
@@ -471,10 +472,10 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
 
                         <div className="wizard-results-footer">
                             <button className="btn-chat-with-maestro secondary" onClick={handleRefineSearch} style={{ marginRight: '8px', background: '#F5F5F5', color: '#666' }}>
-                                {t('maestro', 'wizard').refine}
+                                Refinar busca
                             </button>
                             <button className="btn-chat-with-maestro" onClick={() => setView('chat')}>
-                                {t('maestro', 'wizard').talkTo} <span className="menux-logo-text"><img src="/logo-menux.svg" alt="Menux" id="logo-menux-order" /></span>
+                                Falar com <span className="menux-logo-text"><img src="/logo-menux.svg" alt="Menux" id="logo-menux-order" /></span>
                             </button>
                         </div>
                     </div>
@@ -490,7 +491,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                         disabled={(step === 2 && !orderStyle) || (step === 3 && !dietaryRestriction)}
                         style={{ opacity: ((step === 2 && !orderStyle) || (step === 3 && !dietaryRestriction)) ? 0.5 : 1 }}
                     >
-                        {t('maestro', 'wizard').continue}
+                        Continuar
                     </button>
                 </div>
             )}

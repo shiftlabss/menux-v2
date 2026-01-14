@@ -1,12 +1,10 @@
 import { motion } from 'framer-motion';
-import { useLanguage } from '../context/LanguageContext';
 
 const imgLogo = "/logo-menux.svg";
 const imgIconLarge = "/icon-menux.svg";
 const imgVerify = "/verify-icon.svg";
 
 export default function Onboarding({ onStart, savedUser }) {
-  const { t } = useLanguage();
 
   return (
     <motion.div
@@ -27,10 +25,10 @@ export default function Onboarding({ onStart, savedUser }) {
 
         <div className="logo-text-group">
           <h1 className="welcome-title">
-            {t('onboarding', 'welcome')}
-            <img src={imgVerify} alt={t('common', 'verified')} className="verified-icon" style={{ marginLeft: '6px' }} />
+            Bem vindo ao, Menux
+            <img src={imgVerify} alt="Verificado" className="verified-icon" style={{ marginLeft: '6px' }} />
           </h1>
-          <p className="welcome-subtitle">{t('onboarding', 'subtitle')}</p>
+          <p className="welcome-subtitle">Veja o cardápio e monte seu pedido.</p>
         </div>
       </div>
 
@@ -40,7 +38,7 @@ export default function Onboarding({ onStart, savedUser }) {
           className="btn-primary"
           onClick={() => onStart('menu')}
         >
-          {t('onboarding', 'openMenu')}
+          Abrir cardápio
         </motion.button>
 
         {!savedUser ? (
@@ -49,7 +47,7 @@ export default function Onboarding({ onStart, savedUser }) {
             className="btn-secondary"
             onClick={() => onStart('auth')}
           >
-            {t('onboarding', 'createAccount')}
+            Criar conta ou entrar no
             <img src={imgLogo} alt="Menux" />
           </motion.button>
         ) : (
@@ -58,7 +56,7 @@ export default function Onboarding({ onStart, savedUser }) {
             className="btn-user-active"
             onClick={() => onStart('direct-access')}
           >
-            <span className="user-login-text">{t('onboarding', 'userLoginText')}</span>
+            <span className="user-login-text">Entrar como</span>
             <div className="user-badge">
               <img src={imgIconLarge} alt="Menux Icon" style={{ height: '18px' }} />
               <div className="avatar-circle"></div>
