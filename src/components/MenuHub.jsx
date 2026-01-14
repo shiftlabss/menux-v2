@@ -10,7 +10,6 @@ import { useStudio } from '../context/StudioContext';
 import { useToast } from '../context/ToastContext';
 import MyOrdersModal from './MyOrdersModal';
 
-
 const imgLogo = "/logo-menux.svg";
 const imgVerify = "/verify-icon.svg";
 
@@ -20,7 +19,7 @@ const RoomServiceIcon = () => (
     </svg>
 );
 
-const BANNERS = [
+const DEFAULT_BANNERS = [
     {
         tag: "Sugestão do Chef",
         title: "Filé Mignon ao Poivre",
@@ -181,6 +180,35 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
     const [activeOrderItems, setActiveOrderItems] = useState([]);
     const [isMyOrdersOpen, setIsMyOrdersOpen] = useState(false);
     const { showToast } = useToast();
+    const [banners, setBanners] = useState([]);
+
+    useEffect(() => {
+        if (import.meta.env.VITE_USE_MOCK_AUTH === 'false') {
+            const fetchHighlights = async () => {
+                try {
+                    const restaurantId = import.meta.env.VITE_RESTAURANT_ID;
+                    if (!restaurantId) return;
+                    const data = await getMenuHighlights(restaurantId);
+                    if (data && Array.isArray(data) && data.length > 0) {
+                        const newBanners = data.map(item => ({
+                            tag: item.tag || "Sugestão",
+                            title: item.name,
+                            price: item.price ? `R$ ${Number(item.price).toFixed(2).replace('.', ',')}` : '',
+                            bg: "#D9D9D9",
+                            image: item.imageUrl,
+                            // Store full item for details
+                            ...item
+                        }));
+                        setBanners(newBanners);
+                        // console.log(newBanners);
+                    }
+                } catch (err) {
+                    console.error("Failed to fetch highlights:", err);
+                }
+            };
+            fetchHighlights();
+        }
+    }, []);
 
     // Cart Persistence
     useEffect(() => {
@@ -317,7 +345,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentIndex((prev) => {
-                const next = (prev + 1) % BANNERS.length;
+                const next = (prev + 1) % banners.length;
                 if (reelRef.current) {
                     reelRef.current.scrollTo({
                         left: next * 329,
@@ -328,7 +356,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
             });
         }, 4000);
         return () => clearInterval(timer);
-    }, []);
+    }, [banners.length]);
 
     const centerNavButton = (containerRef, buttonElement) => {
         if (!containerRef.current || !buttonElement) return;
@@ -342,18 +370,14 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
     };
 
     const handleBannerClick = (index) => {
-        // Find the actual product in MENU_DATA based on the banner title or similar logic
-        // For now, let's map index to some mocked featured items or real items if available
-        // To be safe and precise, we will just open a generic product modal with banner info
-        // BUT, the user reported clicking 3rd opens 1st. This is because we might have passed a wrong index or item object.
-        const banner = BANNERS[index];
+        const banner = banners[index];
         if (banner) {
             setSelectedProduct({
-                id: `banner-${index}`,
-                name: banner.title,
-                desc: "Prato em destaque, preparado especialmente pelo chef.",
-                price: banner.price,
-                image: banner.image // Assuming banners might have images later, or use background
+                id: banner.id || `banner-${index}`,
+                name: banner.item.name,
+                desc: banner.item.description || "Prato em destaque.",
+                price: banner.item.price,
+                image: banner.item.imageUrl
             });
         }
     };
@@ -461,14 +485,15 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
 
                 <section className="featured-section">
                     <div className="featured-reel" ref={reelRef}>
-                        {BANNERS.map((b, i) => (
+                        {banners && banners.map((b, i) => (
+
                             <div
                                 key={i}
                                 className="featured-card"
                                 style={{
-                                    background: b.image
-                                        ? `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), url('${b.image}') center/cover no-repeat`
-                                        : b.bg
+                                    background: !b.image
+                                        ? `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), url('${b.item.imageUrl}') center/cover no-repeat`
+                                        : b.item.bgColor
                                 }}
                                 onClick={() => handleBannerClick(i)}
                             >

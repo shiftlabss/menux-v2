@@ -44,7 +44,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                     </div>
 
                     <p className="pd-description">{product.desc}</p>
-                    <div className="pd-price">{product.price}</div>
+                    <div className="pd-price">{Number(product.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
                 </div>
 
                 <div className="pd-observations-section">
@@ -78,6 +78,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                             Adicionar ao pedido
                         </button>
                     </div>
+
                 </div>
             </div>
         </motion.div>
