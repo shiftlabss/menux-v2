@@ -3,6 +3,7 @@ import storage, { KEYS } from '../services/storageService';
 import { DEFAULT_BRANDING, DEFAULT_CATEGORIES, DEFAULT_PRODUCTS } from '../data/defaults';
 import { generateId } from '../utils/generateId';
 import { safeParseBranding, safeParseCategories, safeParseProducts } from '../schemas';
+import { getMenuByRestaurantId } from '../services/api';
 
 const StudioContext = createContext();
 
@@ -103,6 +104,81 @@ export const StudioProvider = ({ children }) => {
 
     // Migration logic removed to prevent infinite loops and ID conflicts.
     // The data reset logic in useState initialization handles consistency now.
+
+    // Fetch from API if not using Mock Auth
+    useEffect(() => {
+        const fetchMenu = async () => {
+            if (import.meta.env.VITE_USE_MOCK_AUTH === 'false') {
+                try {
+                    const restaurantId = import.meta.env.VITE_RESTAURANT_ID;
+                    if (!restaurantId) {
+                        console.warn("VITE_RESTAURANT_ID not found in .env");
+                        return;
+                    }
+
+                    const response = await getMenuByRestaurantId(restaurantId);
+                    const apiData = response.data || [];
+
+                    const newCategories = [];
+                    const newProducts = [];
+
+                    apiData.forEach(cat => {
+                        // Map Category
+                        newCategories.push({
+                            id: cat.id,
+                            name: cat.name,
+                            subcategories: cat.subcategories ? cat.subcategories.map(sub => ({
+                                id: sub.id,
+                                name: sub.name
+                            })) : []
+                        });
+
+                        // Map Items in Category (if any - usually none if it has subcategories, but logic allows)
+                        if (cat.items && cat.items.length > 0) {
+                            cat.items.forEach(item => {
+                                newProducts.push({
+                                    id: item.id,
+                                    name: item.name,
+                                    desc: item.description,
+                                    price: `R$ ${Number(item.price).toFixed(2).replace('.', ',')}`,
+                                    image: item.imageUrl,
+                                    categoryId: cat.id,
+                                    subcategoryId: null
+                                });
+                            });
+                        }
+
+                        // Map Items in Subcategories
+                        if (cat.subcategories) {
+                            cat.subcategories.forEach(sub => {
+                                if (sub.items) {
+                                    sub.items.forEach(item => {
+                                        newProducts.push({
+                                            id: item.id,
+                                            name: item.name,
+                                            desc: item.description,
+                                            price: `R$ ${Number(item.price).toFixed(2).replace('.', ',')}`,
+                                            image: item.imageUrl,
+                                            categoryId: cat.id,
+                                            subcategoryId: sub.id
+                                        });
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+                    if (newCategories.length > 0) setCategories(newCategories);
+                    if (newProducts.length > 0) setProducts(newProducts);
+
+                } catch (error) {
+                    console.error("Error fetching menu from API:", error);
+                }
+            }
+        };
+
+        fetchMenu();
+    }, []);
 
     const resetToDefault = () => {
         setBranding(DEFAULT_BRANDING);
