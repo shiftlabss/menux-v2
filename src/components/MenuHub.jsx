@@ -541,7 +541,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                         </div>
                         <div className="maestro-text-group">
                             <span className="maestro-title">Olá, eu sou o Menux!</span>
-                            <span className="maestro-subtitle">Te ajudo a escolher o prato...</span>
+                            <span className="maestro-subtitle">Clica aqui que eu te ajudo a escolher.</span>
                         </div>
                     </div>
 
