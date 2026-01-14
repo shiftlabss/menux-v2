@@ -155,16 +155,34 @@ export const StudioProvider = ({ children }) => {
 
     // Salvar no localStorage sempre que mudar
     useEffect(() => {
-        localStorage.setItem('menux_studio_branding', JSON.stringify(branding));
-        document.documentElement.style.setProperty('--brand-primary', branding.brandColor);
+        try {
+            localStorage.setItem('menux_studio_branding', JSON.stringify(branding));
+            document.documentElement.style.setProperty('--brand-primary', branding.brandColor);
+        } catch (error) {
+            console.error("Erro ao salvar branding:", error);
+            if (error.name === 'QuotaExceededError') {
+                alert("Limite de armazenamento do navegador excedido! Tente usar imagens menores na capa ou logo.");
+            }
+        }
     }, [branding]);
 
     useEffect(() => {
-        localStorage.setItem('menux_studio_categories', JSON.stringify(categories));
+        try {
+            localStorage.setItem('menux_studio_categories', JSON.stringify(categories));
+        } catch (error) {
+            console.error("Erro ao salvar categorias:", error);
+        }
     }, [categories]);
 
     useEffect(() => {
-        localStorage.setItem('menux_studio_products', JSON.stringify(products));
+        try {
+            localStorage.setItem('menux_studio_products', JSON.stringify(products));
+        } catch (error) {
+            console.error("Erro ao salvar produtos:", error);
+            if (error.name === 'QuotaExceededError') {
+                alert("Limite de armazenamento excedido! Tente usar menos imagens ou imagens menores nos produtos.");
+            }
+        }
     }, [products]);
 
     // Lógica para corrigir imagens em dados antigos persistidos (Migration)
@@ -225,7 +243,7 @@ export const StudioProvider = ({ children }) => {
     };
 
     const updateBranding = (data) => {
-        setBranding({ ...data });
+        setBranding(prev => ({ ...prev, ...data }));
     };
 
     return (

@@ -28,8 +28,11 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                     </div>
                 </div>
 
-                <div className="pd-image-container">
-                    {/* Imagem do produto viria aqui */}
+                <div className="pd-image-container" style={{
+                    backgroundImage: product.image ? `url(${product.image})` : 'none',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                }}>
                 </div>
 
                 <div className="pd-content">

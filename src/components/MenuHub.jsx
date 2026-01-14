@@ -565,6 +565,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                     <OrderModal
                         cartItems={cart}
                         onUpdateQty={handleUpdateQty}
+                        onAddToCart={handleAddToCart}
                         onOpenChat={handleOpenMaestroChat}
                         onClose={() => setIsOrderModalOpen(false)}
                         onFinish={handleFinishOrder}

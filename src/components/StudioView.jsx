@@ -20,6 +20,13 @@ export default function StudioView({ onClose }) {
 
     const handleImageUpload = (file, callback) => {
         if (!file) return;
+
+        // Validação de tamanho (max 2MB para evitar erro de LocalStorage)
+        if (file.size > 2 * 1024 * 1024) {
+            alert("A imagem é muito grande! Por favor, escolha uma imagem menor que 2MB para não sobrecarregar o navegador.");
+            return;
+        }
+
         const reader = new FileReader();
         reader.onloadend = () => {
             callback(reader.result);

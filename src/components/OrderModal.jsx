@@ -18,7 +18,7 @@ const MinusIcon = () => (
     </svg>
 );
 
-export default function OrderModal({ cartItems = [], onUpdateQty, onOpenChat, onClose, onFinish }) {
+export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, onOpenChat, onClose, onFinish }) {
     const isEmpty = cartItems.length === 0;
 
     const handleMaestroClick = (e) => {
@@ -41,64 +41,91 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onOpenChat, on
                 <span className="order-title">Seu pedido</span>
             </div>
 
-            <div className="order-items-list">
-                {isEmpty ? (
-                    <div className="empty-cart-message" style={{ textAlign: 'center', padding: '40px 20px', color: '#8A8A8A', fontFamily: 'Geist, sans-serif' }}>
-                        Seu carrinho está vazio. Adicione algum item do cardápio!
-                    </div>
-                ) : (
-                    cartItems.map((item, index) => (
-                        <div key={item.id || index} className="order-item-card">
-                            <div className="order-item-image" style={{ backgroundImage: item.image ? `url(${item.image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
-                            <div className="order-item-details">
-                                <span className="order-item-name">{item.name}</span>
-                                <span className="order-item-desc">{item.desc}</span>
-                                <span className="order-item-price">{item.price}</span>
+            <div className="order-scroll-content">
+                <div className="order-items-list">
+                    {isEmpty ? (
+                        <div className="empty-cart-message" style={{ textAlign: 'center', padding: '40px 20px', color: '#8A8A8A', fontFamily: 'Geist, sans-serif' }}>
+                            Seu carrinho está vazio. Adicione algum item do cardápio!
+                        </div>
+                    ) : (
+                        cartItems.map((item, index) => (
+                            <div key={item.id || index} className="order-item-card">
+                                <div className="order-item-image" style={{ backgroundImage: item.image ? `url(${item.image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
+                                <div className="order-item-details">
+                                    <span className="order-item-name">{item.name}</span>
+                                    <span className="order-item-desc">{item.desc}</span>
+                                    <span className="order-item-price">{item.price}</span>
 
-                                {item.extras && item.extras.length > 0 && (
-                                    <div className="order-item-extras">
-                                        {item.extras.map(extra => (
-                                            <div key={extra.id} className="extra-row">
-                                                <div className="extra-qty-badge">{extra.qty}</div>
-                                                <span className="extra-name">{extra.name}</span>
-                                            </div>
-                                        ))}
+                                    {item.extras && item.extras.length > 0 && (
+                                        <div className="order-item-extras">
+                                            {item.extras.map(extra => (
+                                                <div key={extra.id} className="extra-row">
+                                                    <div className="extra-qty-badge">{extra.qty}</div>
+                                                    <span className="extra-name">{extra.name}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="order-item-qty-control">
+                                    <button className="qty-btn" onClick={() => onUpdateQty(item.id, item.obs, -1)}>
+                                        {item.qty === 1 ? <TrashIcon /> : <MinusIcon />}
+                                    </button>
+                                    <span className="qty-val">{item.qty}</span>
+                                    <button className="qty-btn" onClick={() => onUpdateQty(item.id, item.obs, 1)}>
+                                        <PlusIcon />
+                                    </button>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+
+                <div className="recommendations-wrapper">
+                    <a href="#" className="maestro-suggestion-link" onClick={handleMaestroClick}>
+                        <span className="maestro-link-text">Quer mais algo? Fale com o </span>
+                        <img src="/logo-menux.svg" alt="Menux" className="maestro-link-logo" style={{ filter: 'invert(29%) sepia(34%) saturate(7460%) hue-rotate(245deg) brightness(101%) contrast(101%)' }} />
+                    </a>
+
+                    <h3 className="rec-title">Peça também</h3>
+                    <div className="rec-scroll-container">
+                        {[
+                            { id: '39', name: "Água com Gás", price: "R$ 6,00", desc: "Água mineral com gás.", image: "/imgs/bebidas-e-drinks/drinks-agua-gas.jpg" },
+                            { id: '28', name: "Pudim de Leite", price: 'R$ 24,00', desc: "Clássico pudim de leite.", image: "/imgs/sobremesas/sobremesa-pudim.jpg" },
+                            { id: '40', name: "Caipirinha", price: 'R$ 22,00', desc: "Limão taiti e cachaça.", image: "/imgs/bebidas-e-drinks/drink-caipirinha.jpg" }
+                        ].map(rec => {
+                            const inCart = cartItems.find(item => item.id === rec.id);
+                            const qty = inCart ? inCart.qty : 0;
+
+                            return (
+                                <div key={rec.id} className="rec-card">
+                                    <div className="rec-img" style={{ backgroundImage: `url(${rec.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                                        <div className="rec-qty-overlay" onClick={(e) => e.stopPropagation()}>
+                                            {qty > 0 ? (
+                                                <div className="rec-qty-controls">
+                                                    <button className="rec-qty-btn" onClick={() => onUpdateQty(rec.id, '', -1)}>
+                                                        {qty === 1 ? <TrashIcon /> : <MinusIcon />}
+                                                    </button>
+                                                    <span className="rec-qty-val">{qty}</span>
+                                                    <button className="rec-qty-btn" onClick={() => onUpdateQty(rec.id, '', 1)}>
+                                                        <PlusIcon />
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <button className="rec-add-btn" onClick={() => onAddToCart(rec, '')}>
+                                                    <PlusIcon />
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
-                                )}
-                            </div>
-                            <div className="order-item-qty-control">
-                                <button className="qty-btn" onClick={() => onUpdateQty(item.id, item.obs, -1)}>
-                                    {item.qty === 1 ? <TrashIcon /> : <MinusIcon />}
-                                </button>
-                                <span className="qty-val">{item.qty}</span>
-                                <button className="qty-btn" onClick={() => onUpdateQty(item.id, item.obs, 1)}>
-                                    <PlusIcon />
-                                </button>
-                            </div>
-                        </div>
-                    ))
-                )}
-            </div>
-
-            <div className="recommendations-wrapper">
-                <a href="#" className="maestro-suggestion-link" onClick={handleMaestroClick}>
-                    <span className="maestro-link-text">Quer mais algo? Fale com o </span>
-                    <img src="/logo-menux.svg" alt="Menux" className="maestro-link-logo" style={{ filter: 'invert(29%) sepia(34%) saturate(7460%) hue-rotate(245deg) brightness(101%) contrast(101%)' }} />
-                </a>
-
-                <h3 className="rec-title">Peça também</h3>
-                <div className="rec-scroll-container">
-                    {[
-                        { id: 'r1', price: "R$ 6,00", desc: "Água com Gás", image: "/imgs/bebidas-e-drinks/drinks-agua-gas.jpg" },
-                        { id: 'r2', price: "R$ 18,00", desc: "Pudim de Leite", image: "/imgs/sobremesas/sobremesa-pudim.jpg" },
-                        { id: 'r3', price: "R$ 24,00", desc: "Caipirinha", image: "/imgs/bebidas-e-drinks/drink-caipirinha.jpg" }
-                    ].map(rec => (
-                        <div key={rec.id} className="rec-card">
-                            <div className="rec-img" style={{ backgroundImage: `url(${rec.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
-                            <div className="rec-price">{rec.price}</div>
-                            <div className="rec-desc">{rec.desc}</div>
-                        </div>
-                    ))}
+                                    <div className="rec-info">
+                                        <div className="rec-price">{rec.price}</div>
+                                        <div className="rec-name">{rec.name}</div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
 
