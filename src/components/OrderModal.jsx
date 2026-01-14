@@ -49,7 +49,7 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onOpenChat, on
                 ) : (
                     cartItems.map((item, index) => (
                         <div key={item.id || index} className="order-item-card">
-                            <div className="order-item-image"></div>
+                            <div className="order-item-image" style={{ backgroundImage: item.image ? `url(${item.image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
                             <div className="order-item-details">
                                 <span className="order-item-name">{item.name}</span>
                                 <span className="order-item-desc">{item.desc}</span>
@@ -88,11 +88,15 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onOpenChat, on
 
                 <h3 className="rec-title">Peça também</h3>
                 <div className="rec-scroll-container">
-                    {[1, 2, 3].map(i => (
-                        <div key={i} className="rec-card">
-                            <div className="rec-img"></div>
-                            <div className="rec-price">R$ 28.00</div>
-                            <div className="rec-desc">Água mineral sem Gás Crist...</div>
+                    {[
+                        { id: 'r1', price: "R$ 6,00", desc: "Água com Gás", image: "/imgs/bebidas-e-drinks/drinks-agua-gas.jpg" },
+                        { id: 'r2', price: "R$ 18,00", desc: "Pudim de Leite", image: "/imgs/sobremesas/sobremesa-pudim.jpg" },
+                        { id: 'r3', price: "R$ 24,00", desc: "Caipirinha", image: "/imgs/bebidas-e-drinks/drink-caipirinha.jpg" }
+                    ].map(rec => (
+                        <div key={rec.id} className="rec-card">
+                            <div className="rec-img" style={{ backgroundImage: `url(${rec.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
+                            <div className="rec-price">{rec.price}</div>
+                            <div className="rec-desc">{rec.desc}</div>
                         </div>
                     ))}
                 </div>

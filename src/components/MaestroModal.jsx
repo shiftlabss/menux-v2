@@ -63,21 +63,24 @@ const MaestroLogo = ({ size = 20 }) => (
 const mockResults = [
     {
         id: 1,
-        name: "Nome do Prato",
-        desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed finibus sed ante a mattis.",
-        price: "R$28,00"
+        name: "Filé Mignon ao Molho Madeira",
+        desc: "Filé mignon bovino macio, servido com molho madeira e champignons frescos.",
+        price: "R$ 74,90",
+        image: "/imgs/pratos-principais/pratop-file-mignon.jpg"
     },
     {
         id: 2,
-        name: "Nome do Prato",
-        desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed finibus sed ante a mattis.",
-        price: "R$28,00"
+        name: "Spaghetti à Bolonhesa",
+        desc: "Massa spaghetti ao molho bolonhesa tradicional, preparada com carne bovina.",
+        price: "R$ 39,90",
+        image: "/imgs/pratos-principais/pratop-spaghetti.jpg"
     },
     {
         id: 3,
-        name: "Nome do Prato",
-        desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed finibus sed ante a mattis.",
-        price: "R$28,00"
+        name: "Petit Gateau",
+        desc: "Bolo quente de chocolate com interior cremoso, servido com bola de sorvete de baunilha.",
+        price: "R$ 28,00",
+        image: "/imgs/sobremesas/sobremesa-petit-gateau.jpg"
     }
 ];
 
@@ -340,7 +343,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome' }) {
                                                 <span className="wizard-result-price">{item.price}</span> <button className="btn-profile-short btn-add-to-cart">Adicionar ao pedido</button>
                                             </div>
                                         </div>
-                                        <div className="wizard-result-image"></div>
+                                        <div className="wizard-result-image" style={{ backgroundImage: item.image ? `url(${item.image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
                                     </div>
                                     {index < mockResults.length - 1 && <div className="wizard-result-divider" />}
                                 </div>
