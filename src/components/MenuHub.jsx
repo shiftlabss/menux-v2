@@ -1,3 +1,4 @@
+import { getMenuHighlights } from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import ProductDetailModal from './ProductDetailModal';
@@ -447,6 +448,7 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                         {banners && banners.map((b, i) => (
 
                             <div
+
                                 key={i}
                                 className={`featured-card ${b.image ? 'has-image' : ''}`}
                                 style={{
@@ -462,12 +464,17 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                                     image: b.image
                                 })}
                             >
+<<<<<<< HEAD
                                 <span className="featured-tag">{b.tag}</span>
                                 <h3 className="featured-title">{b.title}</h3>
                                 <div className="featured-footer">
                                     <span className="featured-price">{b.price}</span>
                                     <button className="btn-order-now">Adicionar</button>
                                     {/* <span className="featured-tag" style={{ color: b.item.imageUrl ? 'rgba(255,255,255,0.9)' : undefined }}>{b.item.tag}</span>
+=======
+                                {/* {console.log(b)} */}
+                                <span className="featured-tag" style={{ color: b.item.imageUrl ? 'rgba(255,255,255,0.9)' : undefined }}>{b.item.tag}</span>
+>>>>>>> ab0dcc9 (menux - alterações no carrossel 2)
                                 <h3 className="featured-title" style={{ color: b.item.imageUrl ? 'white' : undefined }}>{b.item.name}</h3>
                                 <div className="featured-footer">
                                     <span className="featured-price" style={{ color: b.item.imageUrl ? 'white' : undefined }}>{Number(b.item.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
