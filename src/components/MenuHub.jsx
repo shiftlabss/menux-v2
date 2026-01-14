@@ -467,6 +467,11 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                                 <div className="featured-footer">
                                     <span className="featured-price">{b.price}</span>
                                     <button className="btn-order-now">Adicionar</button>
+                                    {/* <span className="featured-tag" style={{ color: b.item.imageUrl ? 'rgba(255,255,255,0.9)' : undefined }}>{b.item.tag}</span>
+                                <h3 className="featured-title" style={{ color: b.item.imageUrl ? 'white' : undefined }}>{b.item.name}</h3>
+                                <div className="featured-footer">
+                                    <span className="featured-price" style={{ color: b.item.imageUrl ? 'white' : undefined }}>{Number(b.item.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                                    <button className="btn-order-now">Adicionar ao pedido</button> */}
                                 </div>
                             </div>
                         ))}
