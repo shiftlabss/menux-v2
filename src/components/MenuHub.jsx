@@ -1,3 +1,4 @@
+import { getMenuHighlights } from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import ProductDetailModal from './ProductDetailModal';
@@ -488,6 +489,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                         {banners && banners.map((b, i) => (
 
                             <div
+
                                 key={i}
                                 className="featured-card"
                                 style={{
@@ -497,6 +499,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                                 }}
                                 onClick={() => handleBannerClick(i)}
                             >
+                                {/* {console.log(b)} */}
                                 <span className="featured-tag" style={{ color: b.item.imageUrl ? 'rgba(255,255,255,0.9)' : undefined }}>{b.item.tag}</span>
                                 <h3 className="featured-title" style={{ color: b.item.imageUrl ? 'white' : undefined }}>{b.item.name}</h3>
                                 <div className="featured-footer">
