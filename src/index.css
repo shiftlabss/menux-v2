@@ -1766,6 +1766,28 @@ body,
   width: calc(100% + 48px);
 }
 
+/* CHAT MODE OVERRIDES (Edge-to-Edge) */
+.maestro-modal-container.chat-mode {
+  padding: 0 0 24px 0;
+}
+
+.maestro-modal-container.chat-mode .modal-header {
+  margin: 0;
+  width: 100%;
+  border-bottom: 1px solid #F2F2F2;
+}
+
+.maestro-modal-container.chat-mode .chat-messages-area {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.maestro-modal-container.chat-mode .maestro-footer-input {
+  /* Ensure input respecting global padding */
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
 /* Standard Modal Header - REUSABLE & EDGE-TO-EDGE */
 .modal-header,
 .modal-header-back {
@@ -2004,12 +2026,19 @@ body,
 
 .chat-bubble-wrapper {
   display: flex;
+  flex-direction: column;
+  flex-direction: column;
+  margin-bottom: 24px;
   width: 100%;
 }
 
 .chat-bubble-wrapper.user {
-  justify-content: flex-end;
+  align-items: flex-end;
+}
 
+.chat-bubble-wrapper.ai {
+  align-items: flex-start;
+  /* AI messages to the left */
 }
 
 /* Bolhas de chat refinadas */
@@ -2025,6 +2054,7 @@ body,
   background: black;
   color: white;
   border-radius: 18px 18px 4px 18px;
+  margin-top: 24px;
 }
 
 .chat-bubble.ai {
@@ -2954,4 +2984,290 @@ body,
     gap: 16px;
     overflow-x: auto;
   }
+}
+
+/* Chat Product Cards - Compact Redesign */
+.chat-suggestions-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  overflow-x: auto;
+
+  /* Edge-to-Edge Effect */
+  /* Pull -24px to ignore parent padding, add 48px to total width to span full screen */
+  margin-left: -24px;
+  margin-right: -24px;
+  width: calc(100% + 48px);
+
+  /* Internal padding to align first item visually with text */
+  padding: 8px 0 20px 0;
+  box-sizing: border-box;
+
+  min-height: 220px;
+  /* Reduced min-height */
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 24px;
+  /* Ensures snap respects the start spacing */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  margin-top: 12px;
+}
+
+/* Force start/end spacing using pseudo-elements (Fixes Chrome/Safari flex overflow padding bug) */
+.chat-suggestions-grid::before,
+.chat-suggestions-grid::after {
+  content: '';
+  display: block;
+  width: 24px;
+  /* Matches screen padding */
+  min-width: 24px;
+  flex: 0 0 24px;
+  /* Rigidly prevent shrinking */
+  scroll-snap-align: none;
+  /* Spacer shouldn't be snap target */
+}
+
+.chat-suggestions-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.chat-product-card {
+  min-width: 160px;
+  /* Reduced width */
+  max-width: 160px;
+  background: #FFFFFF;
+  border-radius: 15px;
+  /* Keep radius */
+  overflow: hidden;
+  /* Softer shadow for smaller size + Simulated border */
+  box-shadow: 0 0 0 1px #E5E5E5, 0 4px 12px rgba(0, 0, 0, 0.06);
+  scroll-snap-align: start;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  transform: translateZ(0);
+  /* Fix clipping */
+}
+
+.chat-card-image {
+  width: 100%;
+  height: 100px;
+  /* Reduced image height */
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid #E5E5E5;
+}
+
+.chat-card-content {
+  padding: 10px;
+  /* Reduced padding */
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.chat-card-title {
+  font-size: 13px;
+  /* Reduced font size */
+  font-weight: 600;
+  color: var(--primary-black);
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+
+  /* Force fixed height for 2 lines to align prices */
+  min-height: 34px;
+  /* 1.3 line-height * 13px * 2 lines approx */
+
+  /* Limit 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.chat-card-price {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 13px;
+  /* Reduced font size */
+  font-weight: 600;
+  color: #767676;
+  margin-bottom: 12px;
+  /* Less margin */
+  display: block;
+}
+
+.chat-card-add-btn {
+  width: 100%;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  padding: 8px 0;
+  /* Simpler button padding */
+  background: var(--primary-black);
+  color: white;
+  border: none;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.chat-card-add-btn:active {
+  opacity: 0.8;
+}
+
+/* =========================================
+   STORYTELLING PROCESSING SCREEN STYLES
+   ========================================= */
+.processing-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100dvh;
+  background: white;
+  /* Clean white full screen */
+  display: flex;
+  align-items: end;
+  /* Generally center content vertically */
+  z-index: 2000;
+  padding: 24px 24px 24px 24px;
+}
+
+.processing-content-wrapper {
+  width: 100%;
+  /* Occupy significant vertical space for spacing */
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* Center content block vertically */
+  position: relative;
+  bottom: 86px;
+}
+
+.processing-logo-container {
+  margin-bottom: 64px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  /* Align logo to left as per image layout text alignment */
+}
+
+.processing-logo-img {
+  width: 37px;
+  height: auto;
+  position: absolute;
+  bottom: 300px;
+  left: 24px;
+}
+
+.processing-text-area {
+  /* Reserve space for text changes */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-bottom: 40px;
+  text-align: left;
+  /* Explicit left alignment */
+}
+
+.processing-step-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary-black);
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.processing-step-subtitle {
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  color: #7E7E7E;
+  line-height: 1.5;
+}
+
+.processing-progress-track {
+  width: 100%;
+  height: 2px;
+  background: #F0F0F0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.processing-progress-fill {
+  height: 100%;
+  background: var(--primary-black);
+}
+
+/* =========================================
+   ORDER CODE MODAL STYLES (Reverted)
+   ========================================= */
+.order-code-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100dvh;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 24px;
+  flex-direction: column;
+}
+
+.order-code-container {
+  background: white;
+  width: 100%;
+  max-width: 320px;
+  border-radius: 24px;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.order-code-logo {
+  width: 40px;
+  margin-bottom: 20px;
+}
+
+.order-code-display {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--primary-black);
+  font-family: 'Bricolage Grotesque', sans-serif;
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+}
+
+.order-code-desc {
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  color: #7E7E7E;
+  line-height: 1.4;
+}
+
+.order-code-btn-container {
+  width: 100%;
+  max-width: 320px;
+}
+
+.btn-back-menu {
+  width: 100%;
+  height: 56px;
+  background: white;
+  color: var(--primary-black);
+  border: none;
+  border-radius: 100px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
 }

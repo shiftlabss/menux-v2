@@ -1,0 +1,46 @@
+id,name,description,price,type
+101,Carpaccio de Carne,"Fatias finas de carne bovina crua, parmesão, rúcula e azeite extravirgem.","R$ 48,00",entrada
+105,Burrata com Tomate Confit,"Burrata cremosa servida com tomates confitados e pesto.","R$ 52,00",entrada
+102,Ceviche de Peixe Branco,"Peixe marinado no limão, cebola roxa e coentro.","R$ 46,00",entrada
+104,Camarão Empanado,"Camarões empanados crocantes com molho agridoce.","R$ 56,00",entrada
+106,Dadinho de Tapioca,"Cubos crocantes de tapioca com geleia de pimenta.","R$ 38,00",entrada
+103,Bolinho de Costela,"Costela desfiada empanada com maionese defumada.","R$ 42,00",entrada
+107,Tábua de Frios,"Queijos, embutidos, frutas secas e castanhas.","R$ 78,00",entrada
+108,Batata Rústica,"Batatas assadas com ervas e páprica.","R$ 34,00",entrada
+109,Anéis de Cebola,"Cebolas empanadas crocantes com molho da casa.","R$ 32,00",entrada
+209,Spaghetti à Bolonhesa,"Massa italiana com molho de carne cozido lentamente.","R$ 62,00",prato principal
+210,Penne ao Molho Alfredo,"Massa curta com molho cremoso de queijo.","R$ 58,00",prato principal
+212,Gnocchi ao Funghi,"Nhoque macio com cogumelos e creme.","R$ 76,00",prato principal
+201,Picanha na Brasa,"Picanha grelhada com farofa e vinagrete.","R$ 96,00",prato principal
+203,Filé Mignon,"Filé grelhado ao ponto com molho de vinho tinto.","R$ 88,00",prato principal
+202,Contra-filé,"Corte grelhado com manteiga de ervas.","R$ 82,00",prato principal
+207,Salmão Grelhado,"Salmão com legumes salteados e molho cítrico.","R$ 82,00",prato principal
+208,Tilápia Grelhada,"Tilápia servida com arroz e legumes.","R$ 64,00",prato principal
+211,Atum Selado,"Atum selado com crosta de gergelim.","R$ 86,00",prato principal
+401,Hambúrguer Clássico,"Pão brioche, carne bovina, queijo e molho da casa.","R$ 46,00",prato principal
+402,Cheeseburger Bacon,"Hambúrguer com cheddar e bacon crocante.","R$ 52,00",prato principal
+403,Burger Duplo,"Dois discos de carne, queijo e pão brioche.","R$ 58,00",prato principal
+404,Frango Crispy,"Frango empanado, alface e maionese.","R$ 44,00",prato principal
+405,Sanduíche de Filé,"Filé grelhado com queijo e cebola caramelizada.","R$ 49,00",prato principal
+406,Vegetariano,"Hambúrguer de grão-de-bico com legumes.","R$ 42,00",prato principal
+407,Batata Frita,"Batatas crocantes e douradas.","R$ 26,00",entrada
+408,Onion Rings,"Anéis de cebola empanados.","R$ 28,00",entrada
+409,Salada Verde,"Mix de folhas frescas.","R$ 24,00",entrada
+501,Pudim de Leite,"Pudim cremoso com calda de caramelo.","R$ 24,00",sobremesa
+502,Mousse de Chocolate,"Mousse aerado de chocolate meio amargo.","R$ 26,00",sobremesa
+503,Torta de Limão,"Torta cremosa com merengue.","R$ 28,00",sobremesa
+504,Brownie com Sorvete,"Brownie quente com sorvete de creme.","R$ 32,00",sobremesa
+505,Petit Gâteau,"Bolinho de chocolate com recheio cremoso.","R$ 34,00",sobremesa
+506,Churros,"Churros crocantes com doce de leite.","R$ 30,00",sobremesa
+507,Sorvete Artesanal,"Duas bolas de sorvete artesanal.","R$ 22,00",sobremesa
+508,Taça de Frutas,"Frutas frescas da estação.","R$ 20,00",sobremesa
+509,Milkshake,"Milkshake cremoso de chocolate ou baunilha.","R$ 26,00",sobremesa
+301,Suco Natural,"Suco de frutas da estação.","R$ 12,00",sucos
+302,Refrigerante,"Refrigerante lata 350 ml.","R$ 8,00",sucos
+303,Água com Gás,"Água mineral com gás.","R$ 6,00",agua
+304,Caipirinha,"Limão, açúcar e cachaça artesanal.","R$ 22,00",drinks
+305,Gin Tônica,"Gin, água tônica e especiarias.","R$ 28,00",drinks
+306,Moscow Mule,"Vodka, gengibre e espuma cítrica.","R$ 32,00",drinks
+307,Drink da Casa,"Vodka, frutas vermelhas e manjericão.","R$ 34,00",drinks
+308,Cítrico Tropical,"Rum, maracujá e limão siciliano.","R$ 30,00",drinks
+309,Negroni Brasileiro,"Cachaça envelhecida, vermute e bitter.","R$ 36,00",drinks

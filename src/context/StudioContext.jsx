@@ -61,69 +61,69 @@ const DEFAULT_CATEGORIES = [
 
 const DEFAULT_PRODUCTS = [
     // ENTRADAS - Frias
-    { id: '1', name: 'Carpaccio de Carne', price: 'R$ 48,00', desc: 'Fatias finas de carne bovina crua marmorizada, finalizadas com lascas de parmesão, rúcula fresca e fios de azeite extravirgem.', categoryId: 'entradas', subcategoryId: 'frias', image: '/imgs/entrada/entrada-carpacio-de-carne.jpg' },
-    { id: '2', name: 'Burrata com Tomate Confit', price: 'R$ 52,00', desc: 'Burrata extremamente cremosa acompanhada de tomates cereja confitados no azeite de ervas e finalizada com pesto de manjericão artesanal.', categoryId: 'entradas', subcategoryId: 'frias', image: '/imgs/entrada/entrada-burrata.jpg' },
-    { id: '3', name: 'Ceviche de Peixe Branco', price: 'R$ 46,00', desc: 'Peixe branco fresco marinado em leite de tigre cítrico, cebola roxa crocante, coentro e um toque de pimenta dedo-de-moça.', categoryId: 'entradas', subcategoryId: 'frias', image: '/imgs/entrada/entrada-ceviche.jpg' },
+    { id: 101, name: 'Carpaccio de Carne', price: 'R$ 48,00', desc: 'Fatias finas de carne bovina crua, parmesão, rúcula e azeite extravirgem.', categoryId: 'entradas', subcategoryId: 'frias', image: '/imgs/entrada/entrada-carpacio-de-carne.jpg' },
+    { id: 105, name: 'Burrata com Tomate Confit', price: 'R$ 52,00', desc: 'Burrata cremosa servida com tomates confitados e pesto.', categoryId: 'entradas', subcategoryId: 'frias', image: '/imgs/entrada/entrada-burrata.jpg' },
+    { id: 102, name: 'Ceviche de Peixe Branco', price: 'R$ 46,00', desc: 'Peixe marinado no limão, cebola roxa e coentro.', categoryId: 'entradas', subcategoryId: 'frias', image: '/imgs/entrada/entrada-ceviche.jpg' },
     // ENTRADAS - Quentes
-    { id: '4', name: 'Camarão Empanado', price: 'R$ 56,00', desc: 'Camarões selecionados empanados em farinha panko ultra crocante, servidos com nosso exclusivo molho agridoce da casa.', categoryId: 'entradas', subcategoryId: 'quentes', image: '/imgs/entrada/entrada-camarão.jpg' },
-    { id: '5', name: 'Dadinho de Tapioca', price: 'R$ 38,00', desc: 'Cubos crocantes de tapioca com queijo coalho, fritos até dourarem, acompanhados de geleia de pimenta levemente picante.', categoryId: 'entradas', subcategoryId: 'quentes', image: '/imgs/entrada/entrada-dadinho.jpg' },
-    { id: '6', name: 'Bolinho de Costela', price: 'R$ 42,00', desc: 'Bolinhos recheados com costela bovina desfiada e suculenta, empanados e servidos com maionese defumada artesanal.', categoryId: 'entradas', subcategoryId: 'quentes', image: '/imgs/entrada/entrada-bolinho-costela.jpg' },
+    { id: 104, name: 'Camarão Empanado', price: 'R$ 56,00', desc: 'Camarões empanados crocantes com molho agridoce.', categoryId: 'entradas', subcategoryId: 'quentes', image: '/imgs/entrada/entrada-camarão.jpg' },
+    { id: 106, name: 'Dadinho de Tapioca', price: 'R$ 38,00', desc: 'Cubos crocantes de tapioca com geleia de pimenta.', categoryId: 'entradas', subcategoryId: 'quentes', image: '/imgs/entrada/entrada-dadinho.jpg' },
+    { id: 103, name: 'Bolinho de Costela', price: 'R$ 42,00', desc: 'Costela desfiada empanada com maionese defumada.', categoryId: 'entradas', subcategoryId: 'quentes', image: '/imgs/entrada/entrada-bolinho-costela.jpg' },
     // ENTRADAS - Compartilhar
-    { id: '7', name: 'Tábua de Frios', price: 'R$ 78,00', desc: 'Seleção premium de queijos finos, embutidos artesanais, frutas secas da estação, castanhas crocantes e torradas da casa.', categoryId: 'entradas', subcategoryId: 'compartilhar', image: '/imgs/entrada/entrada-tabua.jpg' },
-    { id: '8', name: 'Batata Rústica', price: 'R$ 34,00', desc: 'Batatas cortadas à mão, assadas com dentes de alho inteiros, alecrim fresco e uma pitada de páprica defumada especial.', categoryId: 'entradas', subcategoryId: 'compartilhar', image: '/imgs/entrada/entrada-batatas-rusticas.jpg' },
-    { id: '9', name: 'Anéis de Cebola', price: 'R$ 32,00', desc: 'Anéis de cebola selecionados, empanados em massa leve e crocante, servidos com molho especial de ervas finas.', categoryId: 'entradas', subcategoryId: 'compartilhar', image: '/imgs/entrada/entrada-cebolas.jpg' },
+    { id: 107, name: 'Tábua de Frios', price: 'R$ 78,00', desc: 'Queijos, embutidos, frutas secas e castanhas.', categoryId: 'entradas', subcategoryId: 'compartilhar', image: '/imgs/entrada/entrada-tabua.jpg' },
+    { id: 108, name: 'Batata Rústica', price: 'R$ 34,00', desc: 'Batatas assadas com ervas e páprica.', categoryId: 'entradas', subcategoryId: 'compartilhar', image: '/imgs/entrada/entrada-batatas-rusticas.jpg' },
+    { id: 109, name: 'Anéis de Cebola', price: 'R$ 32,00', desc: 'Cebolas empanadas crocantes com molho da casa.', categoryId: 'entradas', subcategoryId: 'compartilhar', image: '/imgs/entrada/entrada-cebolas.jpg' },
 
-    // PRINCIPAIS - Massas
-    { id: '10', name: 'Spaghetti à Bolonhesa', price: 'R$ 62,00', desc: 'Massa al dente envolvida em um robusto molho de carne bovina e tomates pelados, cozido lentamente por 6 horas.', categoryId: 'principais', subcategoryId: 'massas', image: '/imgs/pratos-principais/pratop-spaghetti.jpg' },
-    { id: '11', name: 'Penne ao Molho Alfredo', price: 'R$ 58,00', desc: 'Penne grano duro mergulhado em um molho aveludado de creme de leite fresco, manteiga noisette e parmesão envelhecido.', categoryId: 'principais', subcategoryId: 'massas', image: '/imgs/pratos-principais/pratop-penne.jpg' },
-    { id: '12', name: 'Nhoque de Cogumelos', price: 'R$ 76,00', desc: 'Nhoque artesanal de batata salteado na manteiga de sálvia com mix de cogumelos frescos e finalizado com creme de trufas negras.', categoryId: 'principais', subcategoryId: 'massas', image: '/imgs/pratos-principais/pratop-gnocchi.jpg' },
-    // PRINCIPAIS - Carnes
-    { id: '13', name: 'Picanha na Brasa', price: 'R$ 96,00', desc: 'Corte nobre de picanha grelhado na brasa de carvão, servido com farofa crocante de ovos e vinagrete de tomatinhos coloridos.', categoryId: 'principais', subcategoryId: 'carnes', image: '/imgs/pratos-principais/pratop-picanha.jpg' },
-    { id: '14', name: 'Filé Mignon', price: 'R$ 88,00', desc: 'Medalhão de filé mignon grelhado ao ponto do chef, banhado em redução de vinho tinto Malbec e especiarias selecionadas.', categoryId: 'principais', subcategoryId: 'carnes', image: '/imgs/pratos-principais/pratop-file-mignon.jpg' },
-    { id: '15', name: 'Contra-filé', price: 'R$ 82,00', desc: 'Corte alto de contra-filé angus grelhado com manteiga de ervas da horta, servido com alho assado e batatas douradas.', categoryId: 'principais', subcategoryId: 'carnes', image: '/imgs/pratos-principais/pratop-contrafile.jpg' },
-    // PRINCIPAIS - Peixes
-    { id: '16', name: 'Salmão Grelhado', price: 'R$ 82,00', desc: 'Posta de salmão fresco selada na chapa, acompanhada de legumes da estação salteados e molho cítrico de limão siciliano.', categoryId: 'principais', subcategoryId: 'peixes', image: '/imgs/pratos-principais/pratop-salmao.jpg' },
-    { id: '17', name: 'Tilápia Grelhada', price: 'R$ 64,00', desc: 'Filé de tilápia leve e suculento, servido com arroz branco soltinho e mix de legumes cozidos no vapor.', categoryId: 'principais', subcategoryId: 'peixes', image: '/imgs/pratos-principais/pratop-tilapia.jpg' },
-    { id: '18', name: 'Atum Selado', price: 'R$ 86,00', desc: 'Lombo de atum fresco selado em crosta de gergelim preto e branco, servido mal passado com redução de balsâmico e mel.', categoryId: 'principais', subcategoryId: 'peixes', image: '/imgs/pratos-principais/pratop-atum.jpg' },
+    // PRATOS PRINCIPAIS - Massas
+    { id: 209, name: 'Spaghetti à Bolonhesa', price: 'R$ 62,00', desc: 'Massa italiana com molho de carne cozido lentamente.', categoryId: 'principais', subcategoryId: 'massas', image: '/imgs/pratos-principais/pratop-spaghetti.jpg' },
+    { id: 210, name: 'Penne ao Molho Alfredo', price: 'R$ 58,00', desc: 'Massa curta com molho cremoso de queijo.', categoryId: 'principais', subcategoryId: 'massas', image: '/imgs/pratos-principais/pratop-penne.jpg' },
+    { id: 212, name: 'Gnocchi ao Funghi', price: 'R$ 76,00', desc: 'Nhoque macio com cogumelos e creme.', categoryId: 'principais', subcategoryId: 'massas', image: '/imgs/pratos-principais/pratop-gnocchi.jpg' },
+    // PRATOS PRINCIPAIS - Carnes
+    { id: 201, name: 'Picanha na Brasa', price: 'R$ 96,00', desc: 'Picanha grelhada com farofa e vinagrete.', categoryId: 'principais', subcategoryId: 'carnes', image: '/imgs/pratos-principais/pratop-picanha.jpg' },
+    { id: 203, name: 'Filé Mignon', price: 'R$ 88,00', desc: 'Filé grelhado ao ponto com molho de vinho tinto.', categoryId: 'principais', subcategoryId: 'carnes', image: '/imgs/pratos-principais/pratop-file-mignon.jpg' },
+    { id: 202, name: 'Contra-filé', price: 'R$ 82,00', desc: 'Corte grelhado com manteiga de ervas.', categoryId: 'principais', subcategoryId: 'carnes', image: '/imgs/pratos-principais/pratop-contrafile.jpg' },
+    // PRATOS PRINCIPAIS - Peixes
+    { id: 207, name: 'Salmão Grelhado', price: 'R$ 82,00', desc: 'Salmão com legumes salteados e molho cítrico.', categoryId: 'principais', subcategoryId: 'peixes', image: '/imgs/pratos-principais/pratop-salmao.jpg' },
+    { id: 208, name: 'Tilápia Grelhada', price: 'R$ 64,00', desc: 'Tilápia servida com arroz e legumes.', categoryId: 'principais', subcategoryId: 'peixes', image: '/imgs/pratos-principais/pratop-tilapia.jpg' },
+    { id: 211, name: 'Atum Selado', price: 'R$ 86,00', desc: 'Atum selado com crosta de gergelim.', categoryId: 'principais', subcategoryId: 'peixes', image: '/imgs/pratos-principais/pratop-atum.jpg' },
 
     // LANCHES - Hamburgueres
-    { id: '19', name: 'Hambúrguer Clássico', price: 'R$ 46,00', desc: 'Hambúrguer artesanal de 180g no pão brioche amanteigado, queijo prato derretido, alface crespa e nosso molho secreto.', categoryId: 'lanches', subcategoryId: 'hamburgueres', image: '/imgs/lanche/lanche-hamburger.jpg' },
-    { id: '20', name: 'Cheeseburger Bacon', price: 'R$ 52,00', desc: 'Blend de carnes selecionadas com muito cheddar cremoso, fatias de bacon crocante e cebola roxa no pão australiano.', categoryId: 'lanches', subcategoryId: 'hamburgueres', image: '/imgs/lanche/lanche-burger-bacon.jpg' },
-    { id: '21', name: 'Burger Duplo', price: 'R$ 58,00', desc: 'Para os famintos: dois discos de 160g de carne angus, camadas duplas de queijo cheddar e bacon no pão brioche.', categoryId: 'lanches', subcategoryId: 'hamburgueres', image: '/imgs/lanche/lanche-burger-duplo.jpg' },
+    { id: 401, name: 'Hambúrguer Clássico', price: 'R$ 46,00', desc: 'Pão brioche, carne bovina, queijo e molho da casa.', categoryId: 'lanches', subcategoryId: 'hamburgueres', image: '/imgs/lanche/lanche-hamburger.jpg' },
+    { id: 402, name: 'Cheeseburger Bacon', price: 'R$ 52,00', desc: 'Hambúrguer com cheddar e bacon crocante.', categoryId: 'lanches', subcategoryId: 'hamburgueres', image: '/imgs/lanche/lanche-burger-bacon.jpg' },
+    { id: 403, name: 'Burger Duplo', price: 'R$ 58,00', desc: 'Dois discos de carne, queijo e pão brioche.', categoryId: 'lanches', subcategoryId: 'hamburgueres', image: '/imgs/lanche/lanche-burger-duplo.jpg' },
     // LANCHES - Sanduiches
-    { id: '22', name: 'Frango Crispy', price: 'R$ 44,00', desc: 'Peito de frango empanado em crosta crocante, servido com alface americana fresca e maionese de ervas finas no pão de batata.', categoryId: 'lanches', subcategoryId: 'sanduiches', image: '/imgs/lanche/sanduiche-frango-crispy.jpg' },
-    { id: '23', name: 'Sanduíche de Filé', price: 'R$ 49,00', desc: 'Iscas de filé mignon grelhadas com queijo gruyère derretido e cebolas caramelizadas lentamente no vinho do porto.', categoryId: 'lanches', subcategoryId: 'sanduiches', image: '/imgs/lanche/sanduiche-file.jpg' },
-    { id: '24', name: 'Vegetariano', price: 'R$ 42,00', desc: 'Hambúrguer artesanal de grão-de-bico com especiarias, servido com abobrinha grelhada e homus cremoso no pão integral.', categoryId: 'lanches', subcategoryId: 'sanduiches', image: '/imgs/lanche/sanduiche-vegetariano.jpg' },
+    { id: 404, name: 'Frango Crispy', price: 'R$ 44,00', desc: 'Frango empanado, alface e maionese.', categoryId: 'lanches', subcategoryId: 'sanduiches', image: '/imgs/lanche/sanduiche-frango-crispy.jpg' },
+    { id: 405, name: 'Sanduíche de Filé', price: 'R$ 49,00', desc: 'Filé grelhado com queijo e cebola caramelizada.', categoryId: 'lanches', subcategoryId: 'sanduiches', image: '/imgs/lanche/sanduiche-file.jpg' },
+    { id: 406, name: 'Vegetariano', price: 'R$ 42,00', desc: 'Hambúrguer de grão-de-bico com legumes.', categoryId: 'lanches', subcategoryId: 'sanduiches', image: '/imgs/lanche/sanduiche-vegetariano.jpg' },
     // LANCHES - Acompanhamentos
-    { id: '25', name: 'Batata Frita', price: 'R$ 26,00', desc: 'Porção generosa de batatas palito ultra crocantes e perfeitamente douradas, finalizadas com flor de sal.', categoryId: 'lanches', subcategoryId: 'acompanhamentos', image: '/imgs/lanche/acomp-batata-frita.jpg' },
-    { id: '26', name: 'Onion Rings', price: 'R$ 28,00', desc: 'Anéis de cebola artesanais empanados em massa de cerveja pilsen, fritos até a perfeição, acompanhados de barbecue original.', categoryId: 'lanches', subcategoryId: 'acompanhamentos', image: '/imgs/lanche/acomp-onion-rings.jpg' },
-    { id: '27', name: 'Salada Verde', price: 'R$ 24,00', desc: 'Mix refrescante de folhas jovens da horta, tomatinhos cereja, pepino japonês e croutons integrais com molho de mostarda e mel.', categoryId: 'lanches', subcategoryId: 'acompanhamentos', image: '/imgs/lanche/acomp-salada-verde.jpg' },
+    { id: 407, name: 'Batata Frita', price: 'R$ 26,00', desc: 'Batatas crocantes e douradas.', categoryId: 'lanches', subcategoryId: 'acompanhamentos', image: '/imgs/lanche/acomp-batata-frita.jpg' },
+    { id: 408, name: 'Onion Rings', price: 'R$ 28,00', desc: 'Anéis de cebola empanados.', categoryId: 'lanches', subcategoryId: 'acompanhamentos', image: '/imgs/lanche/acomp-onion-rings.jpg' },
+    { id: 409, name: 'Salada Verde', price: 'R$ 24,00', desc: 'Mix de folhas frescas.', categoryId: 'lanches', subcategoryId: 'acompanhamentos', image: '/imgs/lanche/acomp-salada-verde.jpg' },
 
     // SOBREMESAS - Classicas
-    { id: '28', name: 'Pudim de Leite', price: 'R$ 24,00', desc: 'O clássico pudim de leite condensado, extremamente liso e cremoso, banhado em calda de caramelo dourado artesanal.', categoryId: 'sobremesas', subcategoryId: 'classicas', image: '/imgs/sobremesas/sobremesa-pudim.jpg' },
-    { id: '29', name: 'Mousse de Chocolate', price: 'R$ 26,00', desc: 'Mousse aerado preparado com chocolate belga 54%, finalizado com raspas de chocolate amargo e flor de sal.', categoryId: 'sobremesas', subcategoryId: 'classicas', image: '/imgs/sobremesas/sobremesa-mosse-chocolate.jpg' },
-    { id: '30', name: 'Torta de Limão', price: 'R$ 28,00', desc: 'Massa sablée crocante recheada com creme aveludado de limão taiti e coberta com merengue suíço maçaricado.', categoryId: 'sobremesas', subcategoryId: 'classicas', image: '/imgs/sobremesas/sobremesa-torta-limao.jpg' },
+    { id: 501, name: 'Pudim de Leite', price: 'R$ 24,00', desc: 'Pudim cremoso com calda de caramelo.', categoryId: 'sobremesas', subcategoryId: 'classicas', image: '/imgs/sobremesas/sobremesa-pudim.jpg' },
+    { id: 502, name: 'Mousse de Chocolate', price: 'R$ 26,00', desc: 'Mousse aerado de chocolate meio amargo.', categoryId: 'sobremesas', subcategoryId: 'classicas', image: '/imgs/sobremesas/sobremesa-mosse-chocolate.jpg' },
+    { id: 503, name: 'Torta de Limão', price: 'R$ 28,00', desc: 'Torta cremosa com merengue.', categoryId: 'sobremesas', subcategoryId: 'classicas', image: '/imgs/sobremesas/sobremesa-torta-limao.jpg' },
     // SOBREMESAS - Quentes
-    { id: '31', name: 'Brownie com Sorvete', price: 'R$ 32,00', desc: 'Brownie intenso de chocolate meio amargo servido quente, acompanhado de uma bola de sorvete de baunilha bourbon.', categoryId: 'sobremesas', subcategoryId: 'quentes-doce', image: '/imgs/sobremesas/sobremesa-brownie-sorvete.jpg' },
-    { id: '32', name: 'Petit Gâteau', price: 'R$ 34,00', desc: 'Bolinho quente de chocolate com o coração derretido, servido com sorvete de creme e calda de frutas vermelhas.', categoryId: 'sobremesas', subcategoryId: 'quentes-doce', image: '/imgs/sobremesas/sobremesa-petit-gateau.jpg' },
-    { id: '33', name: 'Churros', price: 'R$ 30,00', desc: 'Mini churros crocantes polvilhados com açúcar e canela, servidos com uma generosa porção de doce de leite mineiro.', categoryId: 'sobremesas', subcategoryId: 'quentes-doce', image: '/imgs/sobremesas/sobremesa-churros.jpg' },
-    // SOBREMESAS - Gelados
-    { id: '34', name: 'Sorvete Artesanal', price: 'R$ 22,00', desc: 'Duas bolas generosas de sorvete artesanal de fabricação própria, à sua escolha entre os sabores da estação.', categoryId: 'sobremesas', subcategoryId: 'gelados', image: '/imgs/sobremesas/sobremesa-sorvete-artesanal.jpg' },
-    { id: '35', name: 'Taça de Frutas', price: 'R$ 20,00', desc: 'Seleção refrescante de frutas da estação laminadas, servidas com mel de flores silvestres e raspas de limão siciliano.', categoryId: 'sobremesas', subcategoryId: 'gelados', image: '/imgs/sobremesas/sobremesas-taça-frutas.jpg' },
-    { id: '36', name: 'Milkshake', price: 'R$ 26,00', desc: 'Milkshake ultra cremoso batido na hora com sorvete premium, disponível nos sabores Chocolate Belga ou Baunilha Bourbon.', categoryId: 'sobremesas', subcategoryId: 'gelados', image: '/imgs/sobremesas/sobremesa-milkshake.jpg' },
+    { id: 504, name: 'Brownie com Sorvete', price: 'R$ 32,00', desc: 'Brownie quente com sorvete de creme.', categoryId: 'sobremesas', subcategoryId: 'quentes-doce', image: '/imgs/sobremesas/sobremesa-brownie-sorvete.jpg' },
+    { id: 505, name: 'Petit Gâteau', price: 'R$ 34,00', desc: 'Bolinho de chocolate com recheio cremoso.', categoryId: 'sobremesas', subcategoryId: 'quentes-doce', image: '/imgs/sobremesas/sobremesa-petit-gateau.jpg' },
+    { id: 506, name: 'Churros', price: 'R$ 30,00', desc: 'Churros crocantes com doce de leite.', categoryId: 'sobremesas', subcategoryId: 'quentes-doce', image: '/imgs/sobremesas/sobremesa-churros.jpg' },
+    // SOBREMESAS - Geladas
+    { id: 507, name: 'Sorvete Artesanal', price: 'R$ 22,00', desc: 'Duas bolas de sorvete artesanal.', categoryId: 'sobremesas', subcategoryId: 'gelados', image: '/imgs/sobremesas/sobremesa-sorvete-artesanal.jpg' },
+    { id: 508, name: 'Taça de Frutas', price: 'R$ 20,00', desc: 'Frutas frescas da estação.', categoryId: 'sobremesas', subcategoryId: 'gelados', image: '/imgs/sobremesas/sobremesas-taça-frutas.jpg' },
+    { id: 509, name: 'Milkshake', price: 'R$ 26,00', desc: 'Milkshake cremoso de chocolate ou baunilha.', categoryId: 'sobremesas', subcategoryId: 'gelados', image: '/imgs/sobremesas/sobremesa-milkshake.jpg' },
 
     // BEBIDAS & DRINKS - Nao Alcoolicas
-    { id: '37', name: 'Suco Natural', price: 'R$ 12,00', desc: 'Suco extraído na hora da própria fruta fresca, garantindo o máximo de sabor e vitaminas. Consulte as frutas do dia.', categoryId: 'bebidas', subcategoryId: 'nao-alcoolicas', image: '/imgs/bebidas-e-drinks/drink-suco-natural.jpg' },
-    { id: '38', name: 'Refrigerante', price: 'R$ 8,00', desc: 'Opções variadas de refrigerantes em lata de 350ml, servidos geladíssimos para sua maior refrescância.', categoryId: 'bebidas', subcategoryId: 'nao-alcoolicas', image: '/imgs/bebidas-e-drinks/drink-lata.jpg' },
-    { id: '39', name: 'Água com Gás', price: 'R$ 6,00', desc: 'Água mineral captada diretamente da fonte com gás natural, servida com uma rodela de limão e pedras de gelo.', categoryId: 'bebidas', subcategoryId: 'nao-alcoolicas', image: '/imgs/bebidas-e-drinks/drinks-agua-gas.jpg' },
+    { id: 301, name: 'Suco Natural', price: 'R$ 12,00', desc: 'Suco de frutas da estação.', categoryId: 'bebidas', subcategoryId: 'nao-alcoolicas', image: '/imgs/bebidas-e-drinks/drink-suco-natural.jpg' },
+    { id: 302, name: 'Refrigerante', price: 'R$ 8,00', desc: 'Refrigerante lata 350 ml.', categoryId: 'bebidas', subcategoryId: 'nao-alcoolicas', image: '/imgs/bebidas-e-drinks/drink-lata.jpg' },
+    { id: 303, name: 'Água com Gás', price: 'R$ 6,00', desc: 'Água mineral com gás.', categoryId: 'bebidas', subcategoryId: 'nao-alcoolicas', image: '/imgs/bebidas-e-drinks/drinks-agua-gas.jpg' },
     // BEBIDAS & DRINKS - Drinks Classicos
-    { id: '40', name: 'Caipirinha', price: 'R$ 22,00', desc: 'A estrela brasileira: limão taiti macerado com açúcar orgânico e cachaça artesanal envelhecida em tonéis de madeira.', categoryId: 'bebidas', subcategoryId: 'drinks-classicos', image: '/imgs/bebidas-e-drinks/drink-caipirinha.jpg' },
-    { id: '41', name: 'Gin Tônica', price: 'R$ 28,00', desc: 'Gin premium combinado com tônica botânica selecionada, infusão de especiarias e uma rodela de limão siciliano.', categoryId: 'bebidas', subcategoryId: 'drinks-classicos', image: '/imgs/bebidas-e-drinks/drinks-gin-tonica.jpg' },
-    { id: '42', name: 'Moscow Mule', price: 'R$ 32,00', desc: 'Cocktail refrescante à base de vodka premium, suco de limão e finalizado com nossa famosa espuma artesanal de gengibre.', categoryId: 'bebidas', subcategoryId: 'drinks-classicos', image: '/imgs/bebidas-e-drinks/drinks-moscow-mule.jpg' },
+    { id: 304, name: 'Caipirinha', price: 'R$ 22,00', desc: 'Limão, açúcar e cachaça artesanal.', categoryId: 'bebidas', subcategoryId: 'drinks-classicos', image: '/imgs/bebidas-e-drinks/drink-caipirinha.jpg' },
+    { id: 305, name: 'Gin Tônica', price: 'R$ 28,00', desc: 'Gin, água tônica e especiarias.', categoryId: 'bebidas', subcategoryId: 'drinks-classicos', image: '/imgs/bebidas-e-drinks/drinks-gin-tonica.jpg' },
+    { id: 306, name: 'Moscow Mule', price: 'R$ 32,00', desc: 'Vodka, gengibre e espuma cítrica.', categoryId: 'bebidas', subcategoryId: 'drinks-classicos', image: '/imgs/bebidas-e-drinks/drinks-moscow-mule.jpg' },
     // BEBIDAS & DRINKS - Drinks Autorais
-    { id: '43', name: 'Drink da Casa', price: 'R$ 34,00', desc: 'Criação autoral do nosso mixologista: vodka, purê de frutas vermelhas frescas e folhas de manjericão maceradas.', categoryId: 'bebidas', subcategoryId: 'drinks-autorais', image: '/imgs/bebidas-e-drinks/drinks-da-casa.jpg' },
-    { id: '44', name: 'Cítrico Tropical', price: 'R$ 30,00', desc: 'Uma viagem aos trópicos: rum envelhecido, polpa de maracujá fresco e um toque vibrante de limão siciliano.', categoryId: 'bebidas', subcategoryId: 'drinks-autorais', image: '/imgs/bebidas-e-drinks/drinks-citrico.jpg' },
-    { id: '45', name: 'Negroni Brasileiro', price: 'R$ 36,00', desc: 'Nossa versão do clássico: cachaça de alambique selecionada, vermute tinto italiano e bitter de ervas selecionadas.', categoryId: 'bebidas', subcategoryId: 'drinks-autorais', image: '/imgs/bebidas-e-drinks/drinks-negroni.jpg' }
+    { id: 307, name: 'Drink da Casa', price: 'R$ 34,00', desc: 'Vodka, frutas vermelhas e manjericão.', categoryId: 'bebidas', subcategoryId: 'drinks-autorais', image: '/imgs/bebidas-e-drinks/drinks-da-casa.jpg' },
+    { id: 308, name: 'Cítrico Tropical', price: 'R$ 30,00', desc: 'Rum, maracujá e limão siciliano.', categoryId: 'bebidas', subcategoryId: 'drinks-autorais', image: '/imgs/bebidas-e-drinks/drinks-citrico.jpg' },
+    { id: 309, name: 'Negroni Brasileiro', price: 'R$ 36,00', desc: 'Cachaça envelhecida, vermute e bitter.', categoryId: 'bebidas', subcategoryId: 'drinks-autorais', image: '/imgs/bebidas-e-drinks/drinks-negroni.jpg' }
 ];
 
 export const StudioProvider = ({ children }) => {
@@ -136,7 +136,6 @@ export const StudioProvider = ({ children }) => {
         const saved = localStorage.getItem('menux_studio_categories');
         const parsed = saved ? JSON.parse(saved) : null;
         if (parsed && parsed.length > 0) {
-            // Force Title Case on legacy uppercase categories
             return parsed.map(cat => ({
                 ...cat,
                 name: cat.name === cat.name.toUpperCase()
@@ -148,9 +147,30 @@ export const StudioProvider = ({ children }) => {
     });
 
     const [products, setProducts] = useState(() => {
+        // Force reset if migration flag missing
+        const resetFlag = localStorage.getItem('menux_v3_reset');
+
+        if (!resetFlag) {
+            console.log("Resetting to V3 Menu Standard...");
+            localStorage.setItem('menux_v3_reset', 'true');
+            // Clear old data to be safe
+            localStorage.removeItem('menux_studio_products');
+            return DEFAULT_PRODUCTS;
+        }
+
         const saved = localStorage.getItem('menux_studio_products');
         const parsed = saved ? JSON.parse(saved) : null;
-        return (parsed && parsed.length > 0) ? parsed : DEFAULT_PRODUCTS;
+
+        // Auto-fix: If saved data has old string ID '1' (Legacy), force reset to new defaults
+        if (parsed && parsed.length > 0) {
+            const hasLegacyIds = parsed.some(p => p.id === '1' || p.id === 1);
+            if (hasLegacyIds) {
+                console.log("Detectados IDs antigos no cache local. Resetando para IDs sincronizados (CSV)...");
+                return DEFAULT_PRODUCTS;
+            }
+            return parsed;
+        }
+        return DEFAULT_PRODUCTS;
     });
 
     // Salvar no localStorage sempre que mudar
@@ -185,32 +205,8 @@ export const StudioProvider = ({ children }) => {
         }
     }, [products]);
 
-    // Lógica para corrigir imagens em dados antigos persistidos (Migration)
-    useEffect(() => {
-        // Verifica se existem produtos com imagem vazia, caminho antigo de entrada, ou caminho antigo de bebidas com espaço
-        const needsFix = products.some(p =>
-            p.image === '' ||
-            p.image.includes('/imgs-entrada/') ||
-            p.image.includes('bebidas e drinks')
-        );
-
-        if (needsFix) {
-            console.log("Migrando imagens dos produtos para o novo padrão (Entradas e Bebidas)...");
-            const updatedProducts = products.map(p => {
-                const defaultProd = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
-                // Se encontrar o produto padrão e o atual estiver com problemas, atualiza
-                if (defaultProd && (
-                    p.image === '' ||
-                    p.image.includes('/imgs-entrada/') ||
-                    p.image.includes('bebidas e drinks')
-                )) {
-                    return { ...p, image: defaultProd.image };
-                }
-                return p;
-            });
-            setProducts(updatedProducts);
-        }
-    }, [products]);
+    // Migration logic removed to prevent infinite loops and ID conflicts.
+    // The data reset logic in useState initialization handles consistency now.
 
     const resetToDefault = () => {
         setBranding(DEFAULT_BRANDING);

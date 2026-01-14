@@ -397,7 +397,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                         )}
                     </div>
                     {activeOrderCode && (
-                        <button className="btn-profile-short" style={{ background: '#E8F5E9', color: '#2E7D32', border: '1px solid #C8E6C9', marginRight: '6px' }} onClick={() => setShowOrderCode(true)}>
+                        <button className="btn-profile-short" style={{ background: '#E8F5E9', color: '#2E7D32', border: '1px solid #C8E6C9', marginRight: 0 }} onClick={() => setShowOrderCode(true)}>
                             Pedido {activeOrderCode}
                         </button>
                     )}
@@ -587,6 +587,9 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                     <MaestroModal
                         onClose={() => setIsMaestroOpen(false)}
                         initialView={maestroInitialView}
+                        products={currentCategories.flatMap(cat => cat.subcategories.flatMap(sub => sub.items))}
+                        staticMenuData={MENU_DATA}
+                        onAddToCart={handleAddToCart}
                     />
                 )}
             </AnimatePresence>

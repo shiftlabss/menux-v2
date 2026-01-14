@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 const CloseIcon = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -84,16 +84,50 @@ const mockResults = [
     }
 ];
 
-export default function MaestroModal({ onClose, initialView = 'welcome' }) {
-    const [view, setView] = useState(initialView); // welcome, wizard, chat
+const ProductCard = ({ product, onAdd }) => (
+    <div className="chat-product-card">
+        <div className="chat-card-image" style={{ backgroundImage: product.image ? `url(${product.image})` : 'none' }}></div>
+        <div className="chat-card-content">
+            <h4 className="chat-card-title">{product.name}</h4>
+            <span className="chat-card-price">{product.price}</span>
+            <button className="chat-card-add-btn" onClick={() => onAdd(product)}>Adicionar</button>
+        </div>
+    </div>
+);
+
+export default function MaestroModal({ onClose, initialView = 'welcome', products = [], staticMenuData = [], onAddToCart }) {
+    // Carrega o estado inicial do localStorage ou usa o padrão
+    // Sempre inicia no Welcome para oferecer opções, mas carrega o estado salvo
+    const [view, setView] = useState(initialView);
     const [step, setStep] = useState(1);
     const [peopleCount, setPeopleCount] = useState(1);
     const [orderStyle, setOrderStyle] = useState(null);
     const [dietaryRestriction, setDietaryRestriction] = useState(null);
     const [inputValue, setInputValue] = useState('');
-    const [messages, setMessages] = useState([]);
+
+    const [messages, setMessages] = useState(() => {
+        const saved = localStorage.getItem('maestro_messages');
+        return saved ? JSON.parse(saved) : [];
+    });
+
+    // Efeito para salvar o estado sempre que mudar
+    useEffect(() => {
+        localStorage.setItem('maestro_current_view', view);
+        localStorage.setItem('maestro_messages', JSON.stringify(messages));
+    }, [view, messages]);
 
     const [isTyping, setIsTyping] = useState(false);
+    const messagesEndRef = useRef(null);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    useEffect(() => {
+        if (view === 'chat') {
+            scrollToBottom();
+        }
+    }, [messages, isTyping, view]);
 
     const handleStartWizard = () => {
         setView('wizard');
@@ -122,6 +156,8 @@ export default function MaestroModal({ onClose, initialView = 'welcome' }) {
     const handleRefineSearch = () => {
         setStep(2); // Go back to "Style" question
     };
+
+
 
     const handleSendMessage = async () => {
         if (!inputValue.trim() || isTyping) return;
@@ -158,25 +194,54 @@ export default function MaestroModal({ onClose, initialView = 'welcome' }) {
 
             // Extract response with more flexibility
             let aiResponse = "";
+            let recommendedIds = [];
 
-            // Case 1: Array with one object containing an output object (User's specific case)
+            // Helper to extract IDs
+            const extractIds = (source) => {
+                if (!source) return [];
+                if (Array.isArray(source.ids_recomendados)) return source.ids_recomendados;
+                if (Array.isArray(source.ids)) return source.ids;
+                if (Array.isArray(source.product_ids)) return source.product_ids;
+                if (Array.isArray(source.sugestoes_ids)) return source.sugestoes_ids;
+                // If ids are strings "101, 202"
+                if (typeof source.ids === 'string') return source.ids.split(',').map(s => s.trim());
+                return [];
+            };
+
+            // Case 1: Array with one object (User provided format)
             if (Array.isArray(data) && data.length > 0) {
-                aiResponse = data[0]?.output?.resposta_chat || data[0]?.resposta_chat;
+                const item = data[0];
+                // Check if output exists and has the expected fields
+                if (item?.output) {
+                    aiResponse = item.output.resposta_chat;
+                    recommendedIds = extractIds(item.output);
+                } else {
+                    // Fallback if structure is flat inside array
+                    aiResponse = item?.resposta_chat;
+                    recommendedIds = extractIds(item);
+                }
             }
             // Case 2: Object containing an output object
-            else if (data?.output?.resposta_chat) {
+            else if (data?.output) {
                 aiResponse = data.output.resposta_chat;
+                recommendedIds = extractIds(data.output);
             }
             // Case 3: Object containing the field directly
-            else if (data?.resposta_chat) {
-                aiResponse = data.resposta_chat;
+            else {
+                aiResponse = data?.resposta_chat;
+                recommendedIds = extractIds(data);
             }
 
             if (!aiResponse) {
                 aiResponse = "Desculpe, tive um problema para processar sua mensagem. Verifique a estrutura da resposta do n8n.";
             }
 
-            const aiMsg = { id: Date.now() + 1, text: aiResponse, sender: 'ai' };
+            const aiMsg = {
+                id: Date.now() + 1,
+                text: aiResponse,
+                sender: 'ai',
+                suggestions: recommendedIds
+            };
             setMessages(prev => [...prev, aiMsg]);
         } catch (error) {
             console.error('Error calling webhook:', error);
@@ -198,19 +263,42 @@ export default function MaestroModal({ onClose, initialView = 'welcome' }) {
                 <button className="maestro-welcome-btn" onClick={handleStartWizard}>Descubra o prato ideal para hoje!</button>
             </div>
             <div className="maestro-footer-input">
-                <div className="maestro-input-wrapper">
-                    <input
-                        type="text"
-                        className="maestro-input-field"
-                        placeholder="Pergunte o melhor..."
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                    />
-                </div>
-                <button className="maestro-send-btn" onClick={handleSendMessage}>
-                    <SendIcon />
-                </button>
+                {messages.length > 0 ? (
+                    <button
+                        className="maestro-welcome-btn secondary"
+                        onClick={() => setView('chat')}
+                        style={{
+                            width: '100%',
+                            margin: 0,
+                            background: 'transparent',
+                            color: 'black',
+                            border: '1px solid black',
+                            borderRadius: '16px',
+                            height: '59px',
+                            fontSize: '16px',
+                            fontWeight: 500,
+                            fontFamily: 'Bricolage Grotesque, sans-serif'
+                        }}
+                    >
+                        Continuar conversa anterior
+                    </button>
+                ) : (
+                    <>
+                        <div className="maestro-input-wrapper">
+                            <input
+                                type="text"
+                                className="maestro-input-field"
+                                placeholder="Pergunte o melhor..."
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                            />
+                        </div>
+                        <button className="maestro-send-btn" onClick={handleSendMessage}>
+                            <SendIcon />
+                        </button>
+                    </>
+                )}
             </div>
         </>
     );
@@ -223,9 +311,37 @@ export default function MaestroModal({ onClose, initialView = 'welcome' }) {
                 icon={<img src="/icon-menux.svg" alt="Menux" style={{ width: '20px' }} />}
             />
             <div className="chat-messages-area">
-                {messages.map(msg => (
-                    <div key={msg.id} className={`chat-bubble-wrapper ${msg.sender}`}>
-                        <div className={`chat-bubble ${msg.sender}`}>{msg.text}</div>
+                {messages.map((msg, index) => (
+                    <div key={msg.id || index} className={`chat-bubble-wrapper ${msg.sender}`}>
+                        <div className={`chat-bubble ${msg.sender}`}>
+                            {msg.text}
+                        </div>
+                        {msg.sender === 'ai' && msg.suggestions && msg.suggestions.length > 0 && (
+                            <div className="chat-suggestions-grid">
+                                {msg.suggestions.map((id, idx) => {
+                                    // 1. Try Direct Lookup (Fastest)
+                                    let product = products?.find(p => p.id == id);
+
+                                    // 2. Fallback: ID Translation via Name
+                                    if (!product && staticMenuData) {
+                                        // Find the "concept" in static data to get the name
+                                        const staticProduct = staticMenuData
+                                            .flatMap(cat => cat.subcategories.flatMap(sub => sub.items))
+                                            .find(p => p.id == id);
+
+                                        if (staticProduct) {
+                                            // Find the "real" product in current data by Name
+                                            product = products?.find(p => p.name === staticProduct.name);
+                                        }
+                                    }
+
+                                    if (!product) {
+                                        return null;
+                                    }
+                                    return <ProductCard key={`${id}-${idx}`} product={product} onAdd={onAddToCart} />;
+                                })}
+                            </div>
+                        )}
                     </div>
                 ))}
                 {isTyping && (
@@ -235,6 +351,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome' }) {
                         </div>
                     </div>
                 )}
+                <div ref={messagesEndRef} />
             </div>
             <div className="maestro-footer-input">
                 <div className="maestro-input-wrapper">
@@ -390,7 +507,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome' }) {
     return (
         <motion.div className="maestro-modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
             <motion.div
-                className="maestro-modal-container"
+                className={`maestro-modal-container ${view === 'chat' ? 'chat-mode' : ''}`}
                 initial={{ y: "100%" }}
                 animate={{ y: "0%" }}
                 exit={{ y: "100%" }}

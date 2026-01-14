@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-export default function OrderCodeModal({ onReset }) {
+export default function OrderCodeModal({ code, onReset }) {
     return (
         <motion.div
             className="order-code-overlay"
@@ -11,7 +11,7 @@ export default function OrderCodeModal({ onReset }) {
         >
             <div className="order-code-container">
                 <img src="/logo-menux.svg" alt="Menux" className="order-code-logo" />
-                <div className="order-code-display">#209</div>
+                <div className="order-code-display">{code}</div>
                 <p className="order-code-desc">Este é o número do seu pedido. Acompanhe pelo painel.</p>
             </div>
 
