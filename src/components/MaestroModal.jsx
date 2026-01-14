@@ -391,7 +391,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
             <div className="wizard-main-content">
                 {step === 1 && (
                     <>
-                        <h2 className="wizard-question" dangerouslySetInnerHTML={{ __html: tData('maestro', 'wizard.people') || t('maestro', 'wizard').people }}></h2>
+                        <h2 className="wizard-question" dangerouslySetInnerHTML={{ __html: t('maestro', 'wizard').people }}></h2>
                         <div className="wizard-counter">
                             <button className="wizard-counter-btn" onClick={() => setPeopleCount(Math.max(1, peopleCount - 1))}>−</button>
                             <span className="wizard-counter-value">{peopleCount}</span>
@@ -402,7 +402,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
 
                 {step === 2 && (
                     <>
-                        <h2 className="wizard-question" dangerouslySetInnerHTML={{ __html: tData('maestro', 'wizard.style') || t('maestro', 'wizard').style }}></h2>
+                        <h2 className="wizard-question" dangerouslySetInnerHTML={{ __html: t('maestro', 'wizard').style }}></h2>
                         <div className="wizard-options-grid">
                             {['Leve', 'Para compartilhar', 'Muita fome', 'Rápido'].map(opt => (
                                 <button
@@ -410,7 +410,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                                     className={`wizard-option-card ${orderStyle === opt ? 'active' : ''}`}
                                     onClick={() => setOrderStyle(opt)}
                                 >
-                                    {tData('maestro', `options.${opt}`) || opt}
+                                    {t('maestro', 'options')[opt] || opt}
                                 </button>
                             ))}
                         </div>
@@ -419,7 +419,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
 
                 {step === 3 && (
                     <>
-                        <h2 className="wizard-question" dangerouslySetInnerHTML={{ __html: tData('maestro', 'wizard.referRestriction') || t('maestro', 'wizard').referRestriction }}></h2>
+                        <h2 className="wizard-question" dangerouslySetInnerHTML={{ __html: t('maestro', 'wizard').referRestriction }}></h2>
                         <div className="wizard-options-grid">
                             {['Sem Glúten', 'Vegetariano', 'Sem Lactose', 'Nenhuma'].map(opt => (
                                 <button
@@ -427,7 +427,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                                     className={`wizard-option-card ${dietaryRestriction === opt ? 'active' : ''}`}
                                     onClick={() => setDietaryRestriction(opt)}
                                 >
-                                    {tData('maestro', `options.${opt}`) || opt}
+                                    {t('maestro', 'options')[opt] || opt}
                                 </button>
                             ))}
                         </div>
@@ -439,7 +439,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                         <div className="loading-icon-wrapper">
                             <img src="/icon-menux.svg" alt="Menux" style={{ width: '32px' }} />
                         </div>
-                        <p className="wizard-loading-text">{tData('maestro', 'wizard.loading') || t('maestro', 'wizard').loading}</p>
+                        <p className="wizard-loading-text">{t('maestro', 'wizard').loading}</p>
                     </div>
                 )}
 
@@ -447,8 +447,8 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                     <div className="wizard-results-container">
                         <div className="wizard-results-header">
                             <div>
-                                <h2 className="wizard-results-title" dangerouslySetInnerHTML={{ __html: tData('maestro', 'wizard.resultsTitle') || t('maestro', 'wizard').resultsTitle }}></h2>
-                                <p className="wizard-results-subtitle">{tData('maestro', 'wizard.resultsSubtitle') || t('maestro', 'wizard').resultsSubtitle}</p>
+                                <h2 className="wizard-results-title" dangerouslySetInnerHTML={{ __html: t('maestro', 'wizard').resultsTitle }}></h2>
+                                <p className="wizard-results-subtitle">{t('maestro', 'wizard').resultsSubtitle}</p>
                             </div>
                         </div>
                         <div className="wizard-results-list">
@@ -471,10 +471,10 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
 
                         <div className="wizard-results-footer">
                             <button className="btn-chat-with-maestro secondary" onClick={handleRefineSearch} style={{ marginRight: '8px', background: '#F5F5F5', color: '#666' }}>
-                                {tData('maestro', 'wizard.refine') || t('maestro', 'wizard').refine}
+                                {t('maestro', 'wizard').refine}
                             </button>
                             <button className="btn-chat-with-maestro" onClick={() => setView('chat')}>
-                                {tData('maestro', 'wizard.talkTo') || t('maestro', 'wizard').talkTo} <span className="menux-logo-text"><img src="/logo-menux.svg" alt="Menux" id="logo-menux-order" /></span>
+                                {t('maestro', 'wizard').talkTo} <span className="menux-logo-text"><img src="/logo-menux.svg" alt="Menux" id="logo-menux-order" /></span>
                             </button>
                         </div>
                     </div>
@@ -490,7 +490,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                         disabled={(step === 2 && !orderStyle) || (step === 3 && !dietaryRestriction)}
                         style={{ opacity: ((step === 2 && !orderStyle) || (step === 3 && !dietaryRestriction)) ? 0.5 : 1 }}
                     >
-                        {tData('maestro', 'wizard.continue') || t('maestro', 'wizard').continue}
+                        {t('maestro', 'wizard').continue}
                     </button>
                 </div>
             )}
