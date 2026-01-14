@@ -6,9 +6,10 @@ import Register from './components/Register'
 import Verification from './components/Verification'
 import MenuHub from './components/MenuHub'
 import StudioView from './components/StudioView'
+import { LanguageProvider } from './context/LanguageContext'
 import './index.css'
 
-function App() {
+function AppContent() {
   const [step, setStep] = useState('onboarding')
   const [phone, setPhone] = useState('')
   const [userName, setUserName] = useState('')
@@ -102,6 +103,14 @@ function App() {
         )}
       </AnimatePresence>
     </main>
+  )
+}
+
+function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   )
 }
 

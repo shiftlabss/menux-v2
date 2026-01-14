@@ -7,6 +7,7 @@ import OrderCodeModal from './OrderCodeModal';
 import ProfileModal from './ProfileModal';
 import MaestroModal from './MaestroModal';
 import { useStudio } from '../context/StudioContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const imgLogo = "/logo-menux.svg";
 const imgVerify = "/verify-icon.svg";
@@ -156,6 +157,7 @@ const MENU_DATA = [
 ];
 
 export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogout }) {
+    const { t, tData, language } = useLanguage();
     const scrollAreaRef = useRef(null);
     const tabsRef = useRef(null);
     const pillsRef = useRef(null);
@@ -192,7 +194,18 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
 
     // Memoize the data merging to prevent infinite render loops
     const currentCategories = useMemo(() => {
-        if (dynamicCategories.length === 0) return MENU_DATA;
+        // Translate Static Data first
+        const translatedStaticData = MENU_DATA.map(cat => ({
+            ...cat,
+            name: tData('categories', cat.id) || cat.name,
+            subcategories: cat.subcategories.map(sub => ({
+                ...sub,
+                name: tData('subcategories', sub.name.toLowerCase()) || sub.name,
+                // Note: Item descriptions could be translated here too if keys existed
+            }))
+        }));
+
+        if (dynamicCategories.length === 0) return translatedStaticData;
 
         return dynamicCategories.map(cat => {
             const catProducts = dynamicProducts.filter(p => p.categoryId === cat.id);
@@ -214,7 +227,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
 
             return { ...cat, subcategories };
         });
-    }, [dynamicCategories, dynamicProducts]);
+    }, [dynamicCategories, dynamicProducts, language]);
 
     // Logic for long press on logo
     const pressTimer = useRef(null);
@@ -398,11 +411,11 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                     </div>
                     {activeOrderCode && (
                         <button className="btn-profile-short" style={{ background: '#E8F5E9', color: '#2E7D32', border: '1px solid #C8E6C9', marginRight: 0 }} onClick={() => setShowOrderCode(true)}>
-                            Pedido {activeOrderCode}
+                            {t('menu', 'order')} {activeOrderCode}
                         </button>
                     )}
                     <button className="btn-profile-short" onClick={() => userName ? setIsProfileOpen(true) : onAuth()}>
-                        {userName ? 'Meu perfil' : 'Entrar'}
+                        {userName ? t('menu', 'myProfile') : t('menu', 'login')}
                     </button>
                 </div>
             </header>
@@ -424,7 +437,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                     ></div>
                     <div className="restaurant-name-row">
                         <h2 className="restaurant-name">{branding.restName}</h2>
-                        <img src={imgVerify} alt="Verified" className="verified-icon" />
+                        <img src={imgVerify} alt={t('common', 'verified')} className="verified-icon" />
                     </div>
                     <p className="restaurant-bio">{branding.restBio}</p>
                 </div>
@@ -442,11 +455,11 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                                 }}
                                 onClick={() => handleBannerClick(i)}
                             >
-                                <span className="featured-tag" style={{ color: b.image ? 'rgba(255,255,255,0.9)' : undefined }}>{b.tag}</span>
-                                <h3 className="featured-title" style={{ color: b.image ? 'white' : undefined }}>{b.title}</h3>
+                                <span className="featured-tag" style={{ color: b.image ? 'rgba(255,255,255,0.9)' : undefined }}>{tData('banners', b.tag)}</span>
+                                <h3 className="featured-title" style={{ color: b.image ? 'white' : undefined }}>{tData('banners', b.title)}</h3>
                                 <div className="featured-footer">
                                     <span className="featured-price" style={{ color: b.image ? 'white' : undefined }}>{b.price}</span>
-                                    <button className="btn-order-now">Adicionar ao pedido</button>
+                                    <button className="btn-order-now">{t('menu', 'addToOrder')}</button>
                                 </div>
                             </div>
                         ))}
@@ -475,7 +488,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                                 centerNavButton(pillsRef, e.currentTarget);
                             }}
                         >
-                            Todos
+                            {t('menu', 'all')}
                         </button>
                         {currentCategories.find(c => c.id === activeCategory)?.subcategories.map(sub => (
                             <button
@@ -519,7 +532,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                 ))}
 
                 <footer style={{ padding: '40px 0 60px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                    <span style={{ fontFamily: 'Geist, sans-serif', fontSize: '13px', color: '#A3A3A3' }}>Este menu foi desenvolvido pela</span>
+                    <span style={{ fontFamily: 'Geist, sans-serif', fontSize: '13px', color: '#A3A3A3' }}>{t('menu', 'developedBy')}</span>
                     <img src={imgLogo} alt="Menux" style={{ height: '18px', marginTop: '2px', filter: 'brightness(0)' }} />
                 </footer>
             </div>
@@ -539,8 +552,8 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                             <img src="/icon-menux.svg" alt="Maestro" className="maestro-icon" />
                         </div>
                         <div className="maestro-text-group">
-                            <span className="maestro-title">Oi, eu posso te ajudar!</span>
-                            <span className="maestro-subtitle">Te ajudo a escolher o prato...</span>
+                            <span className="maestro-title">{t('maestro', 'greetings')}</span>
+                            <span className="maestro-subtitle">{t('maestro', 'subtitle')}</span>
                         </div>
                     </div>
 
