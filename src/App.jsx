@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import Onboarding from './components/Onboarding'
 import Login from './components/Login'
@@ -6,16 +6,20 @@ import Register from './components/Register'
 import Verification from './components/Verification'
 import MenuHub from './components/MenuHub'
 import StudioView from './components/StudioView'
+import DesignSystemView from './components/DesignSystemView'
 import './index.css'
 
 function AppContent() {
-  const [step, setStep] = useState('onboarding')
+  const [step, setStep] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('page') === 'design' ? 'design-system' : 'onboarding';
+  })
   const [phone, setPhone] = useState('')
   const [userName, setUserName] = useState('')
   const [isReturningUser, setIsReturningUser] = useState(false)
 
   return (
-    <main className="app-container">
+    <main className="app-container" style={step === 'design-system' ? { maxWidth: '100%', height: 'auto', borderRadius: 0, boxShadow: 'none' } : {}}>
       <AnimatePresence mode="wait">
         {step === 'onboarding' && (
           <Onboarding
@@ -99,6 +103,9 @@ function AppContent() {
               setStep('hub');
             }}
           />
+        )}
+        {step === 'design-system' && (
+          <DesignSystemView />
         )}
       </AnimatePresence>
     </main>
