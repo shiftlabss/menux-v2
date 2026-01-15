@@ -1,0 +1,214 @@
+import { motion } from 'framer-motion';
+import './MyOrdersModal.css';
+
+const ChevronLeft = () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 18L9 12L15 6" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+);
+
+const MOCK_TODAY = [
+    {
+        id: "#5872",
+        time: "Pedido hoje ás 12h34",
+        status: "waiting", // waiting, annotated, completed
+        statusLabel: "Aguardando Garçom",
+        items: [
+            { qty: 1, name: "Filé Mignon ao Poivre" },
+            { qty: 1, name: "Coca-Cola Zero" }
+        ]
+    },
+    {
+        id: "#5871",
+        time: "Pedido hoje ás 12h10",
+        status: "annotated",
+        statusLabel: "Anotado",
+        items: [
+            { qty: 1, name: "Carpaccio de Carne" }
+        ]
+    },
+    {
+        id: "#5870",
+        time: "Pedido hoje ás 11h55",
+        status: "completed",
+        statusLabel: "Concluido",
+        items: [
+            { qty: 2, name: "Água com Gás" }
+        ]
+    }
+];
+
+const MOCK_HISTORY = [
+    {
+        id: "#5420",
+        time: "Pedido ás 19h30",
+        status: "completed",
+        statusLabel: "Concluido",
+        items: [
+            { qty: 1, name: "Pizza Marguerita" },
+            { qty: 2, name: "Heineken Long Neck" }
+        ]
+    },
+    {
+        id: "#5419",
+        time: "Pedido ás 18h45",
+        status: "completed",
+        statusLabel: "Concluido",
+        items: [
+            { qty: 1, name: "Dadinho de Tapioca" }
+        ]
+    }
+];
+
+export default function MyOrdersModal({ onClose, userName }) {
+    // Current date formatted
+    const todayDate = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' });
+
+    // Logic: If user is logged in (userName exists), show history. exact implementation of keeping today's orders separate.
+    const showHistory = !!userName;
+
+    return (
+        <motion.div
+            className="my-orders-modal"
+            initial={{ x: "100%" }}
+            animate={{ x: "0%" }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+        >
+            <div className="my-orders-header">
+                <button className="header-back-btn" onClick={onClose}>
+                    <ChevronLeft />
+                </button>
+                <span className="header-title-text">Meus pedidos</span>
+            </div>
+
+            <div className="my-orders-content">
+                <h3 className="date-section-title">Hoje, {todayDate}</h3>
+
+                {/* Always show Today's orders (mocked + active if exists) */}
+                {/* For demonstration, we mix the activeOrderCode if it exists or just use MOCK_TODAY */}
+                {MOCK_TODAY.map((order, idx) => (
+                    <div key={idx} className="order-card-container">
+                        <div className="order-card-header">
+                            <div className="order-info-group">
+                                {/* If it's the first one, maybe match the active code if we wanted to be perfectly synced, but keeping mock for design fidelity */}
+                                <span className="order-number">{order.id}</span>
+                                <span className="order-time">{order.time}</span>
+                            </div>
+                            <div className={`status-badge ${order.status}`}>
+                                {order.status === 'annotated' || order.status === 'completed' ? (
+                                    <span style={{ marginRight: 4, display: 'flex' }}>
+                                        <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M1 4L3.5 6.5L9 1" stroke={order.status === 'completed' ? 'white' : '#2E7D32'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    </span>
+                                ) : null}
+                                {order.statusLabel}
+                            </div>
+                        </div>
+
+                        <div className="order-divider"></div>
+
+                        <div className="order-summary-list">
+                            {order.items.map((item, i) => (
+                                <div key={i} className="summary-item">
+                                    <div className="qty-circle">{item.qty}</div>
+                                    <span className="item-name-summary">{item.name}</span>
+                                </div>
+                            ))}
+                        </div>
+
+
+                        <div className="order-divider"></div>
+
+                        <button className="btn-reorder">
+                            Pedir novamente
+                        </button>
+                    </div>
+                ))}
+
+                {showHistory && (
+                    <>
+                        {/* Mocking a past date */}
+                        <h3 className="date-section-title" style={{ marginTop: 32 }}>12 de Janeiro</h3>
+                        {MOCK_HISTORY.map((order, idx) => (
+                            <div key={`hist-${idx}`} className="order-card-container">
+                                <div className="order-card-header">
+                                    <div className="order-info-group">
+                                        <span className="order-number">{order.id}</span>
+                                        <span className="order-time">{order.time}</span>
+                                    </div>
+                                    <div className={`status-badge ${order.status}`}>
+                                        <span style={{ marginRight: 4, display: 'flex' }}>
+                                            <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                            </svg>
+                                        </span>
+                                        {order.statusLabel}
+                                    </div>
+                                </div>
+
+                                <div className="order-divider"></div>
+
+                                <div className="order-summary-list">
+                                    {order.items.map((item, i) => (
+                                        <div key={i} className="summary-item">
+                                            <div className="qty-circle">{item.qty}</div>
+                                            <span className="item-name-summary">{item.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+
+
+                                <div className="order-divider"></div>
+
+                                <button className="btn-reorder">
+                                    Pedir novamente
+                                </button>
+                            </div>
+
+                        ))}
+
+                        <h3 className="date-section-title" style={{ marginTop: 32 }}>10 de Janeiro</h3>
+                        {MOCK_HISTORY.map((order, idx) => (
+                            <div key={`hist-10-${idx}`} className="order-card-container">
+                                <div className="order-card-header">
+                                    <div className="order-info-group">
+                                        <span className="order-number">{order.id}</span>
+                                        <span className="order-time">Pedido em 10/01</span>
+                                    </div>
+                                    <div className={`status-badge ${order.status}`}>
+                                        <span style={{ marginRight: 4, display: 'flex' }}>
+                                            <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                            </svg>
+                                        </span>
+                                        {order.statusLabel}
+                                    </div>
+                                </div>
+
+                                <div className="order-divider"></div>
+
+                                <div className="order-summary-list">
+                                    {order.items.map((item, i) => (
+                                        <div key={i} className="summary-item">
+                                            <div className="qty-circle">{item.qty}</div>
+                                            <span className="item-name-summary">{item.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+
+
+                                <div className="order-divider"></div>
+
+                                <button className="btn-reorder">
+                                    Pedir novamente
+                                </button>
+                            </div>
+                        ))}
+                    </>
+                )}
+            </div>
+        </motion.div >
+    );
+}

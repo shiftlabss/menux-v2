@@ -7,6 +7,7 @@ import OrderCodeModal from './OrderCodeModal';
 import ProfileModal from './ProfileModal';
 import MaestroModal from './MaestroModal';
 import { useStudio } from '../context/StudioContext';
+import MyOrdersModal from './MyOrdersModal';
 
 
 const imgLogo = "/logo-menux.svg";
@@ -176,6 +177,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
     const [isMaestroOpen, setIsMaestroOpen] = useState(false);
     const [maestroInitialView, setMaestroInitialView] = useState('welcome');
     const [activeOrderCode, setActiveOrderCode] = useState(null);
+    const [isMyOrdersOpen, setIsMyOrdersOpen] = useState(false);
 
     // Cart Persistence
     useEffect(() => {
@@ -398,8 +400,8 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                         )}
                     </div>
                     {activeOrderCode && (
-                        <button className="btn-profile-short" style={{ background: '#E8F5E9', color: '#2E7D32', border: '1px solid #C8E6C9', marginRight: 0 }} onClick={() => setShowOrderCode(true)}>
-                            Pedido {activeOrderCode}
+                        <button className="btn-my-orders" onClick={() => setIsMyOrdersOpen(true)}>
+                            Pedidos
                         </button>
                     )}
                     <button className="btn-profile-short" onClick={() => userName ? setIsProfileOpen(true) : onAuth()}>
@@ -582,6 +584,13 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                         userName={userName}
                         phone={phone}
                         onLogout={onLogout}
+                    />
+                )}
+                {isMyOrdersOpen && (
+                    <MyOrdersModal
+                        onClose={() => setIsMyOrdersOpen(false)}
+                        userName={userName}
+                        activeOrderCode={activeOrderCode}
                     />
                 )}
                 {isMaestroOpen && (

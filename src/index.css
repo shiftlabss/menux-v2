@@ -421,7 +421,7 @@ body,
 .header-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .menu-section-visible-check {
@@ -3311,4 +3311,21 @@ body,
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
+}
+
+.btn-my-orders {
+  background: #f0f0f0;
+  color: black;
+  border: 1px solid #d9d9d9;
+  height: 29px;
+  padding: 0 10px;
+  border-radius: 100px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
