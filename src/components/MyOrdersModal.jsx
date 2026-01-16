@@ -60,7 +60,7 @@ const MOCK_HISTORY = [
     }
 ];
 
-export default function MyOrdersModal({ onClose, userName }) {
+export default function MyOrdersModal({ onClose, userName, activeOrderCode, activeOrderItems = [], onReorder }) {
     // Current date formatted
     const todayDate = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' });
 
@@ -85,13 +85,52 @@ export default function MyOrdersModal({ onClose, userName }) {
             <div className="my-orders-content">
                 <h3 className="date-section-title">Hoje, {todayDate}</h3>
 
-                {/* Always show Today's orders (mocked + active if exists) */}
-                {/* For demonstration, we mix the activeOrderCode if it exists or just use MOCK_TODAY */}
+                {/* Always show Today's orders */}
+                {/* Active Order Item */}
+                {activeOrderCode && (
+                    <div className="order-card-container">
+                        <div className="order-card-header">
+                            <div className="order-info-group">
+                                <span className="order-number">{activeOrderCode}</span>
+                                <span className="order-time">Pedido agora mesmo</span>
+                            </div>
+                            <div className="status-badge waiting">
+                                Aguardando Garçom
+                            </div>
+                        </div>
+
+                        <div className="order-divider"></div>
+
+                        <div className="order-summary-list">
+                            {activeOrderItems.length > 0 ? activeOrderItems.map((item, i) => (
+                                <div key={i} className="summary-item">
+                                    <div className="qty-circle">{item.qty || 1}</div>
+                                    <span className="item-name-summary">{item.name}</span>
+                                </div>
+                            )) : (
+                                <div className="summary-item">
+                                    <div className="qty-circle">1</div>
+                                    <span className="item-name-summary">Itens do Pedido</span>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="order-divider"></div>
+
+                        <button
+                            className="btn-reorder"
+                            onClick={() => onReorder && onReorder(activeOrderItems)}
+                        >
+                            Pedir novamente
+                        </button>
+                    </div>
+                )}
+
+                {/* MOCK_TODAY items */}
                 {MOCK_TODAY.map((order, idx) => (
                     <div key={idx} className="order-card-container">
                         <div className="order-card-header">
                             <div className="order-info-group">
-                                {/* If it's the first one, maybe match the active code if we wanted to be perfectly synced, but keeping mock for design fidelity */}
                                 <span className="order-number">{order.id}</span>
                                 <span className="order-time">{order.time}</span>
                             </div>
@@ -118,10 +157,12 @@ export default function MyOrdersModal({ onClose, userName }) {
                             ))}
                         </div>
 
-
                         <div className="order-divider"></div>
 
-                        <button className="btn-reorder">
+                        <button
+                            className="btn-reorder"
+                            onClick={() => onReorder && onReorder(order.items)}
+                        >
                             Pedir novamente
                         </button>
                     </div>
@@ -159,52 +200,16 @@ export default function MyOrdersModal({ onClose, userName }) {
                                     ))}
                                 </div>
 
-
                                 <div className="order-divider"></div>
 
-                                <button className="btn-reorder">
+                                <button
+                                    className="btn-reorder"
+                                    onClick={() => onReorder && onReorder(order.items)}
+                                >
                                     Pedir novamente
                                 </button>
                             </div>
 
-                        ))}
-
-                        <h3 className="date-section-title" style={{ marginTop: 32 }}>10 de Janeiro</h3>
-                        {MOCK_HISTORY.map((order, idx) => (
-                            <div key={`hist-10-${idx}`} className="order-card-container">
-                                <div className="order-card-header">
-                                    <div className="order-info-group">
-                                        <span className="order-number">{order.id}</span>
-                                        <span className="order-time">Pedido em 10/01</span>
-                                    </div>
-                                    <div className={`status-badge ${order.status}`}>
-                                        <span style={{ marginRight: 4, display: 'flex' }}>
-                                            <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                        </span>
-                                        {order.statusLabel}
-                                    </div>
-                                </div>
-
-                                <div className="order-divider"></div>
-
-                                <div className="order-summary-list">
-                                    {order.items.map((item, i) => (
-                                        <div key={i} className="summary-item">
-                                            <div className="qty-circle">{item.qty}</div>
-                                            <span className="item-name-summary">{item.name}</span>
-                                        </div>
-                                    ))}
-                                </div>
-
-
-                                <div className="order-divider"></div>
-
-                                <button className="btn-reorder">
-                                    Pedir novamente
-                                </button>
-                            </div>
                         ))}
                     </>
                 )}

@@ -20,7 +20,7 @@ export default function ProcessingModal() {
     const [currentStep, setCurrentStep] = useState(0);
 
     useEffect(() => {
-        // Sync with the 5000ms timeout in MenuHub
+        // Sync with the 6000ms timeout in MenuHub
         const t1 = setTimeout(() => setCurrentStep(1), 2000);
         const t2 = setTimeout(() => setCurrentStep(2), 4000);
 
@@ -61,8 +61,8 @@ export default function ProcessingModal() {
                     <motion.div
                         className="processing-progress-fill"
                         initial={{ width: "0%" }}
-                        animate={{ width: currentStep === 0 ? "33%" : currentStep === 1 ? "66%" : "100%" }}
-                        transition={{ duration: 1.5, ease: "easeInOut" }}
+                        animate={{ width: "100%" }}
+                        transition={{ duration: 6, ease: "linear" }}
                     />
                 </div>
             </div>

@@ -178,6 +178,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
     const [isMaestroOpen, setIsMaestroOpen] = useState(false);
     const [maestroInitialView, setMaestroInitialView] = useState('welcome');
     const [activeOrderCode, setActiveOrderCode] = useState(null);
+    const [activeOrderItems, setActiveOrderItems] = useState([]);
     const [isMyOrdersOpen, setIsMyOrdersOpen] = useState(false);
     const { showToast } = useToast();
 
@@ -188,11 +189,22 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
 
         const savedCode = localStorage.getItem('menux_active_order');
         if (savedCode) setActiveOrderCode(savedCode);
+
+        const savedItems = localStorage.getItem('menux_active_items');
+        if (savedItems) setActiveOrderItems(JSON.parse(savedItems));
     }, []);
 
     useEffect(() => {
         localStorage.setItem('menux_cart', JSON.stringify(cart));
     }, [cart]);
+
+    useEffect(() => {
+        localStorage.setItem('menux_active_items', JSON.stringify(activeOrderItems));
+    }, [activeOrderItems]);
+
+    useEffect(() => {
+        if (activeOrderCode) localStorage.setItem('menux_active_order', activeOrderCode);
+    }, [activeOrderCode]);
     const { branding, categories: dynamicCategories, products: dynamicProducts } = useStudio();
 
     // Memoize the data merging to prevent infinite render loops
@@ -277,16 +289,28 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
     };
 
     const handleFinishOrder = () => {
-        setIsOrderModalOpen(false);
+        const orderId = "#" + Math.floor(1000 + Math.random() * 9000);
+        const currentItems = [...cart];
+        setActiveOrderCode(orderId);
+        setActiveOrderItems(currentItems);
         setIsProcessing(true);
         setTimeout(() => {
             setIsProcessing(false);
-            const newCode = "#" + Math.floor(Math.random() * 900 + 100);
-            setActiveOrderCode(newCode);
-            localStorage.setItem('menux_active_order', newCode);
             setShowOrderCode(true);
-            setCart([]); // Clear cart after order
-        }, 5000);
+            setIsOrderModalOpen(false);
+        }, 6000); // 3 steps x 2 seconds each
+    };
+
+    const handleViewOrders = () => {
+        setShowOrderCode(false);
+        setIsMyOrdersOpen(true);
+        setCart([]); // Clear cart now that we are viewing the order in history
+    };
+
+    const handleReorder = (items) => {
+        setCart(prev => [...prev, ...items]);
+        setIsMyOrdersOpen(false);
+        showToast("Itens adicionados ao pedido!");
     };
 
     // Carousel Automático (Rolagem)
@@ -403,7 +427,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                         )}
                     </div>
                     {activeOrderCode && (
-                        <button className="btn-my-orders" onClick={() => setIsMyOrdersOpen(true)}>
+                        <button className="btn-my-orders-active" onClick={() => setIsMyOrdersOpen(true)}>
                             Pedidos
                         </button>
                     )}
@@ -546,7 +570,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                         </div>
                         <div className="maestro-text-group">
                             <span className="maestro-title">Olá, eu sou o Menux!</span>
-                            <span className="maestro-subtitle">Clica aqui que eu te ajudo a escolher.</span>
+                            <span className="maestro-subtitle">Clica aqui que eu te ajudo...</span>
                         </div>
                     </div>
 
@@ -578,7 +602,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                     />
                 )}
                 {isProcessing && <ProcessingModal />}
-                {showOrderCode && <OrderCodeModal code={activeOrderCode} onReset={() => setShowOrderCode(false)} />}
+                {showOrderCode && <OrderCodeModal code={activeOrderCode} onViewOrders={handleViewOrders} />}
                 {isProfileOpen && (
                     <ProfileModal
                         onClose={() => setIsProfileOpen(false)}
@@ -594,6 +618,8 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                         onClose={() => setIsMyOrdersOpen(false)}
                         userName={userName}
                         activeOrderCode={activeOrderCode}
+                        activeOrderItems={activeOrderItems}
+                        onReorder={handleReorder}
                     />
                 )}
                 {isMaestroOpen && (
