@@ -10,5 +10,12 @@ export const orderService = {
     getOrder: async (id: string): Promise<Order> => {
         const response = await api.get<Order>(`/orders/${id}`);
         return response.data;
+    },
+
+    getCustomerOrders: async (customerId: string, restaurantId?: string): Promise<Order[]> => {
+        const response = await api.get<Order[]>(`/orders/customer/${customerId}`, {
+            params: { restaurantId }
+        });
+        return response.data;
     }
 };

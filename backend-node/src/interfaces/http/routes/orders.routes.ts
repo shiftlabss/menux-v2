@@ -7,6 +7,8 @@ import { ListOrdersByTable } from '@application/use-cases/order/ListOrdersByTabl
 import { ListOrdersByWaiter } from '@application/use-cases/order/ListOrdersByWaiter';
 import { CreateOrder } from '@application/use-cases/order/CreateOrder';
 import { UpdateOrder } from '@application/use-cases/order/UpdateOrder';
+import { ListCustomerOrders } from '@application/use-cases/order/ListCustomerOrders';
+import { RedisCacheAdapter } from '@infrastructure/cache/redis/RedisCacheAdapter';
 import { TypeOrmOrderRepository } from '@infrastructure/repositories/TypeOrmOrderRepository';
 import { TypeOrmWaiterRepository } from '@infrastructure/repositories/TypeOrmWaiterRepository';
 import { TypeOrmMenuRepository } from '@infrastructure/repositories/TypeOrmMenuRepository';
@@ -18,14 +20,16 @@ const ordersRouter = Router();
 const orderRepository = new TypeOrmOrderRepository();
 const waiterRepository = new TypeOrmWaiterRepository();
 const menuRepository = new TypeOrmMenuRepository();
+const cacheAdapter = new RedisCacheAdapter();
 
 const confirmOrderWithPin = new ConfirmOrderWithPin(orderRepository, waiterRepository);
 const listOrders = new ListOrdersByRestaurant(orderRepository);
 const updateOrderStatus = new UpdateOrderStatus(orderRepository);
 const listOrdersByTable = new ListOrdersByTable(orderRepository);
 const listOrdersByWaiter = new ListOrdersByWaiter(orderRepository);
-const createOrder = new CreateOrder(orderRepository, menuRepository);
+const createOrder = new CreateOrder(orderRepository, menuRepository, cacheAdapter);
 const updateOrder = new UpdateOrder(orderRepository);
+const listCustomerOrders = new ListCustomerOrders(orderRepository);
 
 const ordersController = new OrdersController(
     confirmOrderWithPin,
@@ -34,7 +38,8 @@ const ordersController = new OrdersController(
     listOrdersByTable,
     listOrdersByWaiter,
     createOrder,
-    updateOrder
+    updateOrder,
+    listCustomerOrders
 );
 
 // pamploni - desativar o middleware de autenticação
@@ -108,6 +113,10 @@ ordersRouter.get('/', (req, res, next) => ordersController.index(req, res, next)
  *               restaurantId:
  *                 type: string
  *                 format: uuid
+ *               transactionId:
+ *                 type: string
+ *                 format: uuid
+ *                 description: Unique client-generated ID for idempotency
  *               tableId:
  *                 type: string
  *                 format: uuid
@@ -263,5 +272,36 @@ ordersRouter.patch('/:id/status', ensureAuthenticated, (req, res, next) => order
  *         description: Order not found
  */
 ordersRouter.post('/:id/confirm', ensureAuthenticated, (req, res, next) => ordersController.confirm(req, res, next));
+
+/**
+ * @swagger
+ * /orders/customer/{customerId}:
+ *   get:
+ *     summary: List all orders for a specific customer in the last 24 hours
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: customerId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *       - in: query
+ *         name: restaurantId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     responses:
+ *       200:
+ *         description: List of cutomer's orders in last 24h
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/OrderResponse'
+ */
+ordersRouter.get('/customer/:customerId', (req, res, next) => ordersController.listByCustomer(req, res, next));
 
 export { ordersRouter };

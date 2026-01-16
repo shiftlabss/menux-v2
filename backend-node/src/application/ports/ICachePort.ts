@@ -18,4 +18,11 @@ export interface ICachePort {
    * @param key The cache key.
    */
   del(key: string): Promise<void>;
+
+  /**
+   * Increments a key atomically.
+   * @param key The cache key to increment.
+   * @returns The new value.
+   */
+  incr(key: string): Promise<number>;
 }

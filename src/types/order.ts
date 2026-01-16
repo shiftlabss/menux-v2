@@ -49,5 +49,6 @@ export interface CreateOrderDTO {
     tableId?: string;
     waiterId?: string;
     customerId?: string;
+    transactionId?: string;
     items: CreateOrderItemDTO[];
 }

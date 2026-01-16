@@ -49,4 +49,13 @@ export class RedisCacheAdapter implements ICachePort {
       logger.error({ error, key }, 'Cache DEL failed');
     }
   }
+
+  async incr(key: string): Promise<number> {
+    try {
+      return await this.client.incr(key);
+    } catch (error) {
+      logger.error({ error, key }, 'Cache INCR failed');
+      throw error;
+    }
+  }
 }

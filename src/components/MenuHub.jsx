@@ -10,6 +10,7 @@ import MaestroModal from './MaestroModal';
 import { useStudio } from '../context/StudioContext';
 import { useToast } from '../context/ToastContext';
 import MyOrdersModal from './MyOrdersModal';
+import { orderService } from '../services/orderService';
 
 const imgLogo = "/logo-menux.svg";
 const imgVerify = "/verify-icon.svg";
@@ -317,19 +318,6 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
         setCart([]);
     };
 
-    const handleFinishOrder = () => {
-        const orderId = "#" + Math.floor(1000 + Math.random() * 9000);
-        const currentItems = [...cart];
-        setActiveOrderCode(orderId);
-        setActiveOrderItems(currentItems);
-        setIsProcessing(true);
-        setTimeout(() => {
-            setIsProcessing(false);
-            setShowOrderCode(true);
-            setIsOrderModalOpen(false);
-        }, 6000); // 3 steps x 2 seconds each
-    };
-
     const handleViewOrders = () => {
         setShowOrderCode(false);
         setIsMyOrdersOpen(true);
@@ -340,6 +328,50 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
         setCart(prev => [...prev, ...items]);
         setIsMyOrdersOpen(false);
         showToast("Itens adicionados ao pedido!");
+    };
+
+    const handleFinishOrder = async () => {
+        const orderId = "#" + Math.floor(1000 + Math.random() * 9000);
+        const currentItems = [...cart];
+        setActiveOrderCode(orderId);
+        setActiveOrderItems(currentItems);
+
+        // const handleFinishOrder = async () => {
+        setIsOrderModalOpen(false);
+        setIsProcessing(true);
+
+        try {
+            const restaurantId = import.meta.env.VITE_RESTAURANT_ID;
+            const transactionId = crypto.randomUUID();
+
+            // Assume customerId might be stored, otherwise anonymous
+            const customerId = localStorage.getItem('menux_customer_id');
+
+            const payload = {
+                restaurantId,
+                transactionId,
+                customerId: customerId || undefined,
+                items: cart.map(item => ({
+                    menuItemId: item.id,
+                    quantity: item.qty,
+                    observation: item.obs
+                }))
+            };
+
+            const order = await orderService.createOrder(payload);
+
+            setIsProcessing(false);
+
+            setActiveOrderCode(order.code);
+            localStorage.setItem('menux_active_order', order.code);
+            setShowOrderCode(true);
+            setCart([]);
+        } catch (error) {
+            console.error("Order failed:", error);
+            setIsProcessing(false);
+            alert("Erro ao enviar pedido. Tente novamente.");
+        }
+        // >>>>>>> fb8a40e (OrderModal - Exibir Sugestoes - bug fix)
     };
 
     // Carousel Automático (Rolagem)

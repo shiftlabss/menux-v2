@@ -7,6 +7,7 @@ import { ListOrdersByWaiter } from '@application/use-cases/order/ListOrdersByWai
 
 import { CreateOrder } from '@application/use-cases/order/CreateOrder';
 import { UpdateOrder } from '@application/use-cases/order/UpdateOrder';
+import { ListCustomerOrders } from '@application/use-cases/order/ListCustomerOrders';
 
 export class OrdersController {
     constructor(
@@ -16,12 +17,13 @@ export class OrdersController {
         private listOrdersByTable: ListOrdersByTable,
         private listOrdersByWaiter: ListOrdersByWaiter,
         private createOrder: CreateOrder,
-        private updateOrder: UpdateOrder
+        private updateOrder: UpdateOrder,
+        private listCustomerOrders: ListCustomerOrders
     ) { }
 
     async create(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { items, tableId, waiterId, customerName } = req.body;
+            const { items, tableId, waiterId, customerName, transactionId } = req.body;
             // Allow restaurantId to be passed in body (for public/session) OR from auth user
             const restaurantId = req.body.restaurantId || (req as any).user?.restaurantId;
 
@@ -35,7 +37,8 @@ export class OrdersController {
                 items,
                 tableId,
                 waiterId,
-                customerName
+                customerName,
+                transactionId
             });
 
             res.status(201).json(order);
@@ -126,6 +129,23 @@ export class OrdersController {
             });
 
             res.json(order);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async listByCustomer(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { customerId } = req.params;
+            const restaurantId = (req.query.restaurantId || req.body.restaurantId || (req as any).user?.restaurantId) as string;
+
+            if (!restaurantId) {
+                res.status(400).json({ message: 'Restaurant ID is required' });
+                return;
+            }
+
+            const orders = await this.listCustomerOrders.execute({ customerId, restaurantId });
+            res.json(orders);
         } catch (error) {
             next(error);
         }

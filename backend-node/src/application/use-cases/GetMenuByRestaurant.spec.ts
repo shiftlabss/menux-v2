@@ -8,12 +8,18 @@ import { IEventBusPort } from '@application/ports/IEventBusPort';
 const mockMenuRepo: jest.Mocked<IMenuRepository> = {
   findAllCategoriesWithItems: jest.fn(),
   findItemById: jest.fn(),
+  create: jest.fn(),
+  findAll: jest.fn(),
+  findById: jest.fn(),
+  update: jest.fn(),
+  delete: jest.fn(),
 };
 
 const mockCache: jest.Mocked<ICachePort> = {
   get: jest.fn(),
   set: jest.fn(),
   del: jest.fn(),
+  incr: jest.fn(),
 };
 
 const mockEventBus: jest.Mocked<IEventBusPort> = {

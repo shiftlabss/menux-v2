@@ -3,6 +3,7 @@ import { IMenuRepository } from '@domain/repositories/IMenuRepository';
 import { Order, OrderStatus } from '@domain/entities/Order';
 import { OrderItem } from '@domain/entities/OrderItem';
 import { AppError } from '../../../shared/errors';
+import { ICachePort } from '@application/ports/ICachePort';
 
 interface ICreateOrderRequest {
     restaurantId: string;
@@ -15,15 +16,25 @@ interface ICreateOrderRequest {
     waiterId?: string;
     customerName?: string;
     tableNumber?: string;
+    transactionId?: string;
 }
 
 export class CreateOrder {
     constructor(
         private orderRepository: IOrderRepository,
-        private menuRepository: IMenuRepository
+        private menuRepository: IMenuRepository,
+        private cachePort: ICachePort
     ) { }
 
-    async execute({ restaurantId, items, tableId, waiterId, customerName, tableNumber }: ICreateOrderRequest): Promise<Order> {
+    async execute({ restaurantId, items, tableId, waiterId, tableNumber, transactionId }: ICreateOrderRequest): Promise<Order> {
+        // 1. Idempotency Check
+        if (transactionId) {
+            const existingOrder = await this.orderRepository.findByTransactionId(transactionId);
+            if (existingOrder) {
+                return existingOrder;
+            }
+        }
+
         if (!items || items.length === 0) {
             throw new AppError('Order must have at least one item.');
         }
@@ -31,12 +42,22 @@ export class CreateOrder {
         const order = new Order();
         order.restaurantId = restaurantId;
         order.status = OrderStatus.WAITING;
-        order.customerName = String(customerName);
-        order.tableNumber = String(tableNumber);
+        order.tableNumber = tableNumber ? String(tableNumber) : null;
+        order.transactionId = transactionId || null;
 
-        // Generate a simple code for the order (e.g. timestamp based or just random for now)
-        // In a real app we might want a sequential number per restaurant
-        order.code = Math.floor(1000 + Math.random() * 9000).toString();
+        // 2. Atomic Order Code Generation via Redis
+        // Key format: restaurant:{id}:order_counter
+        // This ensures sequential, unique numbers without collisions.
+        const counterKey = `restaurant:${restaurantId}:order_counter`;
+        const nextOrderNumber = await this.cachePort.incr(counterKey);
+
+        // Format to string, e.g. "1001", "1002" or just simple number 
+        // If we want to simulate the 4-digit code (e.g. 0001) or just meaningful number
+        // Let's assume just the number as string for now, or pad it if needed.
+        // User asked for "Atomic counter funcione", usually implies just sequential.
+        // If we want to reset daily, we would need a key with date, e.g. `restaurant:${id}:date:${today}:order_counter`
+        // But for "last 24h" uniqueness or general sequence, a global increment is safest for now.
+        order.code = nextOrderNumber.toString();
 
         if (tableId) {
             order.tableId = tableId;
@@ -68,12 +89,6 @@ export class CreateOrder {
         }
 
         order.total = total;
-
-        // Optional: Customer Name/ID handling if we had it, for now implicit or stored elsewhere?
-        // Customer entity is linked, but request might just have name. 
-        // We'll skip creating a full Customer entity for this simple version unless strictly required.
-        // If customerName is passed and no customerId, we could create an anonymous customer or similar, 
-        // but let's stick to the core request first.
 
         return await this.orderRepository.save(order);
     }
