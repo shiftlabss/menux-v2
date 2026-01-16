@@ -6,6 +6,7 @@ import { UpdateOrderStatus } from '@application/use-cases/order/UpdateOrderStatu
 import { ListOrdersByTable } from '@application/use-cases/order/ListOrdersByTable';
 import { ListOrdersByWaiter } from '@application/use-cases/order/ListOrdersByWaiter';
 import { CreateOrder } from '@application/use-cases/order/CreateOrder';
+<<<<<<< HEAD
 import { ConfirmOrder } from '@application/use-cases/order/ConfirmOrder';
 import { UpdateOrder } from '@application/use-cases/order/UpdateOrder';
 import { ListCustomerOrders } from '@application/use-cases/order/ListCustomerOrders';
@@ -22,6 +23,12 @@ import { TypeOrmMenuRepository } from '@infrastructure/repositories/TypeOrmMenuR
 import { TypeOrmDailyMetricRepository } from '@infrastructure/repositories/TypeOrmDailyMetricRepository';
 import { TypeOrmTableRepository } from '@infrastructure/repositories/TypeOrmTableRepository';
 import { UpdateRestaurantDailyMetrics } from '@application/use-cases/analytics/UpdateRestaurantDailyMetrics';
+=======
+import { UpdateOrder } from '@application/use-cases/order/UpdateOrder';
+import { TypeOrmOrderRepository } from '@infrastructure/repositories/TypeOrmOrderRepository';
+import { TypeOrmWaiterRepository } from '@infrastructure/repositories/TypeOrmWaiterRepository';
+import { TypeOrmMenuRepository } from '@infrastructure/repositories/TypeOrmMenuRepository';
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
 import { ensureAuthenticated } from '../middlewares/ensureAuthenticated';
 import { asyncHandler } from '@shared/utils/asyncHandler';
 
@@ -30,6 +37,7 @@ const ordersRouter = Router();
 // Dependencies
 const orderRepository = new TypeOrmOrderRepository();
 const waiterRepository = new TypeOrmWaiterRepository();
+<<<<<<< HEAD
 const tableRepository = new TypeOrmTableRepository();
 const menuRepository = new TypeOrmMenuRepository();
 const cacheAdapter = new RedisCacheAdapter();
@@ -39,10 +47,16 @@ const updateRestaurantDailyMetrics = new UpdateRestaurantDailyMetrics(dailyMetri
 
 const confirmOrderWithPin = new ConfirmOrderWithPin(orderRepository, waiterRepository, updateRestaurantDailyMetrics);
 const confirmOrder = new ConfirmOrder(orderRepository, tableRepository);
+=======
+const menuRepository = new TypeOrmMenuRepository();
+
+const confirmOrderWithPin = new ConfirmOrderWithPin(orderRepository, waiterRepository);
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
 const listOrders = new ListOrdersByRestaurant(orderRepository);
 const updateOrderStatus = new UpdateOrderStatus(orderRepository, updateRestaurantDailyMetrics);
 const listOrdersByTable = new ListOrdersByTable(orderRepository);
 const listOrdersByWaiter = new ListOrdersByWaiter(orderRepository);
+<<<<<<< HEAD
 const createOrder = new CreateOrder(orderRepository, menuRepository, cacheAdapter, updateRestaurantDailyMetrics);
 const updateOrder = new UpdateOrder(orderRepository, updateRestaurantDailyMetrics);
 const listCustomerOrders = new ListCustomerOrders(orderRepository);
@@ -54,6 +68,10 @@ const listSoldItemsByDateRange = new ListSoldItemsByDateRange(orderRepository);
 const listOrdersByRestaurantCompact = new ListOrdersByRestaurantCompact(orderRepository);
 const getOrderByCode = new GetOrderByCode(orderRepository);
 const cancelOrderItem = new CancelOrderItem(orderRepository, waiterRepository);
+=======
+const createOrder = new CreateOrder(orderRepository, menuRepository);
+const updateOrder = new UpdateOrder(orderRepository);
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
 
 const ordersController = new OrdersController(
     confirmOrderWithPin,
@@ -63,6 +81,7 @@ const ordersController = new OrdersController(
     listOrdersByTable,
     listOrdersByWaiter,
     createOrder,
+<<<<<<< HEAD
     updateOrder,
     listCustomerOrders,
     listTemporaryCustomerOrders,
@@ -71,6 +90,9 @@ const ordersController = new OrdersController(
     listOrdersByRestaurantCompact,
     getOrderByCode,
     cancelOrderItem
+=======
+    updateOrder
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
 );
 
 // pamploni - desativar o middleware de autenticação
@@ -403,6 +425,107 @@ ordersRouter.post('/', asyncHandler((req, res, next) => ordersController.create(
  *               $ref: '#/components/schemas/OrderResponse'
  */
 ordersRouter.put('/:id', asyncHandler((req, res, next) => ordersController.update(req, res, next)));
+
+/**
+ * @swagger
+ * /orders:
+ *   post:
+ *     summary: Create a new order with items
+ *     tags: [Orders]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - restaurantId
+ *               - items
+ *             properties:
+ *               restaurantId:
+ *                 type: string
+ *                 format: uuid
+ *               tableId:
+ *                 type: string
+ *                 format: uuid
+ *                 nullable: true
+ *               waiterId:
+ *                 type: string
+ *                 format: uuid
+ *                 nullable: true
+ *               customerName:
+ *                 type: string
+ *                 nullable: true
+ *               items:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - menuItemId
+ *                     - quantity
+ *                   properties:
+ *                     menuItemId:
+ *                       type: string
+ *                       format: uuid
+ *                     quantity:
+ *                       type: integer
+ *                       minimum: 1
+ *                     observation:
+ *                       type: string
+ *     responses:
+ *       201:
+ *         description: Order created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/OrderResponse'
+ */
+ordersRouter.post('/', (req, res, next) => ordersController.create(req, res, next));
+
+/**
+ * @swagger
+ * /orders/{id}:
+ *   put:
+ *     summary: Update an order (e.g. assign table/waiter/status)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               restaurantId:
+ *                 type: string
+ *                 format: uuid
+ *                 description: Required for validation
+ *               tableId:
+ *                 type: string
+ *                 format: uuid
+ *               waiterId:
+ *                 type: string
+ *                 format: uuid
+ *               status:
+ *                 type: string
+ *                 enum: [WAITING, PREPARING, READY, DELIVERED, FINISHED, CANCELED]
+ *     responses:
+ *       200:
+ *         description: Order updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/OrderResponse'
+ */
+ordersRouter.put('/:id', (req, res, next) => ordersController.update(req, res, next));
 
 /**
  * @swagger

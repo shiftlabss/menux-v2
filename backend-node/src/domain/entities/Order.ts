@@ -41,6 +41,7 @@ export class Order {
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     total: number;
 
+<<<<<<< HEAD
     // @Column({ type: 'varchar', precision: 10, scale: 2 })
     // customerName: string;
 
@@ -56,6 +57,11 @@ export class Order {
     @Column({ name: 'total_decision_time', type: 'int', nullable: true })
     totalDecisionTime: number | null;
 
+=======
+    @Column({ type: 'varchar', precision: 10, scale: 2 })
+    customerName: string;
+
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
     @ManyToOne(() => Customer, (customer) => customer.orders, { nullable: true })
     @JoinColumn({ name: 'customer_id' })
     customer: Customer | null;

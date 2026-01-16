@@ -143,6 +143,7 @@ const options: swaggerJsdoc.Options = {
             }
           },
         },
+<<<<<<< HEAD
         MenuItemResponse: {
           type: 'object',
           properties: {
@@ -160,6 +161,8 @@ const options: swaggerJsdoc.Options = {
             optionsConfig: { type: 'object', nullable: true },
           }
         },
+=======
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
         UpsellRuleResponse: {
           type: 'object',
           properties: {

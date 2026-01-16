@@ -118,6 +118,7 @@ menuItemsRouter.get('/getItem/:id', asyncHandler(menuItemsController.show));
  *               menuId:
  *                 type: string
  *                 format: uuid
+<<<<<<< HEAD
  *               optionsConfig:
  *                 type: object
  *               menuType:
@@ -144,6 +145,8 @@ menuItemsRouter.get('/getItem/:id', asyncHandler(menuItemsController.show));
  *               glassPrice:
  *                 type: number
  *                 description: Price per glass
+=======
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
  *     responses:
  *       201:
  *         description: Item created
@@ -206,6 +209,7 @@ menuItemsRouter.post('/', ensureAuthenticated, asyncHandler(menuItemsController.
  *               menuId:
  *                 type: string
  *                 format: uuid
+<<<<<<< HEAD
  *               optionsConfig:
  *                 type: object
  *                 description: JSON configuration for option groups and items
@@ -226,6 +230,8 @@ menuItemsRouter.post('/', ensureAuthenticated, asyncHandler(menuItemsController.
  *                 type: string
  *               glassPrice:
  *                 type: number
+=======
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
  *     responses:
  *       200:
  *         description: Item updated

@@ -15,6 +15,7 @@ interface IRequest {
     ingredients?: string;
     tags?: string[];
     menuId: string;
+<<<<<<< HEAD
     menuType?: 'PRODUCT' | 'WINE' | 'PIZZA';
     maxChoices?: number;
     optionsConfig?: any;
@@ -27,6 +28,8 @@ interface IRequest {
     region?: string;
     style?: string;
     glassPrice?: number;
+=======
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
 }
 
 export class CreateMenuItem {

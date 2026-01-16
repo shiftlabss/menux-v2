@@ -21,11 +21,15 @@ export class MenuItemsController {
     }
 
     public create = async (req: Request, res: Response): Promise<Response> => {
+<<<<<<< HEAD
         const {
             name, description, price, categoryId, isActive, imageUrl, allergens, code, ingredients, tags, menuId, maxChoices, options_config, menuType,
             // Wine-specific fields
             vintage, country, winery, grape, region, style, glassPrice
         } = req.body;
+=======
+        const { name, description, price, categoryId, isActive, imageUrl, allergens, code, ingredients, tags, menuId } = req.body;
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
 
         let targetMenuId = menuId;
 
@@ -59,6 +63,7 @@ export class MenuItemsController {
             ingredients,
             tags,
             menuId: targetMenuId,
+<<<<<<< HEAD
             maxChoices,
             optionsConfig: options_config,
             menuType,
@@ -70,6 +75,8 @@ export class MenuItemsController {
             region,
             style,
             glassPrice,
+=======
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
         });
 
         if (req.user?.restaurantId) {

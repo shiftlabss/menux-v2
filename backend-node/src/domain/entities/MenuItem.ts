@@ -7,14 +7,18 @@ import {
   DeleteDateColumn,
   ManyToOne,
   JoinColumn,
+<<<<<<< HEAD
   OneToMany,
   AfterLoad,
 
+=======
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
 } from 'typeorm';
 
 import { Type } from 'class-transformer';
 import { Category } from './Category';
 
+<<<<<<< HEAD
 
 import { Menu } from './Menu';
 import { ChoiceItem } from './ChoiceItem';
@@ -36,6 +40,9 @@ interface OptionsConfig {
     }[];
   }[];
 }
+=======
+import { Menu } from './Menu';
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
 
 @Entity('menu_items')
 export class MenuItem {

@@ -11,9 +11,12 @@ import { categoriesRouter } from './routes/categories.routes';
 import { customersRouter } from './routes/customers.routes';
 import { menuItemsRouter } from './routes/menu-items.routes';
 import { menusRouter } from './routes/menus.routes';
+<<<<<<< HEAD
 import { analyticsRouter } from './routes/analytics.routes';
 import { systemParametersRouter } from './routes/system-parameters.routes';
 import { winesRouter } from './routes/wines.routes';
+=======
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
 import { ensureAuthenticated } from './middlewares/ensureAuthenticated';
 
 // Composition Root / Dependency Injection (Manual)
@@ -240,8 +243,11 @@ router.post('/sessions/end', (req, res, next) => sessionController.end(req, res,
 
 import { upsellRulesRouter } from './routes/upsell-rules.routes';
 
+<<<<<<< HEAD
 import { pizzasRouter } from './routes/pizzas.routes';
 
+=======
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
 // Routes - Backoffice
 router.use('/auth', authRouter);
 router.use('/users', usersRouter);
@@ -254,9 +260,12 @@ router.use('/menu-items', menuItemsRouter);
 router.use('/menus', menusRouter);
 router.use('/customers', customersRouter);
 router.use('/upsell-rules', upsellRulesRouter);
+<<<<<<< HEAD
 router.use('/analytics', analyticsRouter);
 router.use('/pizzas', pizzasRouter);
 router.use('/system-parameters', systemParametersRouter);
 router.use('/wines', winesRouter);
+=======
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
 
 export { router };

@@ -8,12 +8,15 @@ import { ListOrdersByWaiter } from '@application/use-cases/order/ListOrdersByWai
 
 import { CreateOrder } from '@application/use-cases/order/CreateOrder';
 import { UpdateOrder } from '@application/use-cases/order/UpdateOrder';
+<<<<<<< HEAD
 import { ListCustomerOrders } from '@application/use-cases/order/ListCustomerOrders';
 import { ListTemporaryCustomerOrders } from '@application/use-cases/order/ListTemporaryCustomerOrders';
 import { ListOrdersByDateRange } from '@application/use-cases/order/ListOrdersByDateRange';
 import { ListSoldItemsByDateRange } from '@application/use-cases/order/ListSoldItemsByDateRange';
 import { ListOrdersByRestaurantCompact } from '@application/use-cases/order/ListOrdersByRestaurantCompact';
 import { GetOrderByCode } from '@application/use-cases/order/GetOrderByCode';
+=======
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
 
 export class OrdersController {
     constructor(
@@ -24,6 +27,7 @@ export class OrdersController {
         private listOrdersByTable: ListOrdersByTable,
         private listOrdersByWaiter: ListOrdersByWaiter,
         private createOrder: CreateOrder,
+<<<<<<< HEAD
         private updateOrder: UpdateOrder,
         private listCustomerOrders: ListCustomerOrders,
         private listTemporaryCustomerOrders: ListTemporaryCustomerOrders,
@@ -32,11 +36,18 @@ export class OrdersController {
         private listOrdersByRestaurantCompact: ListOrdersByRestaurantCompact,
         private getOrderByCode: GetOrderByCode,
         private cancelOrderItem: import('@application/use-cases/order/CancelOrderItem').CancelOrderItem
+=======
+        private updateOrder: UpdateOrder
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
     ) { }
 
     async create(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
+<<<<<<< HEAD
             const { items, tableId, waiterId, customerName, transactionId, customerId, temporaryCustomerId, kpis } = req.body;
+=======
+            const { items, tableId, waiterId, customerName } = req.body;
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
             // Allow restaurantId to be passed in body (for public/session) OR from auth user
             const restaurantId = req.body.restaurantId || (req as any).user?.restaurantId;
 
@@ -50,11 +61,15 @@ export class OrdersController {
                 items,
                 tableId,
                 waiterId,
+<<<<<<< HEAD
                 customerName,
                 transactionId,
                 customerId,
                 temporaryCustomerId,
                 kpis
+=======
+                customerName
+>>>>>>> 90e62cd (backend - adequação da rota e do método de sugestões)
             });
 
             res.status(201).json(order);
