@@ -15,3 +15,13 @@ export const getMenuHighlights = async (restaurantId: string) => {
     });
     return response.data;
 };
+
+export const getUpsellRules = async (triggerProductId: string, upsellType: string = 'cross-sell') => {
+    const response = await api.get('/upsell-rules', {
+        params: {
+            triggerProductId,
+            upsellType
+        }
+    });
+    return response.data;
+};

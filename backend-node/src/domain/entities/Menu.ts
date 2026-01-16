@@ -5,9 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-
+  OneToMany,
 } from 'typeorm';
 import { Restaurant } from './Restaurant';
+import { MenuItem } from './MenuItem';
 
 
 @Entity('menus')
@@ -35,6 +36,9 @@ export class Menu {
   // But based on user requirements "GetMenuByRestaurant", we might just need Categories linked to Restaurant.
   // Let's keep it simple: Menu might not be strictly needed as an Entity if we just list Categories,
   // but let's keep it for future-proofing "Lunch Menu", "Dinner Menu".
+
+  @OneToMany(() => MenuItem, (item) => item.menu)
+  items: MenuItem[];
 
   @CreateDateColumn()
   createdAt: Date;

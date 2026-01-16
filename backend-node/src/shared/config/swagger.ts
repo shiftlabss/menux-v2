@@ -139,6 +139,18 @@ const options: swaggerJsdoc.Options = {
             }
           },
         },
+        UpsellRuleResponse: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            name: { type: 'string' },
+            triggerProductId: { type: 'string', format: 'uuid' },
+            triggerProduct: { type: 'object' },
+            upgradeProductId: { type: 'string', format: 'uuid' },
+            upgradeProduct: { type: 'object' },
+            isActive: { type: 'boolean' },
+          }
+        },
       },
       securitySchemes: {
         bearerAuth: {

@@ -5,8 +5,11 @@ import { ListOrdersByRestaurant } from '@application/use-cases/order/ListOrdersB
 import { UpdateOrderStatus } from '@application/use-cases/order/UpdateOrderStatus';
 import { ListOrdersByTable } from '@application/use-cases/order/ListOrdersByTable';
 import { ListOrdersByWaiter } from '@application/use-cases/order/ListOrdersByWaiter';
+import { CreateOrder } from '@application/use-cases/order/CreateOrder';
+import { UpdateOrder } from '@application/use-cases/order/UpdateOrder';
 import { TypeOrmOrderRepository } from '@infrastructure/repositories/TypeOrmOrderRepository';
 import { TypeOrmWaiterRepository } from '@infrastructure/repositories/TypeOrmWaiterRepository';
+import { TypeOrmMenuRepository } from '@infrastructure/repositories/TypeOrmMenuRepository';
 import { ensureAuthenticated } from '../middlewares/ensureAuthenticated';
 
 const ordersRouter = Router();
@@ -14,18 +17,24 @@ const ordersRouter = Router();
 // Dependencies
 const orderRepository = new TypeOrmOrderRepository();
 const waiterRepository = new TypeOrmWaiterRepository();
+const menuRepository = new TypeOrmMenuRepository();
+
 const confirmOrderWithPin = new ConfirmOrderWithPin(orderRepository, waiterRepository);
 const listOrders = new ListOrdersByRestaurant(orderRepository);
 const updateOrderStatus = new UpdateOrderStatus(orderRepository);
 const listOrdersByTable = new ListOrdersByTable(orderRepository);
 const listOrdersByWaiter = new ListOrdersByWaiter(orderRepository);
+const createOrder = new CreateOrder(orderRepository, menuRepository);
+const updateOrder = new UpdateOrder(orderRepository);
 
 const ordersController = new OrdersController(
     confirmOrderWithPin,
     listOrders,
     updateOrderStatus,
     listOrdersByTable,
-    listOrdersByWaiter
+    listOrdersByWaiter,
+    createOrder,
+    updateOrder
 );
 
 // pamploni - desativar o middleware de autenticação
@@ -79,6 +88,107 @@ const ordersController = new OrdersController(
  *                 $ref: '#/components/schemas/OrderResponse'
  */
 ordersRouter.get('/', (req, res, next) => ordersController.index(req, res, next));
+
+/**
+ * @swagger
+ * /orders:
+ *   post:
+ *     summary: Create a new order with items
+ *     tags: [Orders]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - restaurantId
+ *               - items
+ *             properties:
+ *               restaurantId:
+ *                 type: string
+ *                 format: uuid
+ *               tableId:
+ *                 type: string
+ *                 format: uuid
+ *                 nullable: true
+ *               waiterId:
+ *                 type: string
+ *                 format: uuid
+ *                 nullable: true
+ *               customerName:
+ *                 type: string
+ *                 nullable: true
+ *               items:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - menuItemId
+ *                     - quantity
+ *                   properties:
+ *                     menuItemId:
+ *                       type: string
+ *                       format: uuid
+ *                     quantity:
+ *                       type: integer
+ *                       minimum: 1
+ *                     observation:
+ *                       type: string
+ *     responses:
+ *       201:
+ *         description: Order created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/OrderResponse'
+ */
+ordersRouter.post('/', (req, res, next) => ordersController.create(req, res, next));
+
+/**
+ * @swagger
+ * /orders/{id}:
+ *   put:
+ *     summary: Update an order (e.g. assign table/waiter/status)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               restaurantId:
+ *                 type: string
+ *                 format: uuid
+ *                 description: Required for validation
+ *               tableId:
+ *                 type: string
+ *                 format: uuid
+ *               waiterId:
+ *                 type: string
+ *                 format: uuid
+ *               status:
+ *                 type: string
+ *                 enum: [WAITING, PREPARING, READY, DELIVERED, FINISHED, CANCELED]
+ *     responses:
+ *       200:
+ *         description: Order updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/OrderResponse'
+ */
+ordersRouter.put('/:id', (req, res, next) => ordersController.update(req, res, next));
 
 /**
  * @swagger

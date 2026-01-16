@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { TypeOrmMenuItemRepository } from '@infrastructure/repositories/TypeOrmMenuItemRepository';
+import { TypeOrmMenuRepository } from '@infrastructure/repositories/TypeOrmMenuRepository';
 import { CreateMenuItem } from '@application/use-cases/menu-item/CreateMenuItem';
 import { UpdateMenuItem } from '@application/use-cases/menu-item/UpdateMenuItem';
 import { DeleteMenuItem } from '@application/use-cases/menu-item/DeleteMenuItem';
@@ -14,7 +15,24 @@ export class MenuItemsController {
     }
 
     public create = async (req: Request, res: Response): Promise<Response> => {
-        const { name, description, price, categoryId, isActive, imageUrl, allergens, code, ingredients, tags } = req.body;
+        const { name, description, price, categoryId, isActive, imageUrl, allergens, code, ingredients, tags, menuId } = req.body;
+
+        let targetMenuId = menuId;
+
+        if (!targetMenuId) {
+            const restaurantId = req.user?.restaurantId;
+            if (restaurantId) {
+                const menuRepo = new TypeOrmMenuRepository();
+                const menus = await menuRepo.findAll(restaurantId);
+                if (menus.length > 0) {
+                    targetMenuId = menus[0].id;
+                }
+            }
+        }
+
+        if (!targetMenuId) {
+            return res.status(400).json({ message: 'menuId is required' });
+        }
 
         const menuItemRepository = new TypeOrmMenuItemRepository();
         const createMenuItem = new CreateMenuItem(menuItemRepository);
@@ -30,6 +48,7 @@ export class MenuItemsController {
             code,
             ingredients,
             tags,
+            menuId: targetMenuId,
         });
 
         if (req.user?.restaurantId) {

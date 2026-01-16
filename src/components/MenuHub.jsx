@@ -349,7 +349,7 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
         const banner = banners[index];
         if (banner) {
             setSelectedProduct({
-                id: banner.id || `banner-${index}`,
+                id: banner.item.id || index,
                 name: banner.item.name,
                 desc: banner.item.description || "Prato em destaque.",
                 price: banner.item.price,

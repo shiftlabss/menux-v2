@@ -5,14 +5,69 @@ import { UpdateOrderStatus } from '@application/use-cases/order/UpdateOrderStatu
 import { ListOrdersByTable } from '@application/use-cases/order/ListOrdersByTable';
 import { ListOrdersByWaiter } from '@application/use-cases/order/ListOrdersByWaiter';
 
+import { CreateOrder } from '@application/use-cases/order/CreateOrder';
+import { UpdateOrder } from '@application/use-cases/order/UpdateOrder';
+
 export class OrdersController {
     constructor(
         private confirmOrderWithPin: ConfirmOrderWithPin,
         private listOrders: ListOrdersByRestaurant,
         private updateOrderStatus: UpdateOrderStatus,
         private listOrdersByTable: ListOrdersByTable,
-        private listOrdersByWaiter: ListOrdersByWaiter
+        private listOrdersByWaiter: ListOrdersByWaiter,
+        private createOrder: CreateOrder,
+        private updateOrder: UpdateOrder
     ) { }
+
+    async create(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { items, tableId, waiterId, customerName } = req.body;
+            // Allow restaurantId to be passed in body (for public/session) OR from auth user
+            const restaurantId = req.body.restaurantId || (req as any).user?.restaurantId;
+
+            if (!restaurantId) {
+                res.status(400).json({ message: 'Restaurant ID is required' });
+                return;
+            }
+
+            const order = await this.createOrder.execute({
+                restaurantId,
+                items,
+                tableId,
+                waiterId,
+                customerName
+            });
+
+            res.status(201).json(order);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async update(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { id } = req.params;
+            const { tableId, waiterId, status } = req.body;
+            const restaurantId = (req as any).user?.restaurantId || req.body.restaurantId; // Assuming update might be done by waiter/admin
+
+            if (!restaurantId) {
+                res.status(400).json({ message: 'Restaurant ID is required' });
+                return;
+            }
+
+            const order = await this.updateOrder.execute({
+                orderId: id,
+                restaurantId,
+                tableId,
+                waiterId,
+                status
+            });
+
+            res.json(order);
+        } catch (error) {
+            next(error);
+        }
+    }
 
     async index(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {

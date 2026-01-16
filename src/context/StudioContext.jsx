@@ -66,6 +66,16 @@ export const StudioProvider = ({ children }) => {
     useEffect(() => {
         storage.set(KEYS.STUDIO_PRODUCTS, products);
     }, [products]);
+    // useEffect(() => {
+    //     try {
+    //         localStorage.setItem('menux_studio_products', JSON.stringify(products));
+    //     } catch (error) {
+    //         console.error("Erro ao salvar produtos:", error);
+    //         if (error.name === 'QuotaExceededError') {
+    //             alert("Limite de armazenamento excedido! Tente usar menos imagens ou imagens menores nos produtos.");
+    //         }
+    //     }
+    // }, [products]);
 
     useEffect(() => {
         setProducts(prev => {

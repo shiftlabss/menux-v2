@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 import { useToast } from '../context/ToastContext';
+import { useState, useEffect } from 'react';
+import { getUpsellRules } from '../services/api';
 
 const TrashIcon = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -22,6 +24,70 @@ const MinusIcon = () => (
 export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, onOpenChat, onClose, onFinish }) {
     const { showToast } = useToast();
     const isEmpty = cartItems.length === 0;
+    const [recommendations, setRecommendations] = useState([]);
+
+    useEffect(() => {
+        if (isEmpty) {
+            setRecommendations([]);
+            return;
+        }
+
+        const fetchRecommendations = async () => {
+            // Avoid fetching if using Mock Auth (unless user wants it, but standard practice in this project seems to be checking it)
+            // However, the request didn't specify mock auth check for this specific feature, but earlier code does. 
+            // To be safe, I'll assume we want this to work with real API primarily.
+            if (import.meta.env.VITE_USE_MOCK_AUTH === 'false') {
+                try {
+                    // Fetch rules for all items in cart
+                    const promises = cartItems.map(item =>
+                        getUpsellRules(item.id, 'cross-sell').catch(err => {
+                            console.error(`Error fetching upsell for ${item.id}:`, err);
+                            return [];
+                        })
+                    );
+
+                    const results = await Promise.all(promises);
+
+                    // Results is array of arrays of rules
+                    // We need to extract upgradeProduct from each rule
+                    const allRules = results.flat();
+
+                    const suggestions = allRules
+                        .filter(rule => rule && rule.isActive && rule.upgradeProduct)
+                        .map(rule => rule.upgradeProduct);
+
+                    // Deduplicate by ID
+                    const uniqueSuggestions = Array.from(new Map(suggestions.map(item => [item.id, item])).values());
+
+                    // Filter out items already in cart or the item itself (though cart check covers it usually)
+                    // The prompt says "show recommended items... where trigger is the inserted item".
+                    // It doesn't explicitly say "hide if already in cart", but UI logic usually does or just shows quantity. 
+                    // The existing UI logic handles "inCart" quantity display, so we can keep them even if in cart.
+
+                    // Transform to match UI expectation if needed (fields: id, name, price, desc, image/imageUrl)
+                    const formattedSuggestions = uniqueSuggestions.map(p => ({
+                        id: p.id,
+                        name: p.name,
+                        desc: p.description,
+                        price: `R$ ${Number(p.price).toFixed(2).replace('.', ',')}`,
+                        image: p.imageUrl
+                    }));
+
+                    setRecommendations(formattedSuggestions);
+
+                } catch (error) {
+                    console.error("Error fetching recommendations:", error);
+                }
+            } else {
+                // Fallback to empty or keep static if needed? User asked to show "items suggested in rules".
+                // If mocking or no rules, maybe show nothing or keep the static list as "default"?
+                // The prompt implies we MUST show rule-based items. I'll default to empty if not real auth/api.
+                setRecommendations([]);
+            }
+        };
+
+        fetchRecommendations();
+    }, [cartItems]);
 
     // Calculate cart total — parse BRL format "R$ 1.234,56" -> 1234.56
     const parseBRL = (str) => {
@@ -120,17 +186,38 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
                         <img src="/logo-menux.svg" alt="Menux" className="maestro-link-logo maestro-link-logo-purple" />
                     </a>
 
-                    <h3 className="rec-title">Peça também</h3>
-                    <div className="rec-scroll-container">
-                        {[
-                            { id: '39', name: "Água com Gás", price: "R$ 6,00", desc: "Água mineral com gás.", image: "/imgs/bebidas-e-drinks/drinks-agua-gas.jpg" },
-                            { id: '28', name: "Pudim de Leite", price: 'R$ 24,00', desc: "Clássico pudim de leite.", image: "/imgs/sobremesas/sobremesa-pudim.jpg" },
-                            { id: '40', name: "Caipirinha", price: 'R$ 22,00', desc: "Limão taiti e cachaça.", image: "/imgs/bebidas-e-drinks/drink-caipirinha.jpg" }
-                        ].map(rec => {
-                            const inCart = cartItems.find(item => item.id === rec.id);
-                            const qty = inCart ? inCart.qty : 0;
+                    {recommendations.length > 0 && (
+                        <>
+                            <h3 className="rec-title">Peça também</h3>
+                            <div className="rec-scroll-container">
+                                {recommendations.map(rec => {
+                                    const inCart = cartItems.find(item => item.id === rec.id);
+                                    const qty = inCart ? inCart.qty : 0;
 
-                            return (
+                                    return (
+                                        <div key={rec.id} className="rec-card">
+                                            <div className="rec-img" style={{ backgroundImage: rec.image ? `url(${rec.image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#eee' }}>
+                                                <div className="rec-qty-overlay" onClick={(e) => e.stopPropagation()}>
+                                                    {qty > 0 ? (
+                                                        <div className="rec-qty-controls">
+                                                            <button className="rec-qty-btn" onClick={() => onUpdateQty(rec.id, '', -1)}>
+                                                                {qty === 1 ? <TrashIcon /> : <MinusIcon />}
+                                                            </button>
+                                                            <span className="rec-qty-val">{qty}</span>
+                                                            <button className="rec-qty-btn" onClick={() => onUpdateQty(rec.id, '', 1)}>
+                                                                <PlusIcon />
+                                                            </button>
+                                                        </div>
+
+
+                                                    ) : (
+                                                        <button className="rec-add-btn" onClick={() => { onAddToCart(rec, ''); showToast("Item adicionado ao pedido!"); }}>
+                                                            <PlusIcon />
+                                                        </button>
+
+                                                    )}
+
+                                                    {/* return (
                                 <div key={rec.id} className="rec-card">
                                     <div className="rec-img" style={{ backgroundImage: `url(${rec.image})` }}>
                                         <div className="rec-qty-overlay" onClick={(e) => e.stopPropagation()}>
@@ -160,8 +247,31 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
                         })}
                     </div>
                 </div>
-            </div>
+            </div> */}
+                                                </div>
+                                            </div>
 
+                                            <div className="rec-info">
+                                                <div className="rec-price">{rec.price}</div>
+                                                <div className="rec-name">{rec.name}</div>
+                                            </div>
+
+                                        </div>
+
+
+
+
+                                    )
+                                })}
+
+                            </div>
+                        </>
+                    )}
+
+
+                </div>
+
+            </div>
             <div className="order-footer-actions">
                 {!isEmpty && (
                     <div className="order-total-text">
