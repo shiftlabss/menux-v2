@@ -255,17 +255,17 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
         setIsMaestroOpen(true);
     };
 
-    const handleAddToCart = (product, obs) => {
+    const handleAddToCart = (product, obs, qty = 1) => {
         setCart(prev => {
             const existing = prev.find(item => item.id === product.id && item.obs === obs);
             if (existing) {
                 return prev.map(item =>
                     (item.id === product.id && item.obs === obs)
-                        ? { ...item, qty: item.qty + 1 }
+                        ? { ...item, qty: item.qty + qty }
                         : item
                 );
             }
-            return [...prev, { ...product, qty: 1, obs }];
+            return [...prev, { ...product, qty, obs }];
         });
         showToast("Item adicionado ao pedido!");
         setSelectedProduct(null);

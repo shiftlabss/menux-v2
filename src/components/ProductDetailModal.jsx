@@ -8,6 +8,7 @@ const MenuxLogo = ({ height = 24 }) => (
 
 export default function ProductDetailModal({ product, onClose, onAddToCart }) {
     const [observation, setObservation] = useState('');
+    const [quantity, setQuantity] = useState(1);
     const { showToast } = useToast();
 
     if (!product) return null;
@@ -57,9 +58,26 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                 </div>
 
                 <div className="pd-footer-action">
-                    <button className="btn-add-order" onClick={() => { onAddToCart(product, observation); showToast("Item adicionado ao pedido!"); }}>
-                        Adicionar ao pedido • {product.price}
-                    </button>
+                    <div className="pd-footer-row">
+                        <div className="pd-quantity-selector">
+                            <div className="pd-qty-slot">
+                                {quantity > 1 && (
+                                    <button className="pd-qty-btn" onClick={() => setQuantity(quantity - 1)}>
+                                        <svg width="12" height="2" viewBox="0 0 12 2" fill="none"><path d="M1 1H11" stroke="black" strokeWidth="2" strokeLinecap="round" /></svg>
+                                    </button>
+                                )}
+                            </div>
+                            <span className="pd-qty-value">{quantity}</span>
+                            <div className="pd-qty-slot">
+                                <button className="pd-qty-btn" onClick={() => setQuantity(quantity + 1)}>
+                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1V11M1 6H11" stroke="black" strokeWidth="2" strokeLinecap="round" /></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <button className="btn-add-order" onClick={() => { onAddToCart(product, observation, quantity); }}>
+                            Adicionar ao pedido
+                        </button>
+                    </div>
                 </div>
             </div>
         </motion.div>

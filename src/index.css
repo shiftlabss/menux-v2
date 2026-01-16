@@ -1069,8 +1069,45 @@ body,
   margin-top: 24px;
 }
 
+.pd-footer-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.pd-quantity-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  justify-items: center;
+  background: white;
+  border: 1px solid #EAEAEA;
+  border-radius: 100px;
+  height: 59px;
+  width: 130px;
+  flex-shrink: 0;
+  padding: 0 8px;
+}
+
+.pd-qty-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.pd-qty-value {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+}
+
 .btn-add-order {
-  width: 100%;
+  flex: 1;
   height: 59px;
   background: black;
   color: white;
