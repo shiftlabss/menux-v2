@@ -14,6 +14,7 @@ interface IRequest {
     code?: string;
     ingredients?: string;
     tags?: string[];
+    menuId?: string;
 }
 
 export class UpdateMenuItem {

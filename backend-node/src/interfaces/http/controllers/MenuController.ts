@@ -31,6 +31,7 @@ export class MenuController {
   public getFullMenu = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
       const restaurantId = req.user?.restaurantId || req.query.restaurantId;
+      console.log(req.user)
 
       if (!restaurantId) {
         return res.status(400).json({ message: 'Restaurant ID is required' });
@@ -60,9 +61,30 @@ export class MenuController {
 
   public getHighlights = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
-      const restaurantId = req.user?.restaurantId;
+      const restaurantId = req.user?.restaurantId || req.query.restaurantId;
+
 
       if (!restaurantId) {
+
+        return res.status(400).json({ message: 'Restaurant ID is required' });
+      }
+
+      const cacheKey = `menux:restaurant:${restaurantId}:highlights`;
+      const highlights = await this.cache.get(cacheKey);
+
+      return res.json(highlights || []);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  public getHighlightsPublic = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    try {
+      const restaurantId = req.query.restaurantId;
+
+
+      if (!restaurantId) {
+
         return res.status(400).json({ message: 'Restaurant ID is required' });
       }
 

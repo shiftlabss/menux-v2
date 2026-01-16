@@ -1,6 +1,6 @@
 import { IUserRepository } from '@domain/repositories/IUserRepository';
 import { User } from '@domain/entities/User';
-import { Repository } from 'typeorm';
+import { Repository, Raw } from 'typeorm';
 import { AppDataSource } from '../database/typeorm/data-source';
 
 export class TypeOrmUserRepository implements IUserRepository {
@@ -23,7 +23,7 @@ export class TypeOrmUserRepository implements IUserRepository {
 
     async findById(id: string): Promise<User | null> {
         return this.repository.findOne({
-            where: { id },
+            where: { id: Raw((alias) => `${alias} = :id::uuid`, { id }) },
             relations: ['restaurant'],
         });
     }

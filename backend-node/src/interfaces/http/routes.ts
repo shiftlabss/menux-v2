@@ -10,6 +10,7 @@ import { restaurantsRouter } from './routes/restaurants.routes';
 import { categoriesRouter } from './routes/categories.routes';
 import { customersRouter } from './routes/customers.routes';
 import { menuItemsRouter } from './routes/menu-items.routes';
+import { menusRouter } from './routes/menus.routes';
 import { ensureAuthenticated } from './middlewares/ensureAuthenticated';
 
 // Composition Root / Dependency Injection (Manual)
@@ -73,10 +74,78 @@ router.get('/menu/full', ensureAuthenticated, (req, res, next) =>
   menuController.getFullMenu(req, res, next),
 );
 
+/**
+ * @swagger
+ * /menu/highlights:
+ *   get:
+ *     summary: Get highlight menu items (Internal)
+ *     tags: [Menu]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: restaurantId
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Optional restaurant ID override
+ *     responses:
+ *       200:
+ *         description: List of highlighted items
+ */
 router.get('/menu/highlights', ensureAuthenticated, (req, res, next) =>
   menuController.getHighlights(req, res, next),
 );
 
+/**
+ * @swagger
+ * /menu/highlightsPublic:
+ *   get:
+ *     summary: Get highlight menu items (Public)
+ *     tags: [Menu]
+ *     parameters:
+ *       - in: query
+ *         name: restaurantId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Restaurant ID
+ *     responses:
+ *       200:
+ *         description: List of highlighted items
+ */
+router.get('/menu/highlightsPublic', (req, res, next) =>
+  menuController.getHighlights(req, res, next),
+);
+
+/**
+ * @swagger
+ * /menu/highlights:
+ *   post:
+ *     summary: Update highlight suggestions
+ *     tags: [Menu]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - products
+ *             properties:
+ *               products:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                 description: List of product objects to highlight
+ *     responses:
+ *       200:
+ *         description: Highlights updated successfully
+ */
 router.post('/menu/highlights', ensureAuthenticated, (req, res, next) =>
   menuController.updateHighlights(req, res, next),
 );
@@ -184,6 +253,8 @@ router.post('/sessions/start', (req, res, next) => sessionController.start(req, 
  */
 router.post('/sessions/end', (req, res, next) => sessionController.end(req, res, next));
 
+import { upsellRulesRouter } from './routes/upsell-rules.routes';
+
 // Routes - Backoffice
 router.use('/auth', authRouter);
 router.use('/users', usersRouter);
@@ -193,6 +264,8 @@ router.use('/tables', tablesRouter);
 router.use('/restaurants', restaurantsRouter);
 router.use('/categories', categoriesRouter);
 router.use('/menu-items', menuItemsRouter);
+router.use('/menus', menusRouter);
 router.use('/customers', customersRouter);
+router.use('/upsell-rules', upsellRulesRouter);
 
 export { router };

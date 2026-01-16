@@ -23,12 +23,11 @@ async function seed() {
         // 2. RAW SQL Seeding
 
         // Waiter
-        // restaurantId is varchar in DB, restaurant_id is uuid
         await AppDataSource.query(`
-            INSERT INTO waiters (id, name, nickname, "pinCode", password, "restaurantId", restaurant_id, "createdAt", "updatedAt")
-            VALUES (uuid_generate_v4(), 'João Silva', 'João', '1234', '1234', $1, $2, now(), now())
+            INSERT INTO waiters (id, name, nickname, "pinCode", password, "restaurant_id", "createdAt", "updatedAt")
+            VALUES (uuid_generate_v4(), 'João Silva', 'João', '1234', '1234', $1, now(), now())
             ON CONFLICT DO NOTHING
-        `, [rId, rId]);
+        `, [rId]);
         console.log('✅ Waiter ensured');
 
         const waiters = await AppDataSource.query('SELECT id FROM waiters LIMIT 1');
@@ -37,10 +36,10 @@ async function seed() {
         // Tables
         for (let i = 1; i <= 20; i++) {
             await AppDataSource.query(`
-                INSERT INTO tables (id, number, status, capacity, "restaurantId", restaurant_id, "createdAt", "updatedAt")
-                VALUES (uuid_generate_v4(), $1, 'FREE', 4, $2, $3, now(), now())
+                INSERT INTO tables (id, number, status, capacity, "restaurant_id", "createdAt", "updatedAt")
+                VALUES (uuid_generate_v4(), $1, 'FREE', 4, $2, now(), now())
                 ON CONFLICT DO NOTHING
-            `, [i, rId, rId]);
+            `, [i, rId]);
         }
         console.log('✅ Tables ensured');
 
@@ -53,7 +52,7 @@ async function seed() {
 
         for (const c of customerData) {
             await AppDataSource.query(`
-                INSERT INTO customers (id, name, email, phone, customer_type, restaurant_id, created_at, updated_at)
+                INSERT INTO customers (id, name, email, phone, "customer_type", "restaurant_id", "created_at", "updated_at")
                 VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, now(), now())
                 ON CONFLICT DO NOTHING
             `, [c[0], c[1], c[2], c[3], rId]);
@@ -72,20 +71,17 @@ async function seed() {
                 const customerId = customers[i % customers.length].id;
                 const table = tables[i % tables.length];
 
-                // waiterId is varchar, waiter_id is uuid in orders
-                // tableId is varchar, table_id is uuid in orders
-                // restaurantId is varchar, restaurant_id is uuid in orders
                 await AppDataSource.query(`
-                    INSERT INTO orders (id, code, status, total, customer_id, table_id, "tableId", "tableNumber", restaurant_id, "restaurantId", waiter_id, "waiterId", "createdAt", "updatedAt")
-                    VALUES ($1, $2, 'FINISHED', 0, $3, $4, $5, $6, $7, $8, $9, $10, now(), now())
-                `, [orderId, code, customerId, table.id, table.id, table.number.toString(), rId, rId, waiterId, waiterId]);
+                    INSERT INTO orders (id, code, status, total, "customer_id", "table_id", "tableNumber", "restaurant_id", "waiter_id", "createdAt", "updatedAt")
+                    VALUES ($1, $2, 'FINISHED', 0, $3, $4, $5, $6, $7, now(), now())
+                `, [orderId, code, customerId, table.id, table.number.toString(), rId, waiterId]);
 
                 let total = 0;
                 for (let j = 0; j < 2; j++) {
                     const item = menuItems[Math.floor(Math.random() * menuItems.length)];
                     total += Number(item.price);
                     await AppDataSource.query(`
-                        INSERT INTO order_items (id, quantity, price, order_id, menu_item_id)
+                        INSERT INTO order_items (id, quantity, price, "order_id", "menu_item_id")
                         VALUES (uuid_generate_v4(), 1, $1, $2, $3)
                     `, [item.price, orderId, item.id]);
                 }

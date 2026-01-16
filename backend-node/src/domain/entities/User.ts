@@ -30,7 +30,7 @@ export class User {
     @JoinColumn({ name: 'restaurant_id' })
     restaurant: Restaurant;
 
-    @Column({ nullable: true })
+    @Column({ name: 'restaurant_id', type: 'uuid', nullable: true })
     restaurantId: string;
 
     @Column({ nullable: true })

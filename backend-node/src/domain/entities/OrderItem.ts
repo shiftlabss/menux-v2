@@ -17,9 +17,15 @@ export class OrderItem {
     @JoinColumn({ name: 'order_id' })
     order: Order;
 
+    @Column({ name: 'order_id', type: 'uuid' })
+    orderId: string;
+
     @ManyToOne(() => MenuItem)
     @JoinColumn({ name: 'menu_item_id' })
     menuItem: MenuItem;
+
+    @Column({ name: 'menu_item_id', type: 'uuid' })
+    menuItemId: string;
 
     @Column()
     quantity: number;

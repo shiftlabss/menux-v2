@@ -1,5 +1,6 @@
 import { Category } from '../entities/Category';
 import { MenuItem } from '../entities/MenuItem';
+import { Menu } from '../entities/Menu';
 
 export interface IMenuRepository {
   /**
@@ -12,4 +13,10 @@ export interface IMenuRepository {
    * Finds a specific menu item by ID.
    */
   findItemById(itemId: string): Promise<MenuItem | null>;
+
+  create(menu: Partial<Menu>): Promise<Menu>;
+  findAll(restaurantId: string): Promise<Menu[]>;
+  findById(id: string): Promise<Menu | null>;
+  update(id: string, menu: Partial<Menu>): Promise<Menu>;
+  delete(id: string): Promise<void>;
 }

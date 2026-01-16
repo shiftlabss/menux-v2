@@ -58,6 +58,8 @@ export class Table {
     @Column({ type: 'timestamp', nullable: true })
     closedAt: Date | null;
 
+
+
     @ManyToOne(() => Restaurant)
     @JoinColumn({ name: 'restaurant_id' })
     restaurant: Restaurant;

@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Menu } from './Menu';
 import { Category } from './Category';
+import { UpsellRule } from './UpsellRule';
 
 @Entity('restaurants')
 export class Restaurant {
@@ -67,6 +68,9 @@ export class Restaurant {
 
   @OneToMany(() => Category, (category) => category.restaurant)
   categories: Category[];
+
+  @OneToMany(() => UpsellRule, (upsellRule) => upsellRule.restaurant)
+  upsellRules: UpsellRule[];
 
   @CreateDateColumn()
   createdAt: Date;

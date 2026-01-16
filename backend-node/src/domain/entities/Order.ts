@@ -41,6 +41,9 @@ export class Order {
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     total: number;
 
+    @Column({ type: 'varchar', precision: 10, scale: 2 })
+    customerName: string;
+
     @ManyToOne(() => Customer, (customer) => customer.orders, { nullable: true })
     @JoinColumn({ name: 'customer_id' })
     customer: Customer | null;

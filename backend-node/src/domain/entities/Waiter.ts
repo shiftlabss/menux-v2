@@ -33,7 +33,7 @@ export class Waiter {
     @JoinColumn({ name: 'restaurant_id' })
     restaurant: Restaurant;
 
-    @Column()
+    @Column({ name: 'restaurant_id' })
     restaurantId: string;
 
     @CreateDateColumn()

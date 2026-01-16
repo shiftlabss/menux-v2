@@ -195,16 +195,16 @@ export const StudioProvider = ({ children }) => {
         }
     }, [categories]);
 
-    useEffect(() => {
-        try {
-            localStorage.setItem('menux_studio_products', JSON.stringify(products));
-        } catch (error) {
-            console.error("Erro ao salvar produtos:", error);
-            if (error.name === 'QuotaExceededError') {
-                alert("Limite de armazenamento excedido! Tente usar menos imagens ou imagens menores nos produtos.");
-            }
-        }
-    }, [products]);
+    // useEffect(() => {
+    //     try {
+    //         localStorage.setItem('menux_studio_products', JSON.stringify(products));
+    //     } catch (error) {
+    //         console.error("Erro ao salvar produtos:", error);
+    //         if (error.name === 'QuotaExceededError') {
+    //             alert("Limite de armazenamento excedido! Tente usar menos imagens ou imagens menores nos produtos.");
+    //         }
+    //     }
+    // }, [products]);
 
     // Migration logic removed to prevent infinite loops and ID conflicts.
     // The data reset logic in useState initialization handles consistency now.

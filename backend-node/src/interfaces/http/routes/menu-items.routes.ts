@@ -91,6 +91,9 @@ menuItemsRouter.get('/:id', ensureAuthenticated, menuItemsController.show);
  *                 type: array
  *                 items:
  *                   type: string
+ *               menuId:
+ *                 type: string
+ *                 format: uuid
  *     responses:
  *       201:
  *         description: Item created
@@ -138,6 +141,9 @@ menuItemsRouter.post('/', ensureAuthenticated, menuItemsController.create);
  *                 type: array
  *                 items:
  *                   type: string
+ *               menuId:
+ *                 type: string
+ *                 format: uuid
  *     responses:
  *       200:
  *         description: Item updated
