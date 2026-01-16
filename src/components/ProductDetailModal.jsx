@@ -25,9 +25,6 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                     <button className="pd-back-circle" onClick={onClose}>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                     </button>
-                    <div className="pd-back-pill" onClick={onClose}>
-                        <span className="pd-back-text">Voltar ao cardápio</span>
-                    </div>
                 </div>
 
                 <div className="pd-image-container" style={{
