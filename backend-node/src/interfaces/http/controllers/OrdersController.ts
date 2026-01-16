@@ -19,6 +19,7 @@ export class OrdersController {
         private createOrder: CreateOrder,
         private updateOrder: UpdateOrder,
         private listCustomerOrders: ListCustomerOrders
+
     ) { }
 
     async create(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -39,6 +40,7 @@ export class OrdersController {
                 waiterId,
                 customerName,
                 transactionId
+
             });
 
             res.status(201).json(order);

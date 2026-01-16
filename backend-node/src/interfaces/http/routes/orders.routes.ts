@@ -30,6 +30,8 @@ const listOrdersByWaiter = new ListOrdersByWaiter(orderRepository);
 const createOrder = new CreateOrder(orderRepository, menuRepository, cacheAdapter);
 const updateOrder = new UpdateOrder(orderRepository);
 const listCustomerOrders = new ListCustomerOrders(orderRepository);
+// const createOrder = new CreateOrder(orderRepository, menuRepository);
+// const updateOrder = new UpdateOrder(orderRepository);
 
 const ordersController = new OrdersController(
     confirmOrderWithPin,
@@ -40,6 +42,7 @@ const ordersController = new OrdersController(
     createOrder,
     updateOrder,
     listCustomerOrders
+
 );
 
 // pamploni - desativar o middleware de autenticação

@@ -3,6 +3,8 @@ import { useToast } from '../context/ToastContext';
 import { useState, useEffect, useRef } from 'react';
 import { getUpsellRules } from '../services/api';
 import { analytics } from '../services/analyticsService';
+import { useState, useEffect } from 'react';
+import { getUpsellRules } from '../services/api';
 
 const TrashIcon = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -240,80 +242,51 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
 
                                     return (
                                         <div key={rec.id} className="rec-card upsell-card" data-upsell-id={rec.id}>
-                                            <div className="rec-img" style={{ backgroundImage: rec.image ? `url(${rec.image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#eee' }}>
-                                                <div className="rec-qty-overlay" onClick={(e) => e.stopPropagation()}>
-                                                    {qty > 0 ? (
-                                                        <div className="rec-qty-controls">
-                                                            <button className="rec-qty-btn" onClick={() => onUpdateQty(rec.id, '', -1)}>
-                                                                {qty === 1 ? <TrashIcon /> : <MinusIcon />}
-                                                            </button>
-                                                            <span className="rec-qty-val">{qty}</span>
-                                                            <button className="rec-qty-btn" onClick={() => onUpdateQty(rec.id, '', 1)}>
-                                                                <PlusIcon />
-                                                            </button>
-                                                        </div>
+                                            <div key={rec.id} className="rec-card">
+                                                <div className="rec-img" style={{ backgroundImage: rec.image ? `url(${rec.image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#eee' }}>
+                                                    <div className="rec-qty-overlay" onClick={(e) => e.stopPropagation()}>
+                                                        {qty > 0 ? (
+                                                            <div className="rec-qty-controls">
+                                                                <button className="rec-qty-btn" onClick={() => onUpdateQty(rec.id, '', -1)}>
+                                                                    {qty === 1 ? <TrashIcon /> : <MinusIcon />}
+                                                                </button>
+                                                                <span className="rec-qty-val">{qty}</span>
+                                                                <button className="rec-qty-btn" onClick={() => onUpdateQty(rec.id, '', 1)}>
+                                                                    <PlusIcon />
+                                                                </button>
+                                                            </div>
 
 
-                                                    ) : (
-                                                        <button className="rec-add-btn" onClick={() => {
-                                                            const decisionTime = Math.floor((Date.now() - startTimeRef.current) / 1000);
-                                                            onAddToCart(rec, '', 1, decisionTime, { isSuggestion: true, suggestionType: 'upsell' });
-                                                            analytics.track('click', {
-                                                                itemId: rec.id,
-                                                                context: 'upsell-carousel'
-                                                            });
-                                                            showToast("Item adicionado ao pedido!");
-                                                        }}>
-                                                            <PlusIcon />
-                                                        </button>
+                                                        ) : (
+                                                            <button className="rec-add-btn" onClick={() => {
+                                                                const decisionTime = Math.floor((Date.now() - startTimeRef.current) / 1000);
+                                                                onAddToCart(rec, '', 1, decisionTime, { isSuggestion: true, suggestionType: 'upsell' });
+                                                                analytics.track('click', {
+                                                                    itemId: rec.id,
+                                                                    context: 'upsell-carousel'
+                                                                });
+                                                                showToast("Item adicionado ao pedido!");
+                                                            }}></button>
+                                                            // <button className="rec-add-btn" onClick={() => { onAddToCart(rec, ''); showToast("Item adicionado ao pedido!"); }}>
+                                                            //     <PlusIcon />
+                                                            // </button>
 
-                                                    )}
+                                                        )}
 
-                                                    {/* return (
-                                <div key={rec.id} className="rec-card">
-                                    <div className="rec-img" style={{ backgroundImage: `url(${rec.image})` }}>
-                                        <div className="rec-qty-overlay" onClick={(e) => e.stopPropagation()}>
-                                            {qty > 0 ? (
-                                                <div className="rec-qty-controls">
-                                                    <button className="rec-qty-btn" onClick={() => onUpdateQty(rec.id, '', -1)} aria-label={qty === 1 ? "Remover item" : "Diminuir quantidade"}>
-                                                        {qty === 1 ? <TrashIcon /> : <MinusIcon />}
-                                                    </button>
-                                                    <span className="rec-qty-val">{qty}</span>
-                                                    <button className="rec-qty-btn" onClick={() => onUpdateQty(rec.id, '', 1)} aria-label="Aumentar quantidade">
-                                                        <PlusIcon />
-                                                    </button>
+                                                    </div>
                                                 </div>
-                                            ) : (
-                                                <button className="rec-add-btn" onClick={() => { onAddToCart(rec, ''); showToast("Item adicionado ao pedido!"); }} aria-label={`Adicionar ${rec.name}`}>
-                                                    <PlusIcon />
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className="rec-info">
-                                        <div className="rec-price">{rec.price}</div>
-                                        <div className="rec-name">{rec.name}</div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            </div> */}
-                                                </div>
-                                            </div>
 
-                                            <div className="rec-info">
-                                                <div className="rec-price">{rec.price}</div>
-                                                <div className="rec-name">{rec.name}</div>
+                                                <div className="rec-info">
+                                                    <div className="rec-price">{rec.price}</div>
+                                                    <div className="rec-name">{rec.name}</div>
+                                                </div>
+
                                             </div>
 
                                         </div>
-
-
-
 
                                     )
+
                                 })}
 
                             </div>

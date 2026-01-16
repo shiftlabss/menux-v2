@@ -47,6 +47,9 @@ export class Order {
     @Column({ name: 'transaction_id', type: 'uuid', nullable: true, unique: true })
     transactionId: string | null;
 
+    @Column({ type: 'varchar', precision: 10, scale: 2 })
+    customerName: string;
+
     @ManyToOne(() => Customer, (customer) => customer.orders, { nullable: true })
     @JoinColumn({ name: 'customer_id' })
     customer: Customer | null;
