@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useToast } from '../context/ToastContext';
 
 const TrashIcon = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -19,6 +20,7 @@ const MinusIcon = () => (
 );
 
 export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, onOpenChat, onClose, onFinish }) {
+    const { showToast } = useToast();
     const isEmpty = cartItems.length === 0;
 
     const handleMaestroClick = (e) => {
@@ -68,7 +70,10 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
                                     )}
                                 </div>
                                 <div className="order-item-qty-control">
-                                    <button className="qty-btn" onClick={() => onUpdateQty(item.id, item.obs, -1)}>
+                                    <button className="qty-btn" onClick={() => {
+                                        if (item.qty === 1) showToast("Item removido do pedido.");
+                                        onUpdateQty(item.id, item.obs, -1);
+                                    }}>
                                         {item.qty === 1 ? <TrashIcon /> : <MinusIcon />}
                                     </button>
                                     <span className="qty-val">{item.qty}</span>
@@ -112,7 +117,7 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
                                                     </button>
                                                 </div>
                                             ) : (
-                                                <button className="rec-add-btn" onClick={() => onAddToCart(rec, '')}>
+                                                <button className="rec-add-btn" onClick={() => { onAddToCart(rec, ''); showToast("Item adicionado ao pedido!"); }}>
                                                     <PlusIcon />
                                                 </button>
                                             )}
@@ -132,9 +137,6 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
             <div className="order-footer-actions">
                 <button className="btn-finish-order" onClick={onFinish}>
                     Concluir e Chamar Garçom
-                </button>
-                <button className="btn-secondary-order" onClick={onClose}>
-                    Voltar ao Cardápio
                 </button>
             </div>
         </motion.div>

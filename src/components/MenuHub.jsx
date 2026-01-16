@@ -7,6 +7,7 @@ import OrderCodeModal from './OrderCodeModal';
 import ProfileModal from './ProfileModal';
 import MaestroModal from './MaestroModal';
 import { useStudio } from '../context/StudioContext';
+import { useToast } from '../context/ToastContext';
 import MyOrdersModal from './MyOrdersModal';
 
 
@@ -178,6 +179,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
     const [maestroInitialView, setMaestroInitialView] = useState('welcome');
     const [activeOrderCode, setActiveOrderCode] = useState(null);
     const [isMyOrdersOpen, setIsMyOrdersOpen] = useState(false);
+    const { showToast } = useToast();
 
     // Cart Persistence
     useEffect(() => {
@@ -253,6 +255,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
             }
             return [...prev, { ...product, qty: 1, obs }];
         });
+        showToast("Item adicionado ao pedido!");
         setSelectedProduct(null);
     };
 
@@ -549,7 +552,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
 
                     {cartCount > 0 && (
                         <div className="cart-floating-button" onClick={() => setIsOrderModalOpen(true)}>
-                            <RoomServiceIcon />
+                            <img src="/icon-pedido.svg" alt="Pedido" style={{ width: '24px', height: '24px' }} />
                             <div className="cart-badge">{cartCount}</div>
                         </div>
                     )}
@@ -599,7 +602,11 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                         initialView={maestroInitialView}
                         products={currentCategories.flatMap(cat => cat.subcategories.flatMap(sub => sub.items))}
                         staticMenuData={MENU_DATA}
+                        cart={cart}
                         onAddToCart={handleAddToCart}
+                        onRemoveFromCart={(product) => {
+                            setCart(prev => prev.filter(item => item.id !== product.id));
+                        }}
                     />
                 )}
             </AnimatePresence>

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { useToast } from '../context/ToastContext';
 
 const MenuxLogo = ({ height = 24 }) => (
     <img src="/logo-menux.svg" alt="Menux" style={{ height }} />
@@ -7,6 +8,7 @@ const MenuxLogo = ({ height = 24 }) => (
 
 export default function ProductDetailModal({ product, onClose, onAddToCart }) {
     const [observation, setObservation] = useState('');
+    const { showToast } = useToast();
 
     if (!product) return null;
 
@@ -58,7 +60,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                 </div>
 
                 <div className="pd-footer-action">
-                    <button className="btn-add-order" onClick={() => onAddToCart(product, observation)}>
+                    <button className="btn-add-order" onClick={() => { onAddToCart(product, observation); showToast("Item adicionado ao pedido!"); }}>
                         Adicionar ao pedido • {product.price}
                     </button>
                 </div>

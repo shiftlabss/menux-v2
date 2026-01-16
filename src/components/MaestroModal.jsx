@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
+import { useToast } from '../context/ToastContext';
 const imgLogo = "/logo-menux.svg";
 
 const CloseIcon = () => (
@@ -85,20 +86,34 @@ const mockResults = [
     }
 ];
 
-const ProductCard = ({ product, onAdd }) => {
+const ProductCard = ({ product, onAdd, onRemove, isInCart }) => {
     return (
         <div className="chat-product-card">
             <div className="chat-card-image" style={{ backgroundImage: product.image ? `url(${product.image})` : 'none' }}></div>
             <div className="chat-card-content">
+                <div className="chat-card-tags">
+                    <span className="chat-card-tag">Serve 2 pessoas</span>
+                    <span className="chat-card-tag">Proteína</span>
+                </div>
                 <h4 className="chat-card-title">{product.name}</h4>
-                <span className="chat-card-price">{product.price}</span>
-                <button className="chat-card-add-btn" onClick={() => onAdd(product)}>Adicionar</button>
+                <p className="chat-card-desc">{product.description || product.desc || "Fatias finas de carne bovina crua, servidas com parmesão em lâminas, rúcula fresca e azeite extravirgem."}</p>
+
+                <div className="chat-card-footer">
+                    <div className="chat-card-price-container">
+                        <span className="chat-card-price">{product.price}</span>
+                    </div>
+                    {isInCart ? (
+                        <button className="chat-card-add-btn remove" onClick={() => onRemove(product)}>Remover</button>
+                    ) : (
+                        <button className="chat-card-add-btn" onClick={() => onAdd(product)}>Adicionar</button>
+                    )}
+                </div>
             </div>
         </div>
     );
 };
 
-export default function MaestroModal({ onClose, initialView = 'welcome', products = [], staticMenuData = [], onAddToCart }) {
+export default function MaestroModal({ onClose, initialView = 'welcome', products = [], staticMenuData = [], cart = [], onAddToCart, onRemoveFromCart }) {
     // Carrega o estado inicial do localStorage ou usa o padrão
     // Sempre inicia no Welcome para oferecer opções, mas carrega o estado salvo
     const [view, setView] = useState(initialView);
@@ -112,6 +127,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
         const saved = localStorage.getItem('maestro_messages');
         return saved ? JSON.parse(saved) : [];
     });
+    const { showToast } = useToast();
 
     // Efeito para salvar o estado sempre que mudar
     useEffect(() => {
@@ -341,7 +357,16 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                                     if (!product) {
                                         return null;
                                     }
-                                    return <ProductCard key={`${id}-${idx}`} product={product} onAdd={onAddToCart} />;
+                                    const isInCart = cart.some(item => item.id === product.id);
+                                    return (
+                                        <ProductCard
+                                            key={`${id}-${idx}`}
+                                            product={product}
+                                            isInCart={isInCart}
+                                            onAdd={(p) => { onAddToCart(p); showToast("Item adicionado ao pedido!"); }}
+                                            onRemove={(p) => { onRemoveFromCart(p); showToast("Item removido!"); }}
+                                        />
+                                    );
                                 })}
                             </div>
                         )}
@@ -360,16 +385,18 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                 <div className="maestro-input-wrapper">
                     <input
                         type="text"
+                        placeholder="Pergunte ao Maestro..."
                         className="maestro-input-field"
-                        placeholder="Qual o melhor vinho para hoje?"
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                     />
+                    <button className="maestro-send-btn" onClick={handleSendMessage} disabled={!inputValue.trim()}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 11L12 6L17 11M12 18V7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </button>
                 </div>
-                <button className="maestro-send-btn" onClick={handleSendMessage}>
-                    <SendIcon />
-                </button>
             </div>
         </div>
     );
@@ -392,7 +419,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
             <div className="wizard-main-content">
                 {step === 1 && (
                     <>
-                        <h2 className="wizard-question" dangerouslySetInnerHTML={{ __html: "Quantas <strong>pessoas</strong> vão comer?" }}></h2>
+                        <h2 className="wizard-question">Quantas pessoas vão comer?</h2>
                         <div className="wizard-counter">
                             <button className="wizard-counter-btn" onClick={() => setPeopleCount(Math.max(1, peopleCount - 1))}>−</button>
                             <span className="wizard-counter-value">{peopleCount}</span>
@@ -403,7 +430,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
 
                 {step === 2 && (
                     <>
-                        <h2 className="wizard-question" dangerouslySetInnerHTML={{ __html: "Qual o <strong>estilo</strong> do pedido?" }}></h2>
+                        <h2 className="wizard-question">Qual o estilo do pedido?</h2>
                         <div className="wizard-options-grid">
                             {['Leve', 'Para compartilhar', 'Muita fome', 'Rápido'].map(opt => (
                                 <button
@@ -420,7 +447,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
 
                 {step === 3 && (
                     <>
-                        <h2 className="wizard-question" dangerouslySetInnerHTML={{ __html: "Possui ou tem preferência por alguma <strong>restrição alimentar</strong>?" }}></h2>
+                        <h2 className="wizard-question">Possui ou tem preferência por alguma restrição alimentar?</h2>
                         <div className="wizard-options-grid">
                             {['Sem Glúten', 'Vegetariano', 'Sem Lactose', 'Nenhuma'].map(opt => (
                                 <button
@@ -448,8 +475,8 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                     <div className="wizard-results-container">
                         <div className="wizard-results-header">
                             <div>
-                                <h2 className="wizard-results-title" dangerouslySetInnerHTML={{ __html: "Aqui estão nossas <strong>sugestões</strong>" }}></h2>
-                                <p className="wizard-results-subtitle">Com base no que você me disse, acho que você vai adorar estas opções:</p>
+                                <h2 className="wizard-results-title">Com base no que <br />você disse...</h2>
+                                <p className="wizard-results-subtitle">Esses são os melhores pratos para você.</p>
                             </div>
                         </div>
                         <div className="wizard-results-list">
@@ -459,8 +486,9 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                                         <div className="wizard-result-info">
                                             <span className="wizard-result-name">{item.name}</span>
                                             <p className="wizard-result-desc">{item.desc}</p>
-                                            <div className="wizard-result-price-wrapper">
-                                                <span className="wizard-result-price">{item.price}</span> <button className="btn-profile-short btn-add-to-cart">Adicionar ao pedido</button>
+                                            <div className="wizard-result-actions">
+                                                <div className="wizard-result-price-capsule">{item.price}</div>
+                                                <button className="btn-wizard-add" onClick={() => { onAddToCart(item); showToast("Item adicionado ao pedido!"); }}>Adicionar</button>
                                             </div>
                                         </div>
                                         <div className="wizard-result-image" style={{ backgroundImage: item.image ? `url(${item.image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
@@ -471,11 +499,8 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                         </div>
 
                         <div className="wizard-results-footer">
-                            <button className="btn-chat-with-maestro secondary" onClick={handleRefineSearch} style={{ marginRight: '8px', background: '#F5F5F5', color: '#666' }}>
-                                Refinar busca
-                            </button>
-                            <button className="btn-chat-with-maestro" onClick={() => setView('chat')}>
-                                Falar com <span className="menux-logo-text"><img src="/logo-menux.svg" alt="Menux" id="logo-menux-order" /></span>
+                            <button className="btn-back-to-menu-full" onClick={onClose}>
+                                Voltar para o cardápio
                             </button>
                         </div>
                     </div>

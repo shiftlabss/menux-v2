@@ -112,9 +112,13 @@ function AppContent() {
   )
 }
 
+import { ToastProvider } from './context/ToastContext'
+
 function App() {
   return (
-    <AppContent />
+    <ToastProvider>
+      <AppContent />
+    </ToastProvider>
   )
 }
 

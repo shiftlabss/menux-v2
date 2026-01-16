@@ -1,10 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useStudio } from '../context/StudioContext';
+import { useToast } from '../context/ToastContext';
 
 export default function StudioView({ onClose }) {
     const { branding, updateBranding, categories, setCategories, products, setProducts, addSubcategory, resetToDefault } = useStudio();
     const [activeTab, setActiveTab] = useState('branding');
+    const { showToast } = useToast();
 
     // Branding State
     const [localBranding, setLocalBranding] = useState(branding);
@@ -36,7 +38,7 @@ export default function StudioView({ onClose }) {
 
     const handleSaveBranding = () => {
         updateBranding(localBranding);
-        alert('Identidade visual atualizada!');
+        showToast('Identidade visual atualizada!');
     };
 
     const handleAddCategory = () => {
@@ -50,7 +52,7 @@ export default function StudioView({ onClose }) {
         if (!selectedCatForSub || !newSubName) return;
         addSubcategory(selectedCatForSub, newSubName);
         setNewSubName('');
-        alert('Subcategoria adicionada!');
+        showToast('Subcategoria adicionada!');
     };
 
     const handleAddProduct = () => {
@@ -62,10 +64,10 @@ export default function StudioView({ onClose }) {
             );
             setProducts(updatedProducts);
             setEditingProductId(null);
-            alert('Produto atualizado!');
+            showToast('Produto atualizado!');
         } else {
             setProducts([...products, { ...newProd, id: Date.now() }]);
-            alert('Produto adicionado!');
+            showToast('Produto adicionado!');
         }
 
         setNewProd({ name: '', price: '', desc: '', categoryId: '', subcategoryId: '', image: '' });
@@ -290,6 +292,7 @@ export default function StudioView({ onClose }) {
                     <button className="admin-reset-btn" onClick={() => {
                         if (confirm("Isso apagará todas as suas alterações e carregará os dados padrão. Deseja continuar?")) {
                             resetToDefault();
+                            showToast("Dados redefinidos com sucesso.");
                         }
                     }}>Redefinir Dados Atuais</button>
                     <p>Cuidado: esta ação reverte todas as edições para o cardápio padrão.</p>

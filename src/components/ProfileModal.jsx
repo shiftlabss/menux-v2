@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useRef } from 'react';
+import { useToast } from '../context/ToastContext';
 
 const MenuxLogo = ({ height = 24 }) => (
     <img src="/logo-menux.svg" alt="Menux" style={{ height }} />
@@ -18,6 +19,7 @@ const MenuxFaceIcon = () => (
 
 export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, userName, phone, onLogout }) {
     const fileInputRef = useRef(null);
+    const { showToast } = useToast();
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -50,6 +52,7 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
                     ctx.drawImage(img, 0, 0, width, height);
                     const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
                     onUpdateAvatar(dataUrl);
+                    showToast("Avatar atualizado!");
                 };
                 img.src = reader.result;
             };
@@ -123,6 +126,7 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
                         if (window.confirm("Deletar minha conta?")) {
                             onLogout();
                             onClose();
+                            showToast("Sua conta foi removida.");
                         }
                     }}>
                         <span className="text-danger">Deletar minha conta</span>
@@ -131,7 +135,7 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
                 </div>
 
                 <button className="btn-save-profile" onClick={() => {
-                    alert('As alterações foram salvas (Simulação).');
+                    showToast("Perfil atualizado com sucesso!");
                     onClose();
                 }}>
                     Salvar ajustes
