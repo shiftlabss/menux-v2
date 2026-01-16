@@ -112,5 +112,9 @@ export default function useCart() {
         finishOrder,
         reorder,
         clearCart,
+        setCart,
+        setActiveOrderCode,
+        setActiveOrderItems,
+        setOrderHistory
     };
 }

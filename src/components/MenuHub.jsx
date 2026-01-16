@@ -22,6 +22,7 @@ import useScrollSpy from '../hooks/useScrollSpy';
 import useAdminPin from '../hooks/useAdminPin';
 import { useUser } from '../context/UserContext';
 
+import { orderService } from '../services/orderService';
 
 const imgLogo = "/logo-menux.svg";
 const imgVerify = "/verify-icon.svg";
@@ -190,6 +191,13 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
     const { showToast } = useToast();
     const [banners, setBanners] = useState([]);
 
+    // --- Custom Hooks ---
+    const {
+        cart, cartCount, activeOrderCode, activeOrderItems, orderHistory,
+        addToCart, removeSingle, removeProduct, updateQty, finishOrder, reorder, clearCart,
+        setCart, setActiveOrderCode, setActiveOrderItems, setOrderHistory
+    } = useCart();
+
     useEffect(() => {
         if (import.meta.env.VITE_USE_MOCK_AUTH === 'false') {
             const fetchHighlights = async () => {
@@ -218,36 +226,10 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
         }
     }, []);
 
-    // Cart Persistence
-    useEffect(() => {
-        const savedCart = localStorage.getItem('menux_cart');
-        if (savedCart) setCart(JSON.parse(savedCart));
 
-        const savedCode = localStorage.getItem('menux_active_order');
-        if (savedCode) setActiveOrderCode(savedCode);
-
-        const savedItems = localStorage.getItem('menux_active_items');
-        if (savedItems) setActiveOrderItems(JSON.parse(savedItems));
-    }, []);
-
-    useEffect(() => {
-        localStorage.setItem('menux_cart', JSON.stringify(cart));
-    }, [cart]);
-
-    useEffect(() => {
-        localStorage.setItem('menux_active_items', JSON.stringify(activeOrderItems));
-    }, [activeOrderItems]);
-
-    useEffect(() => {
-        if (activeOrderCode) localStorage.setItem('menux_active_order', activeOrderCode);
-    }, [activeOrderCode]);
     const { branding, categories: dynamicCategories, products: dynamicProducts } = useStudio();
 
-    // --- Custom Hooks ---
-    const {
-        cart, cartCount, activeOrderCode, activeOrderItems, orderHistory,
-        addToCart, removeSingle, removeProduct, updateQty, finishOrder, reorder, clearCart
-    } = useCart();
+
 
     // --- Data Merging (Static + Dynamic) ---
     const currentCategories = useMemo(() => {
@@ -298,14 +280,23 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
         setSelectedProduct(null);
     };
 
-    const handleFinishOrder = () => {
-        finishOrder();
-        setIsProcessing(true);
-        setTimeout(() => {
-            setIsProcessing(false);
-            setShowOrderCode(true);
-            setIsOrderModalOpen(false);
-        }, 6000);
+    // const handleFinishOrder = () => {
+    //     finishOrder();
+    //     setIsProcessing(true);
+    //     setTimeout(() => {
+    //         setIsProcessing(false);
+    //         setShowOrderCode(true);
+    //         setIsOrderModalOpen(false);
+    //     }, 6000);
+    // }
+
+    const handleUpdateQty = (itemId, obs, delta) => {
+        updateQty(itemId, obs, delta);
+    };
+
+    const handleResetOrder = () => {
+        setShowOrderCode(false);
+        clearCart();
     };
 
     const handleViewOrders = () => {
@@ -321,6 +312,51 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
     };
 
     // Auto-scroll Banners
+    const handleFinishOrder = async () => {
+        // const orderId = "#" + Math.floor(1000 + Math.random() * 9000);
+        const currentItems = [...cart];
+        // setActiveOrderCode(orderId);
+        setActiveOrderItems(currentItems);
+
+        // const handleFinishOrder = async () => {
+        setIsOrderModalOpen(false);
+        setIsProcessing(true);
+
+        try {
+            const restaurantId = import.meta.env.VITE_RESTAURANT_ID;
+            const transactionId = crypto.randomUUID();
+
+            // Assume customerId might be stored, otherwise anonymous
+            const customerId = localStorage.getItem('menux_customer_id');
+
+            const payload = {
+                restaurantId,
+                transactionId,
+                customerId: customerId || undefined,
+                items: cart.map(item => ({
+                    menuItemId: item.id,
+                    quantity: item.qty,
+                    observation: item.obs
+                }))
+            };
+
+            const order = await orderService.createOrder(payload);
+
+            setIsProcessing(false);
+
+            setActiveOrderCode(order.code);
+            // localStorage.setItem('menux_active_order', order.code); // Managed by useCart
+            setShowOrderCode(true);
+            clearCart();
+        } catch (error) {
+            console.error("Order failed:", error);
+            setIsProcessing(false);
+            alert("Erro ao enviar pedido. Tente novamente.");
+        }
+
+    };
+
+    // Carousel Automático (Rolagem)
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentIndex((prev) => {
@@ -464,17 +500,14 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                                     image: b.image
                                 })}
                             >
-<<<<<<< HEAD
                                 <span className="featured-tag">{b.tag}</span>
                                 <h3 className="featured-title">{b.title}</h3>
                                 <div className="featured-footer">
                                     <span className="featured-price">{b.price}</span>
                                     <button className="btn-order-now">Adicionar</button>
                                     {/* <span className="featured-tag" style={{ color: b.item.imageUrl ? 'rgba(255,255,255,0.9)' : undefined }}>{b.item.tag}</span>
-=======
                                 {/* {console.log(b)} */}
-                                <span className="featured-tag" style={{ color: b.item.imageUrl ? 'rgba(255,255,255,0.9)' : undefined }}>{b.item.tag}</span>
->>>>>>> ab0dcc9 (menux - alterações no carrossel 2)
+                                    {/* <span className="featured-tag" style={{ color: b.item.imageUrl ? 'rgba(255,255,255,0.9)' : undefined }}>{b.item.tag}</span>
                                 <h3 className="featured-title" style={{ color: b.item.imageUrl ? 'white' : undefined }}>{b.item.name}</h3>
                                 <div className="featured-footer">
                                     <span className="featured-price" style={{ color: b.item.imageUrl ? 'white' : undefined }}>{Number(b.item.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
@@ -482,8 +515,8 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                                 </div>
                             </div>
                         ))}
-                    </div>
-                </section>
+                    </div >
+                </section >
 
                 <CategoryNav
                     categories={currentCategories}
@@ -507,37 +540,39 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                     <span className="menu-footer-text">Desenvolvido por</span>
                     <img src={imgLogo} alt="Menux" className="menu-footer-logo" />
                 </footer>
-            </div>
+            </div >
 
             {/* Floating Maestro Tabbar */}
-            {!selectedProduct && (
-                <>
-                    <div
-                        className={`floating-tabbar-container ${cartCount > 0 ? 'has-cart' : ''}`}
-                        role="button"
-                        aria-label="Abrir assistente Menux"
-                        onClick={() => {
-                            setMaestroInitialView('welcome');
-                            setIsMaestroOpen(true);
-                        }}
-                    >
-                        <div className="maestro-icon-wrapper">
-                            <img src="/icon-menux.svg" alt="Maestro" className="maestro-icon" />
+            {
+                !selectedProduct && (
+                    <>
+                        <div
+                            className={`floating-tabbar-container ${cartCount > 0 ? 'has-cart' : ''}`}
+                            role="button"
+                            aria-label="Abrir assistente Menux"
+                            onClick={() => {
+                                setMaestroInitialView('welcome');
+                                setIsMaestroOpen(true);
+                            }}
+                        >
+                            <div className="maestro-icon-wrapper">
+                                <img src="/icon-menux.svg" alt="Maestro" className="maestro-icon" />
+                            </div>
+                            <div className="maestro-text-group">
+                                <span className="maestro-title">Olá, eu sou o Menux!</span>
+                                <span className="maestro-subtitle">Clica aqui que eu te ajudo...</span>
+                            </div>
                         </div>
-                        <div className="maestro-text-group">
-                            <span className="maestro-title">Olá, eu sou o Menux!</span>
-                            <span className="maestro-subtitle">Clica aqui que eu te ajudo...</span>
-                        </div>
-                    </div>
 
-                    {cartCount > 0 && (
-                        <div className="cart-floating-button" onClick={() => setIsOrderModalOpen(true)} role="button" aria-label="Ver pedido">
-                            <img src="/icon-pedido.svg" alt="Pedido" className="cart-icon" />
-                            <div className="cart-badge">{cartCount}</div>
-                        </div>
-                    )}
-                </>
-            )}
+                        {cartCount > 0 && (
+                            <div className="cart-floating-button" onClick={() => setIsOrderModalOpen(true)} role="button" aria-label="Ver pedido">
+                                <img src="/icon-pedido.svg" alt="Pedido" className="cart-icon" />
+                                <div className="cart-badge">{cartCount}</div>
+                            </div>
+                        )}
+                    </>
+                )
+            }
 
             <AnimatePresence>
                 {selectedProduct && (
@@ -608,6 +643,6 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                     />
                 )}
             </AnimatePresence>
-        </div>
+        </div >
     );
 }
