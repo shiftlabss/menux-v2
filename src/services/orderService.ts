@@ -17,5 +17,12 @@ export const orderService = {
             params: { restaurantId }
         });
         return response.data;
+    },
+
+    getTemporaryCustomerOrders: async (temporaryCustomerId: string, restaurantId?: string): Promise<Order[]> => {
+        const response = await api.get<Order[]>(`/orders/temporary-customer/${temporaryCustomerId}`, {
+            params: { restaurantId }
+        });
+        return response.data;
     }
 };

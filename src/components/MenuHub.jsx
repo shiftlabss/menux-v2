@@ -11,6 +11,7 @@ import { useStudio } from '../context/StudioContext';
 import { useToast } from '../context/ToastContext';
 import MyOrdersModal from './MyOrdersModal';
 import { orderService } from '../services/orderService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const imgLogo = "/logo-menux.svg";
@@ -416,18 +417,24 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
             const transactionId = generateUUID();
 
             // Assume customerId might be stored, otherwise anonymous
-            const customerId = localStorage.getItem('menux_customer_id');
+            const customerId = await AsyncStorage.getItem('menux_customer_id');
+            console.log(customerId);
 
             const payload = {
                 restaurantId,
                 transactionId,
-                customerId: customerId || undefined,
                 items: cart.map(item => ({
                     menuItemId: item.id,
                     quantity: item.qty,
                     observation: item.obs
                 }))
             };
+
+            if (userName) {
+                payload.customerId = customerId;
+            } else {
+                payload.temporaryCustomerId = customerId;
+            }
 
             const order = await orderService.createOrder(payload);
 
@@ -442,7 +449,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
             setIsProcessing(false);
             alert("Erro ao enviar pedido. Tente novamente.");
         }
-        // >>>>>>> fb8a40e (OrderModal - Exibir Sugestoes - bug fix)
+
     };
 
     // Carousel Automático (Rolagem)

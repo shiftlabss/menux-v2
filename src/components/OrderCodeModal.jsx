@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 export default function OrderCodeModal({ code, onViewOrders }) {
     // Split code into array of characters, handle number or string
-    const codeChars = String(code).split('');
+    const codeChars = String(code).padStart(4, '0').split('');
 
     return (
         <motion.div
