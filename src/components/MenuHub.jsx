@@ -23,6 +23,7 @@ import useAdminPin from '../hooks/useAdminPin';
 import { useUser } from '../context/UserContext';
 
 import { orderService } from '../services/orderService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const imgLogo = "/logo-menux.svg";
@@ -407,18 +408,24 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
             const transactionId = generateUUID();
 
             // Assume customerId might be stored, otherwise anonymous
-            const customerId = localStorage.getItem('menux_customer_id');
+            const customerId = await AsyncStorage.getItem('menux_customer_id');
+            console.log(customerId);
 
             const payload = {
                 restaurantId,
                 transactionId,
-                customerId: customerId || undefined,
                 items: cart.map(item => ({
                     menuItemId: item.id,
                     quantity: item.qty,
                     observation: item.obs
                 }))
             };
+
+            if (userName) {
+                payload.customerId = customerId;
+            } else {
+                payload.temporaryCustomerId = customerId;
+            }
 
             const order = await orderService.createOrder(payload);
 

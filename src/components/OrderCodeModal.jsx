@@ -4,7 +4,7 @@ import { useState } from 'react';
 export default function OrderCodeModal({ code, onViewOrders }) {
     const [copied, setCopied] = useState(false);
     // Split code into array of characters, handle number or string
-    const codeChars = String(code).split('');
+    const codeChars = String(code).padStart(4, '0').split('');
 
     const handleCopyCode = async () => {
         try {

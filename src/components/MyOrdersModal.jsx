@@ -39,7 +39,14 @@ export default function MyOrdersModal({ onClose, userName, activeOrderCode, acti
             setLoading(true);
             try {
                 const restaurantId = import.meta.env.VITE_RESTAURANT_ID;
-                const data = await orderService.getCustomerOrders(customerId, restaurantId);
+                let data;
+
+                if (userName) {
+                    data = await orderService.getCustomerOrders(customerId, restaurantId);
+                } else {
+                    data = await orderService.getTemporaryCustomerOrders(customerId, restaurantId);
+                }
+
                 // Sort by date desc
                 const sorted = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 setOrders(sorted);
@@ -50,9 +57,7 @@ export default function MyOrdersModal({ onClose, userName, activeOrderCode, acti
             }
         };
 
-        if (userName) { // Only fetch if 'logged in' (simulated by userName check)
-            fetchOrders();
-        }
+        fetchOrders();
     }, [userName]);
 
     const renderedOrders = orders.length > 0 ? orders : []; // Use MOCK_TODAY if needed, but per instruction we fetch.
