@@ -1,4 +1,4 @@
-import { getMenuHighlights } from '../services/api';
+import { getMenuHighlights, getRestaurantBySlug } from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import ProductDetailModal from './ProductDetailModal';
@@ -24,11 +24,27 @@ import { useUser } from '../context/UserContext';
 
 import { orderService } from '../services/orderService';
 
+
 const imgLogo = "/logo-menux.svg";
 const imgVerify = "/verify-icon.svg";
 
 export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccount }) {
     const { userName, phone, userAvatar, updateAvatar, updateProfile, registeredAt } = useUser();
+    const RoomServiceIcon = () => (
+        <svg width="24" height="24" viewBox="0 -960 960 960" fill="black">
+            <path d="M480-200q-142 0-248.5-47T85-375q-4-2-6-5.5t-2-7.5q0-5 3.5-8.5T89-400h782q5 0 8.5 3.5t3.5 8.5q0 4-2 7.5t-6 5.5q-40 81-146.5 128Q582-200 480-200Zm0-240q-137 0-240.5-83T121-720q-1-4-1-6.5t1.5-4.5q1.5-2 4.5-3.5t6.5-1.5h693q4 0 6.5 1.5t4.5 3.5q2 2 1.5 4.5t-1.5 6.5q-15 114-118.5 197T480-440Zm0-320q-17 0-28.5-11.5T440-800q0-17 11.5-28.5T480-840q17 0 28.5 11.5T520-800q0 17-11.5 28.5T480-760Z" />
+        </svg>
+    );
+    const generateUUID = () => {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+            return crypto.randomUUID();
+        }
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    };
+
     const RoomServiceIcon = () => (
         <svg width="24" height="24" viewBox="0 -960 960 960" fill="black">
             <path d="M480-200q-142 0-248.5-47T85-375q-4-2-6-5.5t-2-7.5q0-5 3.5-8.5T89-400h782q5 0 8.5 3.5t3.5 8.5q0 4-2 7.5t-6 5.5q-40 81-146.5 128Q582-200 480-200Zm0-240q-137 0-240.5-83T121-720q-1-4-1-6.5t1.5-4.5q1.5-2 4.5-3.5t6.5-1.5h693q4 0 6.5 1.5t4.5 3.5q2 2 1.5 4.5t-1.5 6.5q-15 114-118.5 197T480-440Zm0-320q-17 0-28.5-11.5T440-800q0-17 11.5-28.5T480-840q17 0 28.5 11.5T520-800q0 17-11.5 28.5T480-760Z" />
@@ -190,6 +206,7 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
 
     const { showToast } = useToast();
     const [banners, setBanners] = useState([]);
+    const [restaurantInfo, setRestaurantInfo] = useState(null);
 
     // --- Custom Hooks ---
     const {
@@ -200,6 +217,19 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
 
     useEffect(() => {
         if (import.meta.env.VITE_USE_MOCK_AUTH === 'false') {
+            const fetchInfo = async () => {
+                try {
+                    const slug = import.meta.env.VITE_RESTAURANT_SLUG || 'menux-default';
+                    const data = await getRestaurantBySlug(slug);
+                    if (data) {
+                        setRestaurantInfo(data);
+                    }
+                } catch (err) {
+                    console.error("Failed to fetch restaurant info:", err);
+                }
+            };
+            fetchInfo();
+
             const fetchHighlights = async () => {
                 try {
                     const restaurantId = import.meta.env.VITE_RESTAURANT_ID;
@@ -216,7 +246,6 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                             ...item
                         }));
                         setBanners(newBanners);
-                        // console.log(newBanners);
                     }
                 } catch (err) {
                     console.error("Failed to fetch highlights:", err);
@@ -226,8 +255,59 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
         }
     }, []);
 
+    // Session Management (Guest ID)
+    useEffect(() => {
+        const manageSession = () => {
+            const SESSION_KEY = 'menux_session';
+            const CUST_ID_KEY = 'menux_customer_id';
+            const MAX_DURATION = 12 * 60 * 60 * 1000; // 12 hours
 
-    const { branding, categories: dynamicCategories, products: dynamicProducts } = useStudio();
+            const now = Date.now();
+            let session = null;
+            try {
+                session = JSON.parse(localStorage.getItem(SESSION_KEY));
+            } catch (e) {
+                // ignore
+            }
+
+            // Check if session is valid
+            const isSessionValid = session && (now - session.startTime < MAX_DURATION);
+
+            if (!isSessionValid) {
+                // Start new session
+                const guestId = generateUUID();
+                const newSession = {
+                    startTime: now,
+                    guestId: guestId
+                };
+                localStorage.setItem(SESSION_KEY, JSON.stringify(newSession));
+
+                // If user is NOT logged in, assign the guest ID
+                if (!userName) {
+                    localStorage.setItem(CUST_ID_KEY, guestId);
+                    console.log("[MenuHub] New Guest Session Started:", guestId);
+                }
+            } else {
+                // Session is valid. If user is NOT logged in and we somehow lost the ID, restore it
+                if (!userName) {
+                    const currentId = localStorage.getItem(CUST_ID_KEY);
+                    if (!currentId) {
+                        localStorage.setItem(CUST_ID_KEY, session.guestId);
+                        console.log("[MenuHub] Restored Guest ID:", session.guestId);
+                    }
+                }
+            }
+        };
+
+        manageSession();
+    }, [userName]);
+
+    // Cart Persistence
+    // useEffect(() => {
+    //     const savedCart = localStorage.getItem('menux_cart');
+    //     if (savedCart) setCart(JSON.parse(savedCart));
+
+    //     const { branding, categories: dynamicCategories, products: dynamicProducts } = useStudio();
 
 
 
@@ -324,7 +404,7 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
 
         try {
             const restaurantId = import.meta.env.VITE_RESTAURANT_ID;
-            const transactionId = crypto.randomUUID();
+            const transactionId = generateUUID();
 
             // Assume customerId might be stored, otherwise anonymous
             const customerId = localStorage.getItem('menux_customer_id');
@@ -460,23 +540,28 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
             <div className="menu-scroll-area" ref={scrollAreaRef}>
                 <div
                     className="restaurant-banner"
-                    style={{ backgroundImage: branding.restCover ? `url(${branding.restCover})` : 'none' }}
+                    style={{ backgroundImage: (restaurantInfo?.headerUrl) ? `url(${restaurantInfo.headerUrl})` : (branding.restCover ? `url(${branding.restCover})` : 'none') }}
                 ></div>
 
                 <div className="restaurant-info">
                     <div
                         className="restaurant-avatar"
-                        style={{ backgroundImage: branding.restLogo ? `url(${branding.restLogo})` : 'none' }}
-                        onMouseDown={onLongPressStart}
-                        onMouseUp={onLongPressEnd}
-                        onTouchStart={onLongPressStart}
-                        onTouchEnd={onLongPressEnd}
+                        // style={{ backgroundImage: branding.restLogo ? `url(${branding.restLogo})` : 'none' }}
+                        // onMouseDown={onLongPressStart}
+                        // onMouseUp={onLongPressEnd}
+                        // onTouchStart={onLongPressStart}
+                        // onTouchEnd={onLongPressEnd}
+                        style={{ backgroundImage: (restaurantInfo?.logoUrl) ? `url(${restaurantInfo.logoUrl})` : (branding.restLogo ? `url(${branding.restLogo})` : 'none') }}
+                        onMouseDown={handleLongPressStart}
+                        onMouseUp={handleLongPressEnd}
+                        onTouchStart={handleLongPressStart}
+                        onTouchEnd={handleLongPressEnd}
                     ></div>
                     <div className="restaurant-name-row">
-                        <h2 className="restaurant-name">{branding.restName}</h2>
+                        <h2 className="restaurant-name">{restaurantInfo?.name || branding.restName}</h2>
                         <img src={imgVerify} alt="Verificado" className="verified-icon" />
                     </div>
-                    <p className="restaurant-bio">{branding.restBio}</p>
+                    <p className="restaurant-bio">{restaurantInfo?.description || branding.restBio}</p>
                 </div>
 
                 <section className="featured-section">

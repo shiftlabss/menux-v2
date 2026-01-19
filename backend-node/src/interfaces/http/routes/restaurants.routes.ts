@@ -24,6 +24,7 @@ const restaurantsController = new RestaurantsController();
  *       200:
  *         description: Restaurant settings
  */
+restaurantsRouter.get('/:slug', restaurantsController.showBySlug);
 restaurantsRouter.get('/me', ensureAuthenticated, restaurantsController.show);
 
 /**

@@ -25,3 +25,8 @@ export const getUpsellRules = async (triggerProductId: string, upsellType: strin
     });
     return response.data;
 };
+
+export const getRestaurantBySlug = async (slug: string) => {
+    const response = await api.get(`/restaurants/${slug}`);
+    return response.data;
+};
