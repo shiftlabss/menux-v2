@@ -9,6 +9,16 @@ import StudioView from './components/StudioView'
 import DesignSystemView from './components/DesignSystemView'
 import './index.css'
 
+const generateUUID = () => {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
+
 function AppContent() {
   const [step, setStep] = useState(() => {
     const params = new URLSearchParams(window.location.search);
@@ -42,6 +52,7 @@ function AppContent() {
             onLogout={() => {
               setUserName('');
               setPhone('');
+              localStorage.removeItem('menux_customer_id');
               setStep('onboarding');
             }}
           />
@@ -97,11 +108,21 @@ function AppContent() {
             onChangePhone={() => setStep('login')}
             onFinish={() => {
               // Simulate Auth Success (usually save token)
+              // For simulation, we generate a stable ID for the "User" or random.
+              // To make "history" work meaningfully in mock, let's persist one if returning.
+              let userId = generateUUID();
+
               if (isReturningUser) {
                 setUserName("Usuário Retorno"); // Simulated name fetch
+                // Simulate a fixed ID for the returning user so we can see history if we had backend
+                // userId = "fixed-returning-user-id"; 
               }
+
+              localStorage.setItem('menux_customer_id', userId);
+
               setStep('hub');
             }}
+
           />
         )}
         {step === 'design-system' && (

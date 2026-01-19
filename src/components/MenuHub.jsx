@@ -1,4 +1,4 @@
-import { getMenuHighlights } from '../services/api';
+import { getMenuHighlights, getRestaurantBySlug } from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import ProductDetailModal from './ProductDetailModal';
@@ -12,8 +12,19 @@ import { useToast } from '../context/ToastContext';
 import MyOrdersModal from './MyOrdersModal';
 import { orderService } from '../services/orderService';
 
+
 const imgLogo = "/logo-menux.svg";
 const imgVerify = "/verify-icon.svg";
+
+const generateUUID = () => {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        return crypto.randomUUID();
+    }
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+};
 
 const RoomServiceIcon = () => (
     <svg width="24" height="24" viewBox="0 -960 960 960" fill="black">
@@ -183,9 +194,23 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
     const [isMyOrdersOpen, setIsMyOrdersOpen] = useState(false);
     const { showToast } = useToast();
     const [banners, setBanners] = useState([]);
+    const [restaurantInfo, setRestaurantInfo] = useState(null);
 
     useEffect(() => {
         if (import.meta.env.VITE_USE_MOCK_AUTH === 'false') {
+            const fetchInfo = async () => {
+                try {
+                    const slug = import.meta.env.VITE_RESTAURANT_SLUG || 'menux-default';
+                    const data = await getRestaurantBySlug(slug);
+                    if (data) {
+                        setRestaurantInfo(data);
+                    }
+                } catch (err) {
+                    console.error("Failed to fetch restaurant info:", err);
+                }
+            };
+            fetchInfo();
+
             const fetchHighlights = async () => {
                 try {
                     const restaurantId = import.meta.env.VITE_RESTAURANT_ID;
@@ -202,7 +227,6 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                             ...item
                         }));
                         setBanners(newBanners);
-                        // console.log(newBanners);
                     }
                 } catch (err) {
                     console.error("Failed to fetch highlights:", err);
@@ -211,6 +235,53 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
             fetchHighlights();
         }
     }, []);
+
+    // Session Management (Guest ID)
+    useEffect(() => {
+        const manageSession = () => {
+            const SESSION_KEY = 'menux_session';
+            const CUST_ID_KEY = 'menux_customer_id';
+            const MAX_DURATION = 12 * 60 * 60 * 1000; // 12 hours
+
+            const now = Date.now();
+            let session = null;
+            try {
+                session = JSON.parse(localStorage.getItem(SESSION_KEY));
+            } catch (e) {
+                // ignore
+            }
+
+            // Check if session is valid
+            const isSessionValid = session && (now - session.startTime < MAX_DURATION);
+
+            if (!isSessionValid) {
+                // Start new session
+                const guestId = generateUUID();
+                const newSession = {
+                    startTime: now,
+                    guestId: guestId
+                };
+                localStorage.setItem(SESSION_KEY, JSON.stringify(newSession));
+
+                // If user is NOT logged in, assign the guest ID
+                if (!userName) {
+                    localStorage.setItem(CUST_ID_KEY, guestId);
+                    console.log("[MenuHub] New Guest Session Started:", guestId);
+                }
+            } else {
+                // Session is valid. If user is NOT logged in and we somehow lost the ID, restore it
+                if (!userName) {
+                    const currentId = localStorage.getItem(CUST_ID_KEY);
+                    if (!currentId) {
+                        localStorage.setItem(CUST_ID_KEY, session.guestId);
+                        console.log("[MenuHub] Restored Guest ID:", session.guestId);
+                    }
+                }
+            }
+        };
+
+        manageSession();
+    }, [userName]);
 
     // Cart Persistence
     useEffect(() => {
@@ -342,7 +413,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
 
         try {
             const restaurantId = import.meta.env.VITE_RESTAURANT_ID;
-            const transactionId = crypto.randomUUID();
+            const transactionId = generateUUID();
 
             // Assume customerId might be stored, otherwise anonymous
             const customerId = localStorage.getItem('menux_customer_id');
@@ -497,23 +568,23 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
             <div className="menu-scroll-area" ref={scrollAreaRef}>
                 <div
                     className="restaurant-banner"
-                    style={{ backgroundImage: branding.restCover ? `url(${branding.restCover})` : 'none' }}
+                    style={{ backgroundImage: (restaurantInfo?.headerUrl) ? `url(${restaurantInfo.headerUrl})` : (branding.restCover ? `url(${branding.restCover})` : 'none') }}
                 ></div>
 
                 <div className="restaurant-info">
                     <div
                         className="restaurant-avatar"
-                        style={{ backgroundImage: branding.restLogo ? `url(${branding.restLogo})` : 'none' }}
+                        style={{ backgroundImage: (restaurantInfo?.logoUrl) ? `url(${restaurantInfo.logoUrl})` : (branding.restLogo ? `url(${branding.restLogo})` : 'none') }}
                         onMouseDown={handleLongPressStart}
                         onMouseUp={handleLongPressEnd}
                         onTouchStart={handleLongPressStart}
                         onTouchEnd={handleLongPressEnd}
                     ></div>
                     <div className="restaurant-name-row">
-                        <h2 className="restaurant-name">{branding.restName}</h2>
+                        <h2 className="restaurant-name">{restaurantInfo?.name || branding.restName}</h2>
                         <img src={imgVerify} alt="Verificado" className="verified-icon" />
                     </div>
-                    <p className="restaurant-bio">{branding.restBio}</p>
+                    <p className="restaurant-bio">{restaurantInfo?.description || branding.restBio}</p>
                 </div>
 
                 <section className="featured-section">
