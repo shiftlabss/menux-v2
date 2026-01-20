@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useToast } from '../context/ToastContext';
 import { useState, useEffect, useRef } from 'react';
 import { getUpsellRules } from '../services/api';
+import { analytics } from '../services/analyticsService';
 
 const TrashIcon = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -101,6 +102,30 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
     }, 0);
 
     const formattedTotal = cartTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    // Analytics: Tracker de Impressões (Upsell)
+    useEffect(() => {
+        if (!recommendations || recommendations.length === 0) return;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.target.dataset.upsellId) {
+                    const upsellId = entry.target.dataset.upsellId;
+                    analytics.track('impression', {
+                        itemId: upsellId,
+                        context: 'upsell-carousel'
+                    });
+                }
+            });
+        }, { threshold: 0.6 });
+
+        // Pequeno delay para garantir render
+        setTimeout(() => {
+            const cards = document.querySelectorAll('.upsell-card');
+            cards.forEach(card => observer.observe(card));
+        }, 1000);
+
+        return () => observer.disconnect();
+    }, [recommendations]);
 
     const handleMaestroClick = (e) => {
         e.preventDefault();
@@ -196,7 +221,7 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
                                     const qty = inCart ? inCart.qty : 0;
 
                                     return (
-                                        <div key={rec.id} className="rec-card">
+                                        <div key={rec.id} className="rec-card upsell-card" data-upsell-id={rec.id}>
                                             <div className="rec-img" style={{ backgroundImage: rec.image ? `url(${rec.image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#eee' }}>
                                                 <div className="rec-qty-overlay" onClick={(e) => e.stopPropagation()}>
                                                     {qty > 0 ? (
@@ -215,6 +240,10 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
                                                         <button className="rec-add-btn" onClick={() => {
                                                             const decisionTime = Math.floor((Date.now() - startTimeRef.current) / 1000);
                                                             onAddToCart(rec, '', 1, decisionTime, { isSuggestion: true, suggestionType: 'upsell' });
+                                                            analytics.track('click', {
+                                                                itemId: rec.id,
+                                                                context: 'upsell-carousel'
+                                                            });
                                                             showToast("Item adicionado ao pedido!");
                                                         }}>
                                                             <PlusIcon />
