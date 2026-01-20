@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useToast } from '../context/ToastContext';
 
 const MenuxLogo = ({ height = 24 }) => (
@@ -10,6 +10,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
     const [observation, setObservation] = useState('');
     const [quantity, setQuantity] = useState(1);
     const { showToast } = useToast();
+    const startTimeRef = useRef(Date.now());
 
     if (!product) return null;
 
@@ -78,7 +79,10 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                                 </button>
                             </div>
                         </div>
-                        <button className="btn-add-order" onClick={() => { onAddToCart(product, observation, quantity); }}>
+                        <button className="btn-add-order" onClick={() => {
+                            const decisionTime = Math.floor((Date.now() - startTimeRef.current) / 1000);
+                            onAddToCart(product, observation, quantity, decisionTime);
+                        }}>
                             Adicionar ao pedido
                         </button>
                     </div>

@@ -312,7 +312,71 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
 
 
 
+<<<<<<< HEAD
     // --- Data Merging (Static + Dynamic) ---
+=======
+    // useEffect(() => {
+    //     localStorage.setItem('menux_active_items', JSON.stringify(activeOrderItems)); //tem um erro aqui quando lança um json grande
+    // }, [activeOrderItems]);
+
+    useEffect(() => {
+        if (activeOrderCode) localStorage.setItem('menux_active_order', activeOrderCode);
+    }, [activeOrderCode]);
+
+    // KPI: Inicializa o contador de tempo de decisão se não existir
+    useEffect(() => {
+        const nowStr = Date.now().toString();
+        if (!localStorage.getItem('menux_order_cycle_start')) {
+            localStorage.setItem('menux_order_cycle_start', nowStr);
+        }
+        // Inicializa a última interação também
+        if (!localStorage.getItem('menux_last_interaction')) {
+            localStorage.setItem('menux_last_interaction', nowStr);
+        }
+
+        // Tracker de Inatividade (IDLE)
+        // Se o usuário ficar > 60s sem interagir, "pausamos" o relógio movendo o start_time para frente
+        const IDLE_THRESHOLD_MS = 60000; // 60 segundos para considerar IDLE
+
+        const handleActivity = () => {
+            const now = Date.now();
+            const lastInteraction = parseInt(localStorage.getItem('menux_last_interaction') || now);
+            const diff = now - lastInteraction;
+
+            if (diff > IDLE_THRESHOLD_MS) {
+                // Usuário voltou de um estado IDLE
+                // Recupera o start time atual
+                const currentStart = parseInt(localStorage.getItem('menux_order_cycle_start') || now);
+
+                // "Empurra" o início para frente pelo tempo que ficou parado
+                // Isso garante que o tempo IDLE não conte no KPI de decisão
+                const newStart = currentStart + diff;
+
+                localStorage.setItem('menux_order_cycle_start', newStart.toString());
+                console.log(`[KPI] Retorno de IDLE detectado. Gap de ${Math.floor(diff / 1000)}s descontado do tempo de decisão.`);
+            }
+
+            // Atualiza timestamp da última interação para Agora
+            localStorage.setItem('menux_last_interaction', now.toString());
+        };
+
+        // Eventos que consideram "Atividade"
+        window.addEventListener('click', handleActivity);
+        window.addEventListener('touchstart', handleActivity);
+        window.addEventListener('scroll', handleActivity);
+        window.addEventListener('mousemove', handleActivity);
+
+        return () => {
+            window.removeEventListener('click', handleActivity);
+            window.removeEventListener('touchstart', handleActivity);
+            window.removeEventListener('scroll', handleActivity);
+            window.removeEventListener('mousemove', handleActivity);
+        };
+    }, []);
+    const { branding, categories: dynamicCategories, products: dynamicProducts } = useStudio();
+
+    // Memoize the data merging to prevent infinite render loops
+>>>>>>> c7849c2 (MNX-88 Implementação de Eventos de medição de KPI Tempo de Decisão no Menux)
     const currentCategories = useMemo(() => {
         if (dynamicCategories.length === 0) return MENU_DATA;
 
@@ -355,8 +419,23 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
         setIsMaestroOpen(true);
     };
 
+<<<<<<< HEAD
     const handleAddToCart = (product, obs, qty = 1) => {
         addToCart(product, obs, qty);
+=======
+    const handleAddToCart = (product, obs, qty = 1, decisionTime = 0) => {
+        setCart(prev => {
+            const existing = prev.find(item => item.id === product.id && item.obs === obs);
+            if (existing) {
+                return prev.map(item =>
+                    (item.id === product.id && item.obs === obs)
+                        ? { ...item, qty: item.qty + qty, decisionTime: (item.decisionTime || 0) + decisionTime }
+                        : item
+                );
+            }
+            return [...prev, { ...product, qty, obs, decisionTime }];
+        });
+>>>>>>> c7849c2 (MNX-88 Implementação de Eventos de medição de KPI Tempo de Decisão no Menux)
         showToast("Item adicionado ao pedido!");
         setSelectedProduct(null);
     };
@@ -411,14 +490,26 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
             const customerId = await AsyncStorage.getItem('menux_customer_id');
             console.log(customerId);
 
+            // --- KPI: Tempo de Decisão (Ciclo Total) ---
+            const cycleStartTime = parseInt(localStorage.getItem('menux_order_cycle_start') || Date.now());
+            const totalDecisionTime = Math.floor((Date.now() - cycleStartTime) / 1000);
+
+            // Log para debug
+            console.log(`[KPI] Total Order Time: ${totalDecisionTime}s`);
+            cart.forEach(item => console.log(`[KPI] Item ${item.name}: ${item.decisionTime || 0}s`));
+
             const payload = {
                 restaurantId,
                 transactionId,
                 items: cart.map(item => ({
                     menuItemId: item.id,
                     quantity: item.qty,
-                    observation: item.obs
-                }))
+                    observation: item.obs,
+                    decisionTime: item.decisionTime || 0 // Tempo de decisão individual do item
+                })),
+                kpis: {
+                    totalDecisionTime: totalDecisionTime // Tempo total do ciclo do pedido
+                }
             };
 
             if (userName) {
@@ -427,9 +518,16 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                 payload.temporaryCustomerId = customerId;
             }
 
+
+
             const order = await orderService.createOrder(payload);
 
             setIsProcessing(false);
+
+            // --- KPI: Reset para o Próximo Pedido (2, 3, 4...) ---
+            // O fim deste pedido marca o início da contagem de tempo para o próximo
+            localStorage.setItem('menux_order_cycle_start', Date.now().toString());
+            // -----------------------------------------------------
 
             setActiveOrderCode(order.code);
             // localStorage.setItem('menux_active_order', order.code); // Managed by useCart
