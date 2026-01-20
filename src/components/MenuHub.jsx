@@ -312,9 +312,7 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
 
 
 
-<<<<<<< HEAD
     // --- Data Merging (Static + Dynamic) ---
-=======
     // useEffect(() => {
     //     localStorage.setItem('menux_active_items', JSON.stringify(activeOrderItems)); //tem um erro aqui quando lança um json grande
     // }, [activeOrderItems]);
@@ -376,7 +374,6 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
     const { branding, categories: dynamicCategories, products: dynamicProducts } = useStudio();
 
     // Memoize the data merging to prevent infinite render loops
->>>>>>> c7849c2 (MNX-88 Implementação de Eventos de medição de KPI Tempo de Decisão no Menux)
     const currentCategories = useMemo(() => {
         if (dynamicCategories.length === 0) return MENU_DATA;
 
@@ -419,11 +416,15 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
         setIsMaestroOpen(true);
     };
 
-<<<<<<< HEAD
-    const handleAddToCart = (product, obs, qty = 1) => {
-        addToCart(product, obs, qty);
-=======
-    const handleAddToCart = (product, obs, qty = 1, decisionTime = 0) => {
+    // <<<<<<< HEAD
+    // <<<<<<< HEAD
+    //     const handleAddToCart = (product, obs, qty = 1) => {
+    //         addToCart(product, obs, qty);
+    // =======
+    //     const handleAddToCart = (product, obs, qty = 1, decisionTime = 0) => {
+    // =======
+    const handleAddToCart = (product, obs, qty = 1, decisionTime = 0, sourceInfo = {}) => {
+
         setCart(prev => {
             const existing = prev.find(item => item.id === product.id && item.obs === obs);
             if (existing) {
@@ -433,9 +434,16 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                         : item
                 );
             }
-            return [...prev, { ...product, qty, obs, decisionTime }];
+            return [...prev, {
+                ...product,
+                qty,
+                obs,
+                decisionTime,
+                isSuggestion: sourceInfo.isSuggestion || false,
+                suggestionType: sourceInfo.suggestionType || null
+            }];
         });
->>>>>>> c7849c2 (MNX-88 Implementação de Eventos de medição de KPI Tempo de Decisão no Menux)
+        // >>>>>>> c7849c2 (MNX-88 Implementação de Eventos de medição de KPI Tempo de Decisão no Menux)
         showToast("Item adicionado ao pedido!");
         setSelectedProduct(null);
     };
@@ -505,7 +513,9 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                     menuItemId: item.id,
                     quantity: item.qty,
                     observation: item.obs,
-                    decisionTime: item.decisionTime || 0 // Tempo de decisão individual do item
+                    decisionTime: item.decisionTime || 0, // Tempo de decisão individual do item
+                    isSuggestion: item.isSuggestion || false,
+                    suggestionType: item.suggestionType || null
                 })),
                 kpis: {
                     totalDecisionTime: totalDecisionTime // Tempo total do ciclo do pedido
@@ -574,7 +584,9 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                 name: banner.item.name,
                 desc: banner.item.description || "Prato em destaque.",
                 price: banner.item.price,
-                image: banner.item.imageUrl
+                image: banner.item.imageUrl,
+                // Metadata for potential add
+                _sourceInfo: { isSuggestion: true, suggestionType: 'cross-sell' }
             });
         }
     };

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useToast } from '../context/ToastContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getUpsellRules } from '../services/api';
 
 const TrashIcon = () => (
@@ -25,6 +25,7 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
     const { showToast } = useToast();
     const isEmpty = cartItems.length === 0;
     const [recommendations, setRecommendations] = useState([]);
+    const startTimeRef = useRef(Date.now());
 
     useEffect(() => {
         if (isEmpty) {
@@ -211,7 +212,11 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
 
 
                                                     ) : (
-                                                        <button className="rec-add-btn" onClick={() => { onAddToCart(rec, ''); showToast("Item adicionado ao pedido!"); }}>
+                                                        <button className="rec-add-btn" onClick={() => {
+                                                            const decisionTime = Math.floor((Date.now() - startTimeRef.current) / 1000);
+                                                            onAddToCart(rec, '', 1, decisionTime, { isSuggestion: true, suggestionType: 'upsell' });
+                                                            showToast("Item adicionado ao pedido!");
+                                                        }}>
                                                             <PlusIcon />
                                                         </button>
 

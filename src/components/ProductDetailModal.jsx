@@ -81,7 +81,8 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                         </div>
                         <button className="btn-add-order" onClick={() => {
                             const decisionTime = Math.floor((Date.now() - startTimeRef.current) / 1000);
-                            onAddToCart(product, observation, quantity, decisionTime);
+                            const sourceInfo = product._sourceInfo || {};
+                            onAddToCart(product, observation, quantity, decisionTime, sourceInfo);
                         }}>
                             Adicionar ao pedido
                         </button>
