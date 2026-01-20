@@ -12,6 +12,7 @@ import { useToast } from '../context/ToastContext';
 import MyOrdersModal from './MyOrdersModal';
 import { orderService } from '../services/orderService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { analytics } from '../services/analyticsService';
 
 
 const imgLogo = "/logo-menux.svg";
@@ -180,7 +181,20 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
     const [activeCategory, setActiveCategory] = useState('entradas');
     const [activeSubcategory, setActiveSubcategory] = useState('');
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [selectedProduct, setSelectedProductState] = useState(null);
+
+    // Wrapper para rastrear visualizações de produto
+    const setSelectedProduct = (product) => {
+        if (product) {
+            analytics.track('view', {
+                itemId: product.id,
+                name: product.name,
+                price: product.price
+            });
+        }
+        setSelectedProductState(product);
+    };
+
     const [cart, setCart] = useState([]);
     const cartCount = cart.reduce((acc, item) => acc + item.qty, 0);
     const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
@@ -298,6 +312,29 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
 
     useEffect(() => {
         localStorage.setItem('menux_cart', JSON.stringify(cart));
+
+        // Analytics: Abandono de Carrinho
+        // Enviamos o estado atual para que o backend decida se é abandono (por timeout)
+        if (cart.length > 0) {
+            try {
+                const totalValue = cart.reduce((acc, item) => {
+                    let priceVal = 0;
+                    if (typeof item.price === 'string') {
+                        priceVal = parseFloat(item.price.replace('R$', '').replace(/\s/g, '').replace(',', '.'));
+                    } else if (typeof item.price === 'number') {
+                        priceVal = item.price;
+                    }
+                    return acc + ((isNaN(priceVal) ? 0 : priceVal) * item.qty);
+                }, 0);
+
+                analytics.track('cart_update', {
+                    itemCount: cart.length,
+                    totalValue: totalValue
+                });
+            } catch (err) {
+                console.warn("[Analytics] Erro ao calcular carrinho:", err);
+            }
+        }
     }, [cart]);
 
     // useEffect(() => {
@@ -436,6 +473,17 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
             return prev.map(item => {
                 if (item.id === itemId && item.obs === obs) {
                     const newQty = Math.max(0, item.qty + delta);
+
+                    // Analytics: Item Rejected
+                    if (newQty === 0) {
+                        analytics.track('item_rejected', {
+                            itemId: item.id,
+                            name: item.name,
+                            qtyRemoved: item.qty,
+                            reason: 'manual_remove'
+                        });
+                    }
+
                     return { ...item, qty: newQty };
                 }
                 return item;
@@ -626,6 +674,38 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
         };
     }, [currentCategories]);
 
+    // Analytics: Tracker de Impressões (Banners)
+    useEffect(() => {
+        if (!banners || banners.length === 0) return;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.target.dataset.bannerId) {
+                    const bannerId = entry.target.dataset.bannerId;
+                    // Debounce ou check único:
+                    // Enviamos impressão. O backend ou o analyticsService pode filtrar duplicatas se quiser,
+                    // mas aqui enviamos sempre que entra verdadeiramente na tela.
+                    analytics.track('impression', {
+                        itemId: bannerId,
+                        context: 'cross-sell-carousel'
+                    });
+                    // Opcional: Parar de observar após primeira impressão? 
+                    // observer.unobserve(entry.target); 
+                    // Para carrossel, talvez queiramos contar múltiplas se o user vai e volta? 
+                    // Vamos deixar contando todas por enquanto.
+                }
+            });
+        }, { threshold: 0.6 }); // 60% visível
+
+        // Pequeno delay para garantir render
+        setTimeout(() => {
+            const cards = document.querySelectorAll('.featured-card');
+            cards.forEach(card => observer.observe(card));
+        }, 1000);
+
+        return () => observer.disconnect();
+    }, [banners]);
+
     return (
         <div className="menu-hub-container">
             <header className="menu-header">
@@ -688,7 +768,14 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                                         ? `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), url('${b.item.imageUrl}') center/cover no-repeat`
                                         : b.item.bgColor
                                 }}
-                                onClick={() => handleBannerClick(i)}
+                                data-banner-id={b.item.id}
+                                onClick={() => {
+                                    handleBannerClick(i);
+                                    analytics.track('click', {
+                                        itemId: b.item.id,
+                                        context: 'cross-sell-carousel'
+                                    });
+                                }}
                             >
                                 {/* {console.log(b)} */}
                                 <span className="featured-tag" style={{ color: b.item.imageUrl ? 'rgba(255,255,255,0.9)' : undefined }}>{b.item.tag}</span>
