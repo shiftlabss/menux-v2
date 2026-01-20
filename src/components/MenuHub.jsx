@@ -408,7 +408,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
         setIsMaestroOpen(true);
     };
 
-    const handleAddToCart = (product, obs, qty = 1, decisionTime = 0) => {
+    const handleAddToCart = (product, obs, qty = 1, decisionTime = 0, sourceInfo = {}) => {
         setCart(prev => {
             const existing = prev.find(item => item.id === product.id && item.obs === obs);
             if (existing) {
@@ -418,7 +418,14 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                         : item
                 );
             }
-            return [...prev, { ...product, qty, obs, decisionTime }];
+            return [...prev, {
+                ...product,
+                qty,
+                obs,
+                decisionTime,
+                isSuggestion: sourceInfo.isSuggestion || false,
+                suggestionType: sourceInfo.suggestionType || null
+            }];
         });
         showToast("Item adicionado ao pedido!");
         setSelectedProduct(null);
@@ -486,7 +493,9 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                     menuItemId: item.id,
                     quantity: item.qty,
                     observation: item.obs,
-                    decisionTime: item.decisionTime || 0 // Tempo de decisão individual do item
+                    decisionTime: item.decisionTime || 0, // Tempo de decisão individual do item
+                    isSuggestion: item.isSuggestion || false,
+                    suggestionType: item.suggestionType || null
                 })),
                 kpis: {
                     totalDecisionTime: totalDecisionTime // Tempo total do ciclo do pedido
@@ -558,7 +567,9 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                 name: banner.item.name,
                 desc: banner.item.description || "Prato em destaque.",
                 price: banner.item.price,
-                image: banner.item.imageUrl
+                image: banner.item.imageUrl,
+                // Metadata for potential add
+                _sourceInfo: { isSuggestion: true, suggestionType: 'cross-sell' }
             });
         }
     };
