@@ -3,7 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import ProductDetailModal from './ProductDetailModal';
 import ProductPizzaModal from './ProductPizzaModal';
+<<<<<<< HEAD
 import ProductWineModal from './ProductWineModal';
+=======
+>>>>>>> c17a66c (C8: pizza)
 import OrderModal from './OrderModal';
 import ProcessingModal from './ProcessingModal';
 import OrderCodeModal from './OrderCodeModal';
@@ -953,6 +956,7 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
             <AnimatePresence>
                 {selectedProduct && (
                     (selectedProduct.type === 'pizza' || selectedProduct.optionsConfig || (selectedProduct.choiceItems && selectedProduct.choiceItems.length > 0)) ? (
+                        // selectedProduct.type === 'pizza' ? (
                         <ProductPizzaModal
                             product={selectedProduct}
                             onClose={() => setSelectedProduct(null)}

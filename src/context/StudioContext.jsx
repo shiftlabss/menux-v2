@@ -308,6 +308,25 @@ export const StudioProvider = ({ children }) => {
         });
     }, []);
 
+    // Force inject Pizza if missing (Robustness for Hot Reload)
+    useEffect(() => {
+        setCategories(prev => {
+            if (!prev.find(c => c.id === 'pizzas')) {
+                const pizzaCat = DEFAULT_CATEGORIES.find(c => c.id === 'pizzas');
+                if (pizzaCat) return [pizzaCat, ...prev];
+            }
+            return prev;
+        });
+
+        setProducts(prev => {
+            if (!prev.find(p => p.id === 'pizza-custom')) {
+                const pizzaProd = DEFAULT_PRODUCTS.find(p => p.id === 'pizza-custom');
+                if (pizzaProd) return [pizzaProd, ...prev];
+            }
+            return prev;
+        });
+    }, []);
+
     // Migration logic removed to prevent infinite loops and ID conflicts.
     // The data reset logic in useState initialization handles consistency now.
     // Lógica para corrigir imagens em dados antigos persistidos (Migration)
