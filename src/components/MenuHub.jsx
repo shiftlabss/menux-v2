@@ -112,6 +112,24 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
             ]
         },
         {
+            id: 'pizzas',
+            name: 'Pizzas',
+            subcategories: [
+                {
+                    name: 'Monte do seu jeito', items: [
+                        {
+                            id: 'pizza-custom',
+                            name: "Pizza Customizável",
+                            desc: "Escolha sua massa, sabores, bordas e acompanhamentos.",
+                            price: "R$ 49,90",
+                            image: "/imgs/pratos-principais/pratop-picanha.jpg", // Using a placeholder image that exists
+                            type: 'pizza'
+                        },
+                    ]
+                }
+            ]
+        },
+        {
             id: 'pratos-principais',
             name: 'Pratos Principais',
             subcategories: [
@@ -197,9 +215,6 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
     const pillsRef = useRef(null);
     const reelRef = useRef(null);
     const [currentIndex, setCurrentIndex] = useState(0);
-<<<<<<< HEAD
-    const [selectedProduct, setSelectedProduct] = useState(null);
-=======
     const [selectedProduct, setSelectedProductState] = useState(null);
 
     // Wrapper para rastrear visualizações de produto
@@ -216,7 +231,6 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
 
     const [cart, setCart] = useState([]);
     const cartCount = cart.reduce((acc, item) => acc + item.qty, 0);
->>>>>>> 77d8c59 (MNX-68 Modelagem e implementação de eventos para registro de comportamento de usuário no Menux)
     const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [showOrderCode, setShowOrderCode] = useState(false);
@@ -331,8 +345,6 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
     //     const { branding, categories: dynamicCategories, products: dynamicProducts } = useStudio();
 
 
-<<<<<<< HEAD
-=======
     useEffect(() => {
         localStorage.setItem('menux_cart', JSON.stringify(cart));
 
@@ -359,7 +371,6 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
             }
         }
     }, [cart]);
->>>>>>> 77d8c59 (MNX-68 Modelagem e implementação de eventos para registro de comportamento de usuário no Menux)
 
     // --- Data Merging (Static + Dynamic) ---
     // useEffect(() => {
@@ -508,9 +519,7 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
     // }
 
     const handleUpdateQty = (itemId, obs, delta) => {
-<<<<<<< HEAD
         updateQty(itemId, obs, delta);
-=======
         setCart(prev => {
             return prev.map(item => {
                 if (item.id === itemId && item.obs === obs) {
@@ -531,7 +540,6 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                 return item;
             }).filter(item => item.qty > 0);
         });
->>>>>>> 77d8c59 (MNX-68 Modelagem e implementação de eventos para registro de comportamento de usuário no Menux)
     };
 
     const handleResetOrder = () => {
@@ -798,15 +806,13 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                                         ? `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), url('${b.item.imageUrl}') center/cover no-repeat`
                                         : b.item.bgColor
                                 }}
-<<<<<<< HEAD
-                                onClick={() => setSelectedProduct({
-                                    id: `banner-${i}`,
-                                    name: b.title,
-                                    desc: "Prato em destaque.",
-                                    price: b.price,
-                                    image: b.image
-                                })}
-=======
+                                // onClick={() => setSelectedProduct({
+                                //     id: `banner-${i}`,
+                                //     name: b.title,
+                                //     desc: "Prato em destaque.",
+                                //     price: b.price,
+                                //     image: b.image
+                                // })}
                                 data-banner-id={b.item.id}
                                 onClick={() => {
                                     handleBannerClick(i);
@@ -815,7 +821,6 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                                         context: 'cross-sell-carousel'
                                     });
                                 }}
->>>>>>> 77d8c59 (MNX-68 Modelagem e implementação de eventos para registro de comportamento de usuário no Menux)
                             >
                                 <span className="featured-tag">{b.tag}</span>
                                 <h3 className="featured-title">{b.title}</h3>

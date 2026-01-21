@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import '../styles/ProductPizzaModal.css';
+import './ProductPizzaModal.css';
 
 
 
@@ -101,6 +102,7 @@ export default function ProductPizzaModal({ product, onClose, onAddToCart }) {
         if (!selections.crust) return 'Selecione a borda';
         return null;
     };
+    const canAdd = selections.dough && selections.flavors.filter(Boolean).length === selections.quantity && selections.crust;
 
     return (
         <motion.div
@@ -113,8 +115,8 @@ export default function ProductPizzaModal({ product, onClose, onAddToCart }) {
             <div className="pizza-modal-container">
 
                 <div className="pizza-header">
-                    <button className="pizza-back-button" onClick={onClose} aria-label="Voltar">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+                    <button className="pizza-back-button" onClick={onClose}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                     </button>
                     <div className="pizza-image-placeholder" style={{
                         backgroundImage: product.image ? `url(${product.image})` : 'none'
