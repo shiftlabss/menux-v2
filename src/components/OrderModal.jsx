@@ -58,6 +58,37 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
                                     <span className="order-item-desc">{item.desc}</span>
                                     <span className="order-item-price">{item.price}</span>
 
+                                    {item.obs && (
+                                        <div className="order-item-obs" style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                            {item.obs.split('\n').map((line, i) => (
+                                                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                                                    <div style={{
+                                                        width: '20px',
+                                                        height: '20px',
+                                                        borderRadius: '50%',
+                                                        backgroundColor: '#F2F2F2',
+                                                        color: '#000',
+                                                        fontSize: '12px',
+                                                        fontWeight: '600',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        flexShrink: 0,
+                                                        fontFamily: 'Geist, sans-serif'
+                                                    }}>1</div>
+                                                    <span style={{
+                                                        fontFamily: 'Geist, sans-serif',
+                                                        fontSize: '14px',
+                                                        color: '#8A8A8A',
+                                                        lineHeight: '1.4'
+                                                    }}>
+                                                        {line}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+
                                     {item.extras && item.extras.length > 0 && (
                                         <div className="order-item-extras">
                                             {item.extras.map(extra => (

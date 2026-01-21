@@ -8,10 +8,18 @@ const DEFAULT_BRANDING = {
     restBio: 'Especialistas em gastronomia premium e experiências sensoriais.',
     restCover: '',
     restLogo: '/icon-menux.svg',
+    // restLogo: 'https://img.freepik.com/premium-vector/chef-food-restaurant-logo_100659-548.jpg',
     brandColor: '#7A55FD'
 };
 
 const DEFAULT_CATEGORIES = [
+    {
+        id: 'pizzas',
+        name: 'Pizzas',
+        subcategories: [
+            { id: 'monte-do-seu-jeito', name: 'Monte do seu jeito' }
+        ]
+    },
     {
         id: 'entradas',
         name: 'Entradas',
@@ -60,6 +68,17 @@ const DEFAULT_CATEGORIES = [
 ];
 
 const DEFAULT_PRODUCTS = [
+    // PIZZAS
+    {
+        id: 'pizza-custom',
+        name: "Pizza Customizável",
+        price: "R$ 49,90",
+        desc: "Escolha sua massa, sabores, bordas e acompanhamentos.",
+        categoryId: 'pizzas',
+        subcategoryId: 'monte-do-seu-jeito',
+        image: '/imgs/pratos-principais/pratop-picanha.jpg',
+        type: 'pizza'
+    },
     // ENTRADAS - Frias
     { id: 101, name: 'Carpaccio de Carne', price: 'R$ 48,00', desc: 'Fatias finas de carne bovina crua, parmesão, rúcula e azeite extravirgem.', categoryId: 'entradas', subcategoryId: 'frias', image: '/imgs/entrada/entrada-carpacio-de-carne.jpg' },
     { id: 105, name: 'Burrata com Tomate Confit', price: 'R$ 52,00', desc: 'Burrata cremosa servida com tomates confitados e pesto.', categoryId: 'entradas', subcategoryId: 'frias', image: '/imgs/entrada/entrada-burrata.jpg' },
@@ -143,17 +162,22 @@ export const StudioProvider = ({ children }) => {
                     : cat.name
             }));
         }
+        // Force resetCategories if flag is new
+        if (!localStorage.getItem('menux_v4_pizza_update')) {
+            return DEFAULT_CATEGORIES;
+        }
         return DEFAULT_CATEGORIES;
     });
 
     const [products, setProducts] = useState(() => {
         // Force reset if migration flag missing
-        const resetFlag = localStorage.getItem('menux_v3_reset');
+        const resetFlag = localStorage.getItem('menux_v4_pizza_update');
 
         if (!resetFlag) {
-            console.log("Resetting to V3 Menu Standard...");
-            localStorage.setItem('menux_v3_reset', 'true');
+            console.log("Resetting to V4 (Pizza Update)...");
+            localStorage.setItem('menux_v4_pizza_update', 'true');
             // Clear old data to be safe
+            localStorage.removeItem('menux_studio_categories');
             localStorage.removeItem('menux_studio_products');
             return DEFAULT_PRODUCTS;
         }
@@ -204,6 +228,25 @@ export const StudioProvider = ({ children }) => {
             }
         }
     }, [products]);
+
+    // Force inject Pizza if missing (Robustness for Hot Reload)
+    useEffect(() => {
+        setCategories(prev => {
+            if (!prev.find(c => c.id === 'pizzas')) {
+                const pizzaCat = DEFAULT_CATEGORIES.find(c => c.id === 'pizzas');
+                if (pizzaCat) return [pizzaCat, ...prev];
+            }
+            return prev;
+        });
+
+        setProducts(prev => {
+            if (!prev.find(p => p.id === 'pizza-custom')) {
+                const pizzaProd = DEFAULT_PRODUCTS.find(p => p.id === 'pizza-custom');
+                if (pizzaProd) return [pizzaProd, ...prev];
+            }
+            return prev;
+        });
+    }, []);
 
     // Migration logic removed to prevent infinite loops and ID conflicts.
     // The data reset logic in useState initialization handles consistency now.

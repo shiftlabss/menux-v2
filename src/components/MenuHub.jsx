@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import ProductDetailModal from './ProductDetailModal';
+import ProductPizzaModal from './ProductPizzaModal';
 import OrderModal from './OrderModal';
 import ProcessingModal from './ProcessingModal';
 import OrderCodeModal from './OrderCodeModal';
@@ -74,6 +75,24 @@ const MENU_DATA = [
                 name: 'Leves e Frescas', items: [
                     { id: 401, name: "Salada Caesar", desc: "Alface americana, croutons artesanais, molho caesar caseiro e lascas de grana padano.", price: "R$ 38,00", image: "/imgs/lanche/acomp-salada-verde.jpg" },
                     { id: 402, name: "Salada Verde", desc: "Mix de folhas verdes frescas, tomate cereja e molho especial da casa.", price: "R$ 28,00", image: "/imgs/lanche/acomp-salada-verde.jpg" },
+                ]
+            }
+        ]
+    },
+    {
+        id: 'pizzas',
+        name: 'Pizzas',
+        subcategories: [
+            {
+                name: 'Monte do seu jeito', items: [
+                    {
+                        id: 'pizza-custom',
+                        name: "Pizza Customizável",
+                        desc: "Escolha sua massa, sabores, bordas e acompanhamentos.",
+                        price: "R$ 49,90",
+                        image: "/imgs/pratos-principais/pratop-picanha.jpg", // Using a placeholder image that exists
+                        type: 'pizza'
+                    },
                 ]
             }
         ]
@@ -585,11 +604,19 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
 
             <AnimatePresence>
                 {selectedProduct && (
-                    <ProductDetailModal
-                        product={selectedProduct}
-                        onClose={() => setSelectedProduct(null)}
-                        onAddToCart={handleAddToCart}
-                    />
+                    selectedProduct.type === 'pizza' ? (
+                        <ProductPizzaModal
+                            product={selectedProduct}
+                            onClose={() => setSelectedProduct(null)}
+                            onAddToCart={handleAddToCart}
+                        />
+                    ) : (
+                        <ProductDetailModal
+                            product={selectedProduct}
+                            onClose={() => setSelectedProduct(null)}
+                            onAddToCart={handleAddToCart}
+                        />
+                    )
                 )}
                 {isOrderModalOpen && (
                     <OrderModal
