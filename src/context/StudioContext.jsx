@@ -291,20 +291,36 @@ export const StudioProvider = ({ children }) => {
             return current;
         });
 
-        setCategories(prev => {
-            const hasPizza = prev.find(c => c.id === 'pizzas');
-            const hasWine = prev.find(c => c.id === 'vinhos');
+        //     setCategories(prev => {
+        //         const hasPizza = prev.find(c => c.id === 'pizzas');
+        //         const hasWine = prev.find(c => c.id === 'vinhos');
 
-            let current = prev;
-            if (!hasPizza) {
+        //         let current = prev;
+        //         if (!hasPizza) {
+        //             const pizzaCat = DEFAULT_CATEGORIES.find(c => c.id === 'pizzas');
+        //             if (pizzaCat) current = [pizzaCat, ...current];
+        //         }
+        //         if (!hasWine) {
+        //             const wineCat = DEFAULT_CATEGORIES.find(c => c.id === 'vinhos');
+        //             if (wineCat) current = [...current, wineCat];
+        //         }
+        //         return current;
+        // // Force inject Pizza if missing (Robustness for Hot Reload)
+        // useEffect(() => {
+        setCategories(prev => {
+            if (!prev.find(c => c.id === 'pizzas')) {
                 const pizzaCat = DEFAULT_CATEGORIES.find(c => c.id === 'pizzas');
-                if (pizzaCat) current = [pizzaCat, ...current];
+                if (pizzaCat) return [pizzaCat, ...prev];
             }
-            if (!hasWine) {
-                const wineCat = DEFAULT_CATEGORIES.find(c => c.id === 'vinhos');
-                if (wineCat) current = [...current, wineCat];
+            return prev;
+        });
+
+        setProducts(prev => {
+            if (!prev.find(p => p.id === 'pizza-custom')) {
+                const pizzaProd = DEFAULT_PRODUCTS.find(p => p.id === 'pizza-custom');
+                if (pizzaProd) return [pizzaProd, ...prev];
             }
-            return current;
+            return prev;
         });
     }, []);
 
