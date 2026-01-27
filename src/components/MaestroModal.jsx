@@ -312,10 +312,10 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                                 onChange={(e) => setInputValue(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                             />
+                            <button className="maestro-send-btn" onClick={handleSendMessage}>
+                                <SendIcon />
+                            </button>
                         </div>
-                        <button className="maestro-send-btn" onClick={handleSendMessage}>
-                            <SendIcon />
-                        </button>
                     </>
                 )}
             </div>
@@ -535,7 +535,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
     return (
         <motion.div className="maestro-modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
             <motion.div
-                className={`maestro-modal-container ${view === 'chat' ? 'chat-mode' : ''}`}
+                className="maestro-modal-container"
                 initial={{ y: "100%" }}
                 animate={{ y: "0%" }}
                 exit={{ y: "100%" }}

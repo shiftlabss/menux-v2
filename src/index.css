@@ -469,7 +469,7 @@ body,
   background: #F0F0F0;
   color: black;
   height: 29px;
-  padding: 0 16px;
+  padding: 0 10px;
   border-radius: 100px;
   font-family: 'Bricolage Grotesque', sans-serif;
   font-size: 14px;
@@ -1861,6 +1861,7 @@ body,
   justify-content: center;
 }
 
+
 .maestro-modal-container {
   width: 100%;
   max-width: 430px;
@@ -1871,7 +1872,6 @@ body,
   display: flex;
   flex-direction: column;
   padding: 24px;
-  /* Restaurado padding global conforme regra */
   overflow: hidden;
 }
 
@@ -1880,27 +1880,7 @@ body,
   width: calc(100% + 48px);
 }
 
-/* CHAT MODE OVERRIDES (Edge-to-Edge) */
-.maestro-modal-container.chat-mode {
-  padding: 0 0 24px 0;
-}
 
-.maestro-modal-container.chat-mode .modal-header {
-  margin: 0;
-  width: 100%;
-  border-bottom: 1px solid #F2F2F2;
-}
-
-.maestro-modal-container.chat-mode .chat-messages-area {
-  padding-left: 24px;
-  padding-right: 24px;
-}
-
-.maestro-modal-container.chat-mode .maestro-footer-input {
-  /* Ensure input respecting global padding */
-  padding-left: 24px;
-  padding-right: 24px;
-}
 
 /* Wizard Header Navigation Wrapper */
 .modal-header-nav-wrapper {
@@ -2128,9 +2108,10 @@ body,
   background: #F4F4F4;
   border-radius: 100px;
   /* Full capsule */
-  height: 54px;
+  height: 59px;
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;
   padding: 0 8px 0 20px;
   transition: all 0.2s ease;
   border: 1px solid transparent;
@@ -2144,6 +2125,7 @@ body,
 
 .maestro-input-field {
   flex: 1;
+  min-width: 0;
   background: transparent;
   border: none;
   outline: none;
@@ -2157,8 +2139,8 @@ body,
 }
 
 .maestro-send-btn {
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   background: black;
   border-radius: 50%;
   border: none;
