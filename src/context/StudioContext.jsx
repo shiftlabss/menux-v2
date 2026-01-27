@@ -64,6 +64,13 @@ const DEFAULT_CATEGORIES = [
             { id: 'drinks-classicos', name: 'Drinks Clássicos' },
             { id: 'drinks-autorais', name: 'Drinks Autorais' }
         ]
+    },
+    {
+        id: 'vinhos',
+        name: 'Vinhos',
+        subcategories: [
+            { id: 'selecao-especial', name: 'Seleção Especial' }
+        ]
     }
 ];
 
@@ -142,7 +149,47 @@ const DEFAULT_PRODUCTS = [
     // BEBIDAS & DRINKS - Drinks Autorais
     { id: 307, name: 'Drink da Casa', price: 'R$ 34,00', desc: 'Vodka, frutas vermelhas e manjericão.', categoryId: 'bebidas', subcategoryId: 'drinks-autorais', image: '/imgs/bebidas-e-drinks/drinks-da-casa.jpg' },
     { id: 308, name: 'Cítrico Tropical', price: 'R$ 30,00', desc: 'Rum, maracujá e limão siciliano.', categoryId: 'bebidas', subcategoryId: 'drinks-autorais', image: '/imgs/bebidas-e-drinks/drinks-citrico.jpg' },
-    { id: 309, name: 'Negroni Brasileiro', price: 'R$ 36,00', desc: 'Cachaça envelhecida, vermute e bitter.', categoryId: 'bebidas', subcategoryId: 'drinks-autorais', image: '/imgs/bebidas-e-drinks/drinks-negroni.jpg' }
+    { id: 309, name: 'Negroni Brasileiro', price: 'R$ 36,00', desc: 'Cachaça envelhecida, vermute e bitter.', categoryId: 'bebidas', subcategoryId: 'drinks-autorais', image: '/imgs/bebidas-e-drinks/drinks-negroni.jpg' },
+
+    // VINHOS
+    {
+        id: 999,
+        name: "Don Simon Selección Tempranillo",
+        desc: "Vinho tinto seco de corpo equilibrado e notas de frutas vermelhas.",
+        price: "R$ 28,00",
+        image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=1000&auto=format&fit=crop",
+        type: 'wine',
+        categoryId: 'vinhos',
+        subcategoryId: 'selecao-especial',
+        country: 'Brasileiro',
+        countryFlag: 'https://flagcdn.com/w20/br.png',
+        year: '1982',
+        facts: {
+            vinicola: 'Marchesi Antinori',
+            uvas: 'Cabernet',
+            regiao: 'Toscana',
+            estilo: 'Tinto Encorpado'
+        }
+    },
+    {
+        id: 1000,
+        name: "Casillero del Diablo Reserva",
+        desc: "Cabernet Sauvignon chileno com aromas de cerejas pretas e toques de baunilha.",
+        price: "R$ 89,00",
+        image: "https://images.unsplash.com/photo-1553361371-9bb22026829b?q=80&w=1000&auto=format&fit=crop",
+        type: 'wine',
+        categoryId: 'vinhos',
+        subcategoryId: 'selecao-especial',
+        country: 'Chileno',
+        countryFlag: 'https://flagcdn.com/w20/cl.png',
+        year: '2021',
+        facts: {
+            vinicola: 'Concha y Toro',
+            uvas: 'Cabernet Sauvignon',
+            regiao: 'Vale Central',
+            estilo: 'Tinto Médio Corpo'
+        }
+    }
 ];
 
 export const StudioProvider = ({ children }) => {
@@ -229,22 +276,38 @@ export const StudioProvider = ({ children }) => {
         }
     }, [products]);
 
-    // Force inject Pizza if missing (Robustness for Hot Reload)
     useEffect(() => {
-        setCategories(prev => {
-            if (!prev.find(c => c.id === 'pizzas')) {
-                const pizzaCat = DEFAULT_CATEGORIES.find(c => c.id === 'pizzas');
-                if (pizzaCat) return [pizzaCat, ...prev];
+        setProducts(prev => {
+            const hasPizza = prev.find(p => p.id === 'pizza-custom');
+            const hasWine = prev.find(p => p.id === 999);
+
+            let current = prev;
+            if (!hasPizza) {
+                const pizzaProd = DEFAULT_PRODUCTS.find(p => p.id === 'pizza-custom');
+                if (pizzaProd) current = [pizzaProd, ...current];
             }
-            return prev;
+            if (!hasWine) {
+                const wineProd = DEFAULT_PRODUCTS.find(p => p.id === 999);
+                const wineProd2 = DEFAULT_PRODUCTS.find(p => p.id === 1000);
+                if (wineProd) current = [...current, wineProd, wineProd2];
+            }
+            return current;
         });
 
-        setProducts(prev => {
-            if (!prev.find(p => p.id === 'pizza-custom')) {
-                const pizzaProd = DEFAULT_PRODUCTS.find(p => p.id === 'pizza-custom');
-                if (pizzaProd) return [pizzaProd, ...prev];
+        setCategories(prev => {
+            const hasPizza = prev.find(c => c.id === 'pizzas');
+            const hasWine = prev.find(c => c.id === 'vinhos');
+
+            let current = prev;
+            if (!hasPizza) {
+                const pizzaCat = DEFAULT_CATEGORIES.find(c => c.id === 'pizzas');
+                if (pizzaCat) current = [pizzaCat, ...current];
             }
-            return prev;
+            if (!hasWine) {
+                const wineCat = DEFAULT_CATEGORIES.find(c => c.id === 'vinhos');
+                if (wineCat) current = [...current, wineCat];
+            }
+            return current;
         });
     }, []);
 

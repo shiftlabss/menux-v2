@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import ProductDetailModal from './ProductDetailModal';
 import ProductPizzaModal from './ProductPizzaModal';
+import ProductWineModal from './ProductWineModal';
 import OrderModal from './OrderModal';
 import ProcessingModal from './ProcessingModal';
 import OrderCodeModal from './OrderCodeModal';
@@ -171,6 +172,50 @@ const MENU_DATA = [
                     { id: 504, name: "Petit Gateau", desc: "Bolo quente de chocolate com interior cremoso, servido com bola de sorvete de baunilha.", price: "R$ 28,00", image: "/imgs/sobremesas/sobremesa-petit-gateau.jpg" },
                     { id: 505, name: "Brownie com Sorvete", desc: "Brownie de chocolate meio amargo com nozes, servido quente com sorvete de creme.", price: "R$ 26,00", image: "/imgs/sobremesas/sobremesa-brownie-sorvete.jpg" },
                     { id: 506, name: "Mousse de Chocolate", desc: "Mousse aerada de chocolate belga 70% cacau, finalizada com raspas de chocolate.", price: "R$ 20,00", image: "/imgs/sobremesas/sobremesa-mosse-chocolate.jpg" }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'vinhos',
+        name: 'Vinhos',
+        subcategories: [
+            {
+                name: 'Seleção Especial', items: [
+                    {
+                        id: 999,
+                        name: "Don Simon Selección Tempranillo",
+                        desc: "Vinho tinto seco de corpo equilibrado e notas de frutas vermelhas.",
+                        price: "R$ 28,00",
+                        image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=1000&auto=format&fit=crop",
+                        type: 'wine',
+                        country: 'Brasileiro',
+                        countryFlag: 'https://flagcdn.com/w20/br.png',
+                        year: '1982',
+                        facts: {
+                            vinicola: 'Marchesi Antinori',
+                            uvas: 'Cabernet',
+                            regiao: 'Toscana',
+                            estilo: 'Tinto Encorpado'
+                        }
+                    },
+                    {
+                        id: 1000,
+                        name: "Casillero del Diablo Reserva",
+                        desc: "Cabernet Sauvignon chileno com aromas de cerejas pretas e toques de baunilha.",
+                        price: "R$ 89,00",
+                        image: "https://images.unsplash.com/photo-1553361371-9bb22026829b?q=80&w=1000&auto=format&fit=crop",
+                        type: 'wine',
+                        country: 'Chileno',
+                        countryFlag: 'https://flagcdn.com/w20/cl.png',
+                        year: '2021',
+                        facts: {
+                            vinicola: 'Concha y Toro',
+                            uvas: 'Cabernet Sauvignon',
+                            regiao: 'Vale Central',
+                            estilo: 'Tinto Médio Corpo'
+                        }
+                    }
                 ]
             }
         ]
@@ -606,6 +651,12 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                 {selectedProduct && (
                     selectedProduct.type === 'pizza' ? (
                         <ProductPizzaModal
+                            product={selectedProduct}
+                            onClose={() => setSelectedProduct(null)}
+                            onAddToCart={handleAddToCart}
+                        />
+                    ) : selectedProduct.type === 'wine' ? (
+                        <ProductWineModal
                             product={selectedProduct}
                             onClose={() => setSelectedProduct(null)}
                             onAddToCart={handleAddToCart}
