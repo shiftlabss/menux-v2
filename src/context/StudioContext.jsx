@@ -308,22 +308,38 @@ export const StudioProvider = ({ children }) => {
         });
     }, []);
 
-    // Force inject Pizza if missing (Robustness for Hot Reload)
     useEffect(() => {
-        setCategories(prev => {
-            if (!prev.find(c => c.id === 'pizzas')) {
-                const pizzaCat = DEFAULT_CATEGORIES.find(c => c.id === 'pizzas');
-                if (pizzaCat) return [pizzaCat, ...prev];
+        setProducts(prev => {
+            const hasPizza = prev.find(p => p.id === 'pizza-custom');
+            const hasWine = prev.find(p => p.id === 999);
+
+            let current = prev;
+            if (!hasPizza) {
+                const pizzaProd = DEFAULT_PRODUCTS.find(p => p.id === 'pizza-custom');
+                if (pizzaProd) current = [pizzaProd, ...current];
             }
-            return prev;
+            if (!hasWine) {
+                const wineProd = DEFAULT_PRODUCTS.find(p => p.id === 999);
+                const wineProd2 = DEFAULT_PRODUCTS.find(p => p.id === 1000);
+                if (wineProd) current = [...current, wineProd, wineProd2];
+            }
+            return current;
         });
 
-        setProducts(prev => {
-            if (!prev.find(p => p.id === 'pizza-custom')) {
-                const pizzaProd = DEFAULT_PRODUCTS.find(p => p.id === 'pizza-custom');
-                if (pizzaProd) return [pizzaProd, ...prev];
+        setCategories(prev => {
+            const hasPizza = prev.find(c => c.id === 'pizzas');
+            const hasWine = prev.find(c => c.id === 'vinhos');
+
+            let current = prev;
+            if (!hasPizza) {
+                const pizzaCat = DEFAULT_CATEGORIES.find(c => c.id === 'pizzas');
+                if (pizzaCat) current = [pizzaCat, ...current];
             }
-            return prev;
+            if (!hasWine) {
+                const wineCat = DEFAULT_CATEGORIES.find(c => c.id === 'vinhos');
+                if (wineCat) current = [...current, wineCat];
+            }
+            return current;
         });
     }, []);
 
