@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
 import { useToast } from '../context/ToastContext';
+import { CONFIG } from '../config';
 const imgLogo = "/logo-menux.svg";
 
 const CloseIcon = () => (
@@ -121,301 +122,98 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
     const [peopleCount, setPeopleCount] = useState(1);
     const [orderStyle, setOrderStyle] = useState(null);
     const [dietaryRestriction, setDietaryRestriction] = useState(null);
-    const [inputValue, setInputValue] = useState('');
+    const [recommendations, setRecommendations] = useState([]);
 
-    const [messages, setMessages] = useState(() => {
-        const lastActivity = localStorage.getItem('maestro_last_activity');
-        const now = Date.now();
-        const THREE_HOURS = 3 * 60 * 60 * 1000;
+    const getRecommendations = () => {
+        if (!products || products.length === 0) return [];
 
-        // Se passaram mais de 3 horas, limpa tudo para uma nova conversa
-        if (lastActivity && (now - parseInt(lastActivity)) > THREE_HOURS) {
-            localStorage.removeItem('maestro_messages');
-            localStorage.removeItem('maestro_current_view');
-            localStorage.removeItem('menux_user_id');
-            return [];
+        let filtered = [...products];
+
+        // 1. Dietary Restrictions
+        if (dietaryRestriction && dietaryRestriction !== 'Nenhuma') {
+            const restrictionLower = dietaryRestriction.toLowerCase();
+            filtered = filtered.filter(p => {
+                const desc = (p.desc || p.description || "").toLowerCase();
+                const name = p.name.toLowerCase();
+                // Simple keyword matching for prototype
+                if (restrictionLower.includes('glúten')) return desc.includes('sem glúten') || name.includes('sem glúten') || p.categoryId === 'bebidas';
+                if (restrictionLower.includes('vegetariano')) return desc.includes('vegetariano') || name.includes('vegetariano') || p.categoryId === 'sobremesas';
+                if (restrictionLower.includes('lactose')) return desc.includes('zero lactose') || name.includes('zero lactose');
+                return true;
+            });
+            // Fallback if too strict
+            if (filtered.length === 0) filtered = [...products];
         }
 
-        const saved = localStorage.getItem('maestro_messages');
-        return saved ? JSON.parse(saved) : [];
-    });
-    const { showToast } = useToast();
+        // 2. Order Style
+        if (orderStyle) {
+            filtered = filtered.sort((a, b) => {
+                const getScore = (item) => {
+                    let score = 0;
+                    const cat = item.categoryId;
+                    const desc = (item.desc || "").toLowerCase();
 
-    // Efeito para salvar o estado e atualizar o timer de atividade
-    useEffect(() => {
-        localStorage.setItem('maestro_current_view', view);
-        localStorage.setItem('maestro_messages', JSON.stringify(messages));
-        localStorage.setItem('maestro_last_activity', Date.now().toString());
-    }, [view, messages]);
-
-    const [isTyping, setIsTyping] = useState(false);
-    const messagesEndRef = useRef(null);
-
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
-
-    useEffect(() => {
-        if (view === 'chat') {
-            scrollToBottom();
+                    if (orderStyle === 'Leve') {
+                        if (cat === 'entradas' && item.subcategoryId === 'frias') score += 5;
+                        if (cat === 'principais' && item.subcategoryId === 'peixes') score += 4;
+                        if (desc.includes('salada')) score += 3;
+                    } else if (orderStyle === 'Para compartilhar') {
+                        if (cat === 'entradas' && item.subcategoryId === 'compartilhar') score += 5;
+                        if (cat === 'pizzas') score += 4;
+                        if (desc.includes('serve 2')) score += 3;
+                    } else if (orderStyle === 'Muita fome') {
+                        if (cat === 'principais' && item.subcategoryId === 'carnes') score += 5;
+                        if (cat === 'lanches' && item.subcategoryId === 'hamburgueres') score += 4;
+                        if (cat === 'principais' && item.subcategoryId === 'massas') score += 3;
+                    } else if (orderStyle === 'Rápido') {
+                        if (cat === 'lanches') score += 5;
+                        if (cat === 'entradas') score += 3;
+                    }
+                    return score;
+                };
+                return getScore(b) - getScore(a);
+            });
         }
-    }, [messages, isTyping, view]);
 
-    const handleStartWizard = () => {
-        setView('wizard');
-        setStep(1);
+        // 3. People Count (Boost 'Share' items if > 1)
+        if (peopleCount > 1) {
+            filtered = filtered.sort((a, b) => {
+                const isShareable = (item) => {
+                    const cat = item.categoryId;
+                    const desc = (item.desc || "").toLowerCase();
+                    if (cat === 'pizzas' || cat === 'vinhos' || (cat === 'entradas' && item.subcategoryId === 'compartilhar')) return 1;
+                    if (desc.includes('serve 2') || desc.includes('compartilhar')) return 1;
+                    return 0;
+                };
+                return isShareable(b) - isShareable(a);
+            });
+        }
+
+        return filtered.slice(0, 3); // Return top 3
     };
 
     const handleNextStep = () => {
         if (step === 3) {
             setStep(4);
-            // Simulate AI searching
-            // Safety timeout to prevent infinite loading
-            const safetyTimeout = setTimeout(() => {
+            // Simulate processing time
+            const processingTime = setTimeout(() => {
+                const results = getRecommendations();
+                setRecommendations(results);
                 setStep(5);
-            }, 3000);
-            return () => clearTimeout(safetyTimeout);
+            }, 1500);
+            return () => clearTimeout(processingTime);
         } else {
             setStep(step + 1);
         }
     };
 
-    const handlePrevStep = () => {
-        if (step > 1) setStep(step - 1);
-        else setView('welcome');
-    };
+    // ... (keep handlePrevStep, handleRefineSearch, handleSendMessage)
 
-    const handleRefineSearch = () => {
-        setStep(2); // Go back to "Style" question
-    };
-
-
-
-    const handleSendMessage = async () => {
-        if (!inputValue.trim() || isTyping) return;
-
-        const currentInput = inputValue;
-        setInputValue('');
-
-        if (view === 'welcome') setView('chat');
-
-        const userMsg = { id: Date.now(), text: currentInput, sender: 'user' };
-        setMessages(prev => [...prev, userMsg]);
-
-        setIsTyping(true);
-
-        // Get or create a persistent userId for memory context
-        let userId = localStorage.getItem('menux_user_id');
-        if (!userId) {
-            userId = 'user_' + Math.random().toString(36).substring(2, 11);
-            localStorage.setItem('menux_user_id', userId);
-        }
-
-        try {
-            const response = await fetch('https://lottoluck.app.n8n.cloud/webhook/menux', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    text: currentInput,
-                    userId: userId
-                })
-            });
-
-            const data = await response.json();
-            console.log('Maestro Webhook Response:', data);
-
-            // Extract response with more flexibility
-            let aiResponse = "";
-            let recommendedIds = [];
-
-            // Helper to extract IDs
-            const extractIds = (source) => {
-                if (!source) return [];
-                if (Array.isArray(source.ids_recomendados)) return source.ids_recomendados;
-                if (Array.isArray(source.ids)) return source.ids;
-                if (Array.isArray(source.product_ids)) return source.product_ids;
-                if (Array.isArray(source.sugestoes_ids)) return source.sugestoes_ids;
-                // If ids are strings "101, 202"
-                if (typeof source.ids === 'string') return source.ids.split(',').map(s => s.trim());
-                return [];
-            };
-
-            // Case 1: Array with one object (User provided format)
-            if (Array.isArray(data) && data.length > 0) {
-                const item = data[0];
-                // Check if output exists and has the expected fields
-                if (item?.output) {
-                    aiResponse = item.output.resposta_chat;
-                    recommendedIds = extractIds(item.output);
-                } else {
-                    // Fallback if structure is flat inside array
-                    aiResponse = item?.resposta_chat;
-                    recommendedIds = extractIds(item);
-                }
-            }
-            // Case 2: Object containing an output object
-            else if (data?.output) {
-                aiResponse = data.output.resposta_chat;
-                recommendedIds = extractIds(data.output);
-            }
-            // Case 3: Object containing the field directly
-            else {
-                aiResponse = data?.resposta_chat;
-                recommendedIds = extractIds(data);
-            }
-
-            if (!aiResponse) {
-                aiResponse = "Ops! Algo não saiu como esperado. Não foi possível processar sua solicitação no momento. Tente novamente em instantes.";
-            }
-
-            const aiMsg = {
-                id: Date.now() + 1,
-                text: aiResponse,
-                sender: 'ai',
-                suggestions: recommendedIds
-            };
-            setMessages(prev => [...prev, aiMsg]);
-        } catch (error) {
-            console.error('Error calling webhook:', error);
-            const errorMsg = { id: Date.now() + 1, text: "Ocorreu um erro de rede ao falar com o Maestro. Verifique se o webhook está aceitando requisições POST e o CORS está configurado.", sender: 'ai' };
-            setMessages(prev => [...prev, errorMsg]);
-        } finally {
-            setIsTyping(false);
-        }
-    };
-
-    const renderWelcome = () => (
-        <>
-            <div className="maestro-welcome-content">
-                <div className="maestro-welcome-icon-circle">
-                    <img src="/icon-menux.svg" alt="Menux" style={{ width: '28px' }} />
-                </div>
-                <h2 className="maestro-welcome-title">Sua experiência começa aqui!</h2>
-                <p className="maestro-welcome-desc">Descubra pratos que combinam com seu paladar. Em poucos passos, encontramos a escolha ideal para você.</p>
-                <button className="maestro-welcome-btn" onClick={handleStartWizard}>Descubra o prato ideal para hoje!</button>
-            </div>
-            <div className="maestro-footer-input">
-                {messages.length > 0 ? (
-                    <button
-                        className="maestro-welcome-btn secondary"
-                        onClick={() => setView('chat')}
-                        style={{
-                            width: '100%',
-                            margin: 0,
-                            background: 'transparent',
-                            color: 'black',
-                            border: '1px solid black',
-                            borderRadius: '16px',
-                            height: '59px',
-                            fontSize: '16px',
-                            fontWeight: 500,
-                            fontFamily: 'Bricolage Grotesque, sans-serif'
-                        }}
-                    >
-                        Continuar conversa
-                    </button>
-                ) : (
-                    <>
-                        <div className="maestro-input-wrapper">
-                            <input
-                                type="text"
-                                className="maestro-input-field"
-                                placeholder="Qual o melhor vinho para hoje?"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                            />
-                            <button className="maestro-send-btn" onClick={handleSendMessage}>
-                                <SendIcon />
-                            </button>
-                        </div>
-                    </>
-                )}
-            </div>
-        </>
-    );
-
-    const renderChat = () => (
-        <div className="chat-view-container">
-            <ModalHeader
-                title="Menux"
-                status="Sempre online"
-                icon={<img src="/icon-menux.svg" alt="Menux" style={{ width: '20px' }} />}
-            />
-            <div className="chat-messages-area">
-                {messages.map((msg, index) => (
-                    <div key={msg.id || index} className={`chat-bubble-wrapper ${msg.sender}`}>
-                        <div className={`chat-bubble ${msg.sender}`}>
-                            {msg.text}
-                        </div>
-                        {msg.sender === 'ai' && msg.suggestions && msg.suggestions.length > 0 && (
-                            <div className="chat-suggestions-grid">
-                                {msg.suggestions.map((id, idx) => {
-                                    // 1. Try Direct Lookup (Fastest)
-                                    let product = products?.find(p => p.id == id);
-
-                                    // 2. Fallback: ID Translation via Name
-                                    if (!product && staticMenuData) {
-                                        // Find the "concept" in static data to get the name
-                                        const staticProduct = staticMenuData
-                                            .flatMap(cat => cat.subcategories.flatMap(sub => sub.items))
-                                            .find(p => p.id == id);
-
-                                        if (staticProduct) {
-                                            // Find the "real" product in current data by Name
-                                            product = products?.find(p => p.name === staticProduct.name);
-                                        }
-                                    }
-
-                                    if (!product) {
-                                        return null;
-                                    }
-                                    const isInCart = cart.some(item => item.id === product.id);
-                                    return (
-                                        <ProductCard
-                                            key={`${id}-${idx}`}
-                                            product={product}
-                                            isInCart={isInCart}
-                                            onAdd={(p) => { onAddToCart(p); showToast("Item adicionado ao pedido!"); }}
-                                            onRemove={(p) => { onRemoveFromCart(p); showToast("Item removido!"); }}
-                                        />
-                                    );
-                                })}
-                            </div>
-                        )}
-                    </div>
-                ))}
-                {isTyping && (
-                    <div className="chat-bubble-wrapper ai">
-                        <div className="chat-bubble ai typing">
-                            <span></span><span></span><span></span>
-                        </div>
-                    </div>
-                )}
-                <div ref={messagesEndRef} />
-            </div>
-            <div className="maestro-footer-input">
-                <div className="maestro-input-wrapper">
-                    <input
-                        type="text"
-                        placeholder="Pergunte ao Maestro..."
-                        className="maestro-input-field"
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                    />
-                    <button className="maestro-send-btn" onClick={handleSendMessage} disabled={!inputValue.trim()}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 11L12 6L17 11M12 18V7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
+    // ... (keep renderWelcome, renderChat)
 
     const renderWizardSteps = () => (
         <div className="wizard-step-content">
+            {/* ... (keep header logic) */}
             {(step <= 3) && (
                 <div className="modal-header-nav-wrapper">
                     <button className="wizard-back-btn" onClick={handlePrevStep}>
@@ -493,47 +291,54 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                             </div>
                         </div>
                         <div className="wizard-results-list">
-                            {mockResults.map((item, index) => {
-                                const isInCart = cart.some(c => c.id === item.id);
-                                return (
-                                    <div key={item.id} className="wizard-result-wrapper">
-                                        <div className="wizard-result-item">
-                                            <div className="wizard-result-info">
-                                                <span className="wizard-result-name">{item.name}</span>
-                                                <p className="wizard-result-desc">{item.desc}</p>
-                                                <div className="wizard-result-actions">
-                                                    <div className="wizard-result-price-capsule">{item.price}</div>
-                                                    {isInCart ? (
-                                                        <button
-                                                            className="btn-wizard-add remove"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                if (onRemoveFromCart) onRemoveFromCart(item);
-                                                                showToast("Item removido do pedido");
-                                                            }}
-                                                        >
-                                                            Remover
-                                                        </button>
-                                                    ) : (
-                                                        <button
-                                                            className="btn-wizard-add"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                if (onAddToCart) onAddToCart(item);
-                                                                showToast("Item adicionado ao pedido!");
-                                                            }}
-                                                        >
-                                                            Adicionar
-                                                        </button>
-                                                    )}
+                            {recommendations.length > 0 ? (
+                                recommendations.map((item, index) => {
+                                    const isInCart = cart.some(c => c.id === item.id);
+                                    return (
+                                        <div key={item.id} className="wizard-result-wrapper">
+                                            <div className="wizard-result-item">
+                                                <div className="wizard-result-info">
+                                                    <span className="wizard-result-name">{item.name}</span>
+                                                    <p className="wizard-result-desc">{item.desc || item.description}</p>
+                                                    <div className="wizard-result-actions">
+                                                        <div className="wizard-result-price-capsule">{item.price}</div>
+                                                        {isInCart ? (
+                                                            <button
+                                                                className="btn-wizard-add remove"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    if (onRemoveFromCart) onRemoveFromCart(item);
+                                                                    showToast("Item removido do pedido");
+                                                                }}
+                                                            >
+                                                                Remover
+                                                            </button>
+                                                        ) : (
+                                                            <button
+                                                                className="btn-wizard-add"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    if (onAddToCart) onAddToCart(item);
+                                                                    showToast("Item adicionado ao pedido!");
+                                                                }}
+                                                            >
+                                                                Adicionar
+                                                            </button>
+                                                        )}
+                                                    </div>
                                                 </div>
+                                                <div className="wizard-result-image" style={{ backgroundImage: item.image ? `url(${item.image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
                                             </div>
-                                            <div className="wizard-result-image" style={{ backgroundImage: item.image ? `url(${item.image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
+                                            {index < recommendations.length - 1 && <div className="wizard-result-divider" />}
                                         </div>
-                                        {index < mockResults.length - 1 && <div className="wizard-result-divider" />}
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })
+                            ) : (
+                                <div className="wizard-no-results">
+                                    <p>Nenhum prato encontrado com essas preferências exatas. Tente mudar o estilo!</p>
+                                    <button className="btn-wizard-restart" onClick={handleRefineSearch}>Refazer busca</button>
+                                </div>
+                            )}
                         </div>
                         <div className="wizard-results-footer">
                             <button className="btn-back-to-menu-full" onClick={onClose}>

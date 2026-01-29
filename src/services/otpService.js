@@ -1,10 +1,15 @@
+import { CONFIG } from '../config';
+
 class OTPVerification {
     constructor() {
         // URL fixa do webhook inicial
-        this.webhookInicial = 'https://lottoluck.app.n8n.cloud/webhook/74de1fb3-5e1d-4866-a824-a58d5db47407';
+        this.webhookInicial = CONFIG.WEBHOOK_OTP;
 
         // URL dinâmica retornada pelo workflow (única por tentativa)
         this.resumeUrl = null;
+
+        // Dados da última requisição para permitir reenvio
+        this.lastRequestData = null;
     }
 
     /**
@@ -14,6 +19,9 @@ class OTPVerification {
     async solicitarCodigo(numeroDoCliente, nome, ddi = '+55') {
         try {
             console.log('📤 Solicitando código OTP para:', numeroDoCliente, 'Nome:', nome, 'DDI:', ddi);
+
+            // Salva dados para possível reenvio
+            this.lastRequestData = { numeroDoCliente, nome, ddi };
 
             const response = await fetch(this.webhookInicial, {
                 method: 'POST',
@@ -121,9 +129,15 @@ class OTPVerification {
      */
     async reenviarCodigo(numeroDoCliente) {
         console.log('🔄 Reenviando código...');
-        // Simplesmente chama solicitarCodigo novamente
-        // Isso cria uma NOVA execução com uma NOVA resumeUrl
-        return await this.solicitarCodigo(numeroDoCliente);
+
+        if (this.lastRequestData && this.lastRequestData.numeroDoCliente === numeroDoCliente) {
+            // Usa dados cacheados para garantir que nome e ddi sejam enviados
+            const { numeroDoCliente, nome, ddi } = this.lastRequestData;
+            return await this.solicitarCodigo(numeroDoCliente, nome, ddi);
+        }
+
+        // Fallback (caso antigo ou sem cache)
+        return await this.solicitarCodigo(numeroDoCliente, '', '+55');
     }
 }
 

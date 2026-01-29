@@ -22,13 +22,18 @@ function AppContent() {
 
   const [phone, setPhone] = useState(() => localStorage.getItem('menux_phone') || '')
   const [userName, setUserName] = useState(() => localStorage.getItem('menux_user') || '')
-  const [isReturningUser, setIsReturningUser] = useState(false)
+  const [userAvatar, setUserAvatar] = useState(() => localStorage.getItem('menux_avatar') || null)
+  const [isReturningUser, setIsReturningUser] = useState(() => {
+    return localStorage.getItem('menux_is_returning') === 'true';
+  })
 
   // Update storage when state changes
   useEffect(() => {
     if (phone) localStorage.setItem('menux_phone', phone);
     if (userName) localStorage.setItem('menux_user', userName);
-  }, [phone, userName]);
+    if (userAvatar) localStorage.setItem('menux_avatar', userAvatar);
+    localStorage.setItem('menux_is_returning', isReturningUser);
+  }, [phone, userName, userAvatar, isReturningUser]);
 
   return (
     <main className="app-container" style={step === 'design-system' ? { maxWidth: '100%', height: 'auto', borderRadius: 0, boxShadow: 'none' } : {}}>
@@ -37,6 +42,7 @@ function AppContent() {
           <Onboarding
             key="onboarding"
             savedUser={userName} // Pass saved name for welcome back message if needed
+            userAvatar={userAvatar}
             onStart={(target) => {
               if (target === 'auth') setStep('login')
               else if (target === 'direct-access' || target === 'menu') setStep('hub')
@@ -50,12 +56,17 @@ function AppContent() {
             onOpenStudio={() => setStep('studio')}
             userName={userName}
             phone={phone}
+            userAvatar={userAvatar}
+            onUpdateAvatar={setUserAvatar}
             onAuth={() => setStep('login')}
             onLogout={() => {
               setUserName('');
               setPhone('');
+              setUserAvatar(null);
               localStorage.removeItem('menux_phone');
               localStorage.removeItem('menux_user');
+              localStorage.removeItem('menux_avatar');
+              localStorage.removeItem('menux_is_returning');
               setStep('onboarding');
             }}
           />

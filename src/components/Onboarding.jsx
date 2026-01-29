@@ -4,7 +4,7 @@ const imgLogo = "/logo-menux.svg";
 const imgIconLarge = "/icon-menux.svg";
 const imgVerify = "/verify-icon.svg";
 
-export default function Onboarding({ onStart, savedUser }) {
+export default function Onboarding({ onStart, savedUser, userAvatar }) {
 
   return (
     <motion.div
@@ -59,7 +59,11 @@ export default function Onboarding({ onStart, savedUser }) {
             <span className="user-login-text">Entrar como</span>
             <div className="user-badge">
               <img src={imgIconLarge} alt="Menux Icon" style={{ height: '18px' }} />
-              <div className="avatar-circle"></div>
+              {userAvatar ? (
+                <img src={userAvatar} alt="Avatar" className="avatar-circle" style={{ objectFit: 'cover' }} />
+              ) : (
+                <div className="avatar-circle"></div>
+              )}
               <span className="user-name-text">{savedUser}</span>
             </div>
           </motion.button>
