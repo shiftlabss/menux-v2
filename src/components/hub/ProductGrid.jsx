@@ -1,68 +1,61 @@
 import React from 'react';
 
-const ProductCard = ({ item, onAdd, onRemove, isInCart }) => {
+const ProductItem = ({ item, onClick }) => {
     return (
-        <div className="product-card">
-            <div className="product-image" style={{ backgroundImage: `url(${item.image})` }}>
-                {isInCart && (
-                    <div className="product-qty-badge">
-                        {isInCart.qty}
-                    </div>
-                )}
+        <div className="menu-item" onClick={() => onClick(item)}>
+            <div className="item-info">
+                <h4 className="item-name">{item.name}</h4>
+                <p className="item-desc">{item.desc}</p>
+                <div className="item-price">{item.price}</div>
             </div>
-            <div className="product-info">
-                <h3 className="product-title">{item.name}</h3>
-                <p className="product-desc">{item.desc}</p>
-                <div className="product-footer">
-                    <span className="product-price">{item.price}</span>
-                    {isInCart ? (
-                        <div className="product-controls">
-                            <button className="btn-control remove" onClick={(e) => { e.stopPropagation(); onRemove(item); }}>-</button>
-                            <span className="qty-value">{isInCart.qty}</span>
-                            <button className="btn-control add" onClick={(e) => { e.stopPropagation(); onAdd(item); }}>+</button>
-                        </div>
-                    ) : (
-                        <button className="btn-add" onClick={(e) => { e.stopPropagation(); onAdd(item); }}>
-                            Adicionar
-                        </button>
-                    )}
-                </div>
-            </div>
+            <div
+                className="item-image"
+                style={{
+                    backgroundImage: item.image ? `url(${item.image})` : 'none',
+                    backgroundSize: 'cover'
+                }}
+            ></div>
         </div>
     );
 };
 
 export default function ProductGrid({
     categories,
-    cart,
-    onAddToCart,
+    cart, // Not used in original list view (qty was not shown in list), but kept for compat
+    onAddToCart, // Acts as "Open Detail" in the original logic
     onRemoveFromCart,
     sectionRefs
 }) {
     return (
-        <div className="menu-list">
+        <div className="menu-list-container">
             {categories.map(cat => (
-                <div key={cat.id} id={`cat-${cat.id}`} ref={el => sectionRefs.current[cat.id] = el} className="category-section">
-                    <h2 className="category-title">{cat.name}</h2>
-                    {cat.subcategories.map(sub => (
-                        <div key={sub.id} id={`sub-${cat.id}-${sub.id}`} className="subcategory-section">
-                            <h3 className="subcategory-name">{sub.name}</h3>
-                            <div className="products-grid">
-                                {sub.items.map(item => {
-                                    const cartItem = cart.find(c => c.id === item.id);
-                                    return (
-                                        <ProductCard
+                <div key={cat.id} id={`cat-${cat.id}`} ref={el => sectionRefs.current[cat.id] = el} className="menu-section-visible-check">
+                    <div className="menu-list">
+                        <h3 className="section-label">
+                            {cat.name.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                        </h3>
+
+                        {cat.subcategories.map(sub => (
+                            <div key={sub.id || sub.name} id={`sub-${cat.id}-${sub.id || sub.name.replace(/\s+/g, '-').toLowerCase()}`}>
+                                <p className="subcategory-label">
+                                    {(sub.subcategory_label || sub.name).toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                                </p>
+
+                                {sub.items && sub.items.length > 0 ? (
+                                    sub.items.map(item => (
+                                        <ProductItem
                                             key={item.id}
                                             item={item}
-                                            isInCart={cartItem}
-                                            onAdd={onAddToCart}
-                                            onRemove={onRemoveFromCart}
+                                            onClick={onAddToCart} // In original MenuHub, clicking an item opened the detail modal (setSelectedProduct) which we passed as onAddToCart here for now, I should rename the prop in MenuHub to make it clear.
                                         />
-                                    );
-                                })}
+                                    ))
+                                ) : (
+                                    <div style={{ padding: '20px 0', opacity: 0.3 }}>Nenhum item disponível no momento.</div>
+                                )}
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
+                    <div className="menu-divider-large"></div>
                 </div>
             ))}
         </div>

@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 
 export default function CategoryNav({
     categories,
@@ -7,47 +6,46 @@ export default function CategoryNav({
     activeSubcategory,
     onCategoryChange,
     onSubcategoryChange,
-    categoryRefs,
+    categoryRefs, // Note: The parent now needs to pass the ref attached to the container if we want scroll centering, or we manage it here. Ref forwarding was a bit mixed up.
     subcategoryRefs
 }) {
+    // We need internal refs if we want to expose them or just attach the passed refs
+
     return (
-        <div className="sticky-nav-container">
-            {/* Main Categories (Tabs) */}
-            <div className="categories-wrapper">
-                <div className="categories-scroll">
-                    {categories.map((cat) => (
-                        <button
-                            key={cat.id}
-                            ref={el => categoryRefs.current[cat.id] = el}
-                            className={`category-tab ${activeCategory === cat.id ? 'active' : ''}`}
-                            onClick={() => onCategoryChange(cat.id)}
-                        >
-                            {cat.name}
-                            {activeCategory === cat.id && (
-                                <motion.div className="active-indicator" layoutId="activeTab" />
-                            )}
-                        </button>
-                    ))}
-                </div>
+        <nav className="category-nav">
+            <div className="category-tabs">
+                {categories.map((cat) => (
+                    <button
+                        key={cat.id}
+                        // If parent passes a ref object to store elements, we use it. 
+                        // The parent passed `categoryRefs` as a mutable ref object (useRef({}))
+                        ref={el => { if (categoryRefs?.current) categoryRefs.current[cat.id] = el }}
+                        className={`category-tab ${activeCategory === cat.id ? 'active' : ''}`}
+                        onClick={() => onCategoryChange(cat.id)}
+                    >
+                        {cat.name.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                    </button>
+                ))}
             </div>
 
-            {/* Subcategories (Pills) */}
-            {activeCategory && categories.find(c => c.id === activeCategory)?.subcategories && (
-                <div className="subcategories-wrapper">
-                    <div className="subcategories-scroll">
-                        {categories.find(c => c.id === activeCategory).subcategories.map((sub) => (
-                            <button
-                                key={sub.id}
-                                ref={el => subcategoryRefs.current[`${activeCategory}-${sub.id}`] = el}
-                                className={`subcategory-pill ${activeSubcategory === sub.id ? 'active' : ''}`}
-                                onClick={() => onSubcategoryChange(sub.id)}
-                            >
-                                {sub.name}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            )}
-        </div>
+            <div className="filter-pills">
+                <button
+                    className={`filter-pill ${activeSubcategory === '' ? 'active' : ''}`}
+                    onClick={() => onSubcategoryChange('')}
+                >
+                    Todos
+                </button>
+                {activeCategory && categories.find(c => c.id === activeCategory)?.subcategories.map((sub) => (
+                    <button
+                        key={sub.id || sub.name}
+                        ref={el => { if (subcategoryRefs?.current) subcategoryRefs.current[`${activeCategory}-${sub.id || sub.name}`] = el }}
+                        className={`filter-pill ${activeSubcategory === (sub.name || sub.id) ? 'active' : ''}`}
+                        onClick={() => onSubcategoryChange(sub.name || sub.id)}
+                    >
+                        {sub.name}
+                    </button>
+                ))}
+            </div>
+        </nav>
     );
 }
