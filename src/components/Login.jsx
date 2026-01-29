@@ -1,26 +1,66 @@
 import { motion } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
 import { useState } from 'react';
+import otpService from '../services/otpService';
+import { useToast } from '../context/ToastContext';
 
 const imgLogo = "/logo-menux.svg";
 
-export default function Login({ onBack, onNext }) {
+export default function Login({ onBack, onNext, checkUser }) {
     const [phoneNumber, setPhoneNumber] = useState('');
+
+    const { showToast } = useToast();
+    const [isLoading, setIsLoading] = useState(false);
 
     const formatPhoneNumber = (value) => {
         if (!value) return value;
-        const phoneNumber = value.replace(/[^\d]/g, '');
-        const phoneNumberLength = phoneNumber.length;
-        if (phoneNumberLength < 3) return phoneNumber;
-        if (phoneNumberLength < 7) {
-            return `(${phoneNumber.slice(0, 2)}) ${phoneNumber.slice(2)}`;
+        const phone = value.replace(/[^\d]/g, '');
+        const phoneLength = phone.length;
+        if (phoneLength < 3) return phone;
+        if (phoneLength < 7) {
+            return `(${phone.slice(0, 2)}) ${phone.slice(2)}`;
         }
-        return `(${phoneNumber.slice(0, 2)}) ${phoneNumber.slice(2, 7)}-${phoneNumber.slice(7, 11)}`;
+        return `(${phone.slice(0, 2)}) ${phone.slice(2, 7)}-${phone.slice(7, 11)}`;
     };
 
     const handlePhoneChange = (e) => {
         const formattedValue = formatPhoneNumber(e.target.value);
         setPhoneNumber(formattedValue);
+    };
+
+    const handleNextStep = async () => {
+        setIsLoading(true);
+        // Remove formatting to send raw numbers
+        const rawPhone = phoneNumber.replace(/[^\d]/g, '');
+
+        try {
+            // Check if user exists (logic passed from parent)
+            // If checkUser is not provided, assume new user or safe default? 
+            // Actually, let's assume parent provides it.
+            // If exists -> Send OTP. 
+            // If new -> Skip OTP (will send after name).
+
+            // Note: We need to know if we should send OTP.
+            // Using the checkUser prop which we will add.
+            const userExists = checkUser ? checkUser(phoneNumber) : false;
+
+            if (userExists) {
+                const result = await otpService.solicitarCodigo(rawPhone);
+                if (result.success) {
+                    onNext(phoneNumber);
+                } else {
+                    showToast(result.error || "Erro ao enviar código. Tente novamente.");
+                }
+            } else {
+                // New user - skip OTP, go to register
+                onNext(phoneNumber);
+            }
+        } catch (error) {
+            console.error(error);
+            showToast("Erro inesperado. Tente novamente.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -62,10 +102,10 @@ export default function Login({ onBack, onNext }) {
                 <motion.button
                     whileTap={phoneNumber.length === 15 ? { scale: 0.96 } : {}}
                     className="btn-primary"
-                    onClick={() => onNext(phoneNumber)}
-                    disabled={phoneNumber.length !== 15}
+                    onClick={handleNextStep}
+                    disabled={phoneNumber.length !== 15 || isLoading}
                 >
-                    Finalizar cadastro
+                    {isLoading ? "Enviando..." : "Continua"}
                 </motion.button>
             </div>
         </motion.div>

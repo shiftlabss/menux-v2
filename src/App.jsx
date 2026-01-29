@@ -58,6 +58,7 @@ function AppContent() {
           <Login
             key="login"
             onBack={() => setStep('onboarding')}
+            checkUser={(phoneValue) => phoneValue === '(11) 99999-9999'}
             onNext={(phoneValue) => {
               setPhone(phoneValue)
 
@@ -80,6 +81,7 @@ function AppContent() {
         {step === 'register' && (
           <Register
             key="register"
+            phone={phone}
             onBack={() => setStep('login')}
             onNext={(nameValue) => {
               setUserName(nameValue)

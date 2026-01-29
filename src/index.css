@@ -2171,7 +2171,7 @@ body,
 
 .chat-messages-area {
   flex: 1;
-  padding: 0 24px 12px;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -2417,10 +2417,12 @@ body,
   height: 100%;
   width: 100%;
   /* Alinha melhor com o header do wizard */
+  overflow: hidden;
 }
 
 .wizard-results-header {
   margin-bottom: 24px;
+  flex-shrink: 0;
 }
 
 .wizard-results-title {
@@ -2443,8 +2445,10 @@ body,
 .wizard-results-list {
   flex: 1;
   overflow-y: auto;
+  min-height: 0;
   margin: 0 -24px;
-  padding: 0 24px;
+  padding: 0 24px 20px 24px;
+  /* Added bottom padding */
   -webkit-overflow-scrolling: touch;
 }
 
@@ -2518,6 +2522,12 @@ body,
   opacity: 0.8;
 }
 
+.btn-wizard-add.remove {
+  background: #F5F5F5;
+  color: #FF3B30;
+  border: 1px solid #EDEDED;
+}
+
 .wizard-result-image {
   width: 110px;
   height: 110px;
@@ -2542,6 +2552,25 @@ body,
 }
 
 .btn-back-to-menu-full {
+  width: 100%;
+  height: 59px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 100px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.wizard-footer {
+  margin-top: auto;
+  padding-top: 24px;
+  width: 100%;
+}
+
+.btn-wizard-next {
   width: 100%;
   height: 59px;
   background: black;
@@ -3504,4 +3533,96 @@ body,
   background: #F5F5F5;
   color: #FF3B30;
   border: 1px solid #EDEDED;
+}
+
+/* Delete Account Modal Styles */
+.delete-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.delete-modal-card {
+  background: white;
+  padding: 24px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 360px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.delete-modal-title {
+  margin: 0 0 12px 0;
+  font-size: 24px;
+  font-weight: 600;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  color: #000;
+}
+
+.delete-modal-desc {
+  margin: 0 0 24px 0;
+  font-size: 15px;
+  color: #666;
+  line-height: 1.5;
+  font-family: 'Geist', sans-serif;
+}
+
+.delete-modal-link {
+  font-size: 14px;
+  color: #333;
+  text-decoration: underline;
+  font-family: 'Geist', sans-serif;
+  font-weight: 500;
+}
+
+.delete-modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-delete-cancel {
+  flex: 1;
+  background: #F5F5F5;
+  border: none;
+  padding: 16px;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 600;
+  color: black;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-delete-cancel:active {
+  background: #E5E5E5;
+}
+
+.btn-delete-confirm {
+  background: #EA2B2B;
+  border: none;
+  padding-left: 18px;
+  padding-right: 18px;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.btn-delete-confirm:active {
+  opacity: 0.9;
 }

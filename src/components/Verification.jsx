@@ -1,13 +1,17 @@
 import { motion } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import otpService from '../services/otpService';
+import { useToast } from '../context/ToastContext';
 
 const imgLogo = "/logo-menux.svg";
 
 export default function Verification({ phone, onBack, onChangePhone, onFinish, isReturningUser }) {
-    const [timer, setTimer] = useState(30);
+    const { showToast } = useToast();
+    const [isLoading, setIsLoading] = useState(false);
     const [code, setCode] = useState(['', '', '', '']);
-    const inputRefs = [useRef(), useRef(), useRef(), useRef()];
+    const [timer, setTimer] = useState(30);
+    const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
     useEffect(() => {
         let interval = null;
@@ -37,6 +41,53 @@ export default function Verification({ phone, onBack, onChangePhone, onFinish, i
             inputRefs[index - 1].current.focus();
         }
     };
+
+    const handleVerifyParams = async () => {
+        setIsLoading(true);
+        const codeString = code.join('');
+
+        try {
+            const result = await otpService.verificarCodigo(codeString);
+
+            if (result.success) {
+                console.log("Chamando onFinish com sucesso (Navigation trigger)");
+                showToast("Código verificado com sucesso!");
+                onFinish();
+            } else {
+                showToast(result.message || "Código incorreto.");
+                // Limpar código para retentar? Opcional
+                setCode(['', '', '', '']);
+                inputRefs[0].current.focus();
+            }
+        } catch (error) {
+            console.error(error);
+            showToast("Erro na verificação.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleResend = async () => {
+        if (timer > 0) return;
+
+        // Remove phone formatting
+        const rawPhone = phone.replace(/[^\d]/g, '');
+        setIsLoading(true);
+
+        try {
+            const success = await otpService.reenviarCodigo(rawPhone);
+            if (success) {
+                showToast("Código reenviado!");
+                setTimer(30);
+            } else {
+                showToast("Erro ao reenviar código.");
+            }
+        } catch (error) {
+            showToast("Erro ao processar solicitação.");
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     const maskPhone = (phoneStr) => {
         if (!phoneStr) return '(00) 00000-0000';
@@ -95,8 +146,8 @@ export default function Verification({ phone, onBack, onChangePhone, onFinish, i
                 <div className="resend-section">
                     <button
                         className={timer > 0 ? "btn-disabled" : "btn-resend-active"}
-                        disabled={timer > 0}
-                        onClick={() => timer === 0 && setTimer(30)}
+                        disabled={timer > 0 || isLoading}
+                        onClick={handleResend}
                     >
                         {timer > 0 ? `Re-enviar código em ${timer}s` : "Re-enviar código"}
                     </button>
@@ -110,8 +161,8 @@ export default function Verification({ phone, onBack, onChangePhone, onFinish, i
                 <motion.button
                     whileTap={code.every(digit => digit !== '') ? { scale: 0.96 } : {}}
                     className="btn-primary"
-                    onClick={onFinish}
-                    disabled={!code.every(digit => digit !== '')}
+                    onClick={handleVerifyParams}
+                    disabled={!code.every(digit => digit !== '') || isLoading}
                 >
                     {isReturningUser ? 'Entrar na minha conta' : 'Finalizar cadastro'}
                 </motion.button>

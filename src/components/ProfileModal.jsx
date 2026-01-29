@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
-import { useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useRef, useState } from 'react';
 import { useToast } from '../context/ToastContext';
 
 const MenuxLogo = ({ height = 24 }) => (
@@ -17,9 +17,51 @@ const MenuxFaceIcon = () => (
     <img src="/icon-menux.svg" alt="Menux Face" style={{ width: 20, height: 20 }} />
 );
 
+const DeleteAccountModal = ({ onClose, onConfirm }) => (
+    <motion.div
+        className="delete-modal-overlay"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+    >
+        <motion.div
+            className="delete-modal-card"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            onClick={(e) => e.stopPropagation()}
+        >
+            <div>
+                <h3 className="delete-modal-title">Excluir sua conta?</h3>
+                <p className="delete-modal-desc">
+                    Isso vai desconectar todos os dispositivos vinculados à sua conta e excluir permanentemente seus dados do Menux.
+                </p>
+                <a href="#" className="delete-modal-link">Saiba mais sobre a exclusão da conta</a>
+            </div>
+
+            <div className="delete-modal-actions">
+                <button
+                    onClick={onClose}
+                    className="btn-delete-cancel"
+                >
+                    Cancelar
+                </button>
+                <button
+                    onClick={onConfirm}
+                    className="btn-delete-confirm"
+                >
+                    Excluir minha conta
+                </button>
+            </div>
+        </motion.div>
+    </motion.div>
+);
+
 export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, userName, phone, onLogout }) {
     const fileInputRef = useRef(null);
     const { showToast } = useToast();
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -65,82 +107,92 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
     };
 
     return (
-        <motion.div
-            className="profile-modal-overlay"
-            initial={{ y: "100%" }}
-            animate={{ y: "0%" }}
-            exit={{ y: "100%" }}
-            transition={{ ease: "easeOut", duration: 0.3 }}
-        >
-            <div className="profile-header">
-                <MenuxLogo height={24} />
-                <button className="btn-profile-back" onClick={onClose}>
-                    Voltar ao Cardápio
-                </button>
-            </div>
-
-            <div className="profile-content">
-                <div className="profile-avatar-section">
-                    <div className="profile-avatar" onClick={triggerFileInput} style={{ cursor: 'pointer' }}>
-                        {currentAvatar && (
-                            <img
-                                src={currentAvatar}
-                                alt="Profile"
-                                style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
-                            />
-                        )}
-                        <div className="profile-camera-icon">
-                            <CameraIcon />
-                        </div>
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleFileChange}
-                            accept="image/*"
-                            style={{ display: 'none' }}
-                        />
-                    </div>
-                    <div className="profile-name">{userName || "Visitante"}</div>
-                    <div className="profile-since">
-                        <MenuxFaceIcon />
-                        <span>Há 3 meses usando menuxIA</span>
-                    </div>
-                </div>
-
-                <div className="profile-form-group">
-                    <label className="profile-label">Seu Telefone*</label>
-                    <div className="profile-input-row">
-                        <input type="text" className="profile-input-ddi" defaultValue="+55" readOnly />
-                        <input type="text" className="profile-input" value={phone || "(00) 00000-0000"} readOnly />
-                    </div>
-                </div>
-
-                <div className="profile-form-group">
-                    <label className="profile-label">Seu Nome*</label>
-                    <input type="text" className="profile-input" value={userName || "Visitante"} readOnly />
-                </div>
-
-                <div className="profile-form-group">
-                    <label className="profile-label">Zona de Perigo</label>
-                    <button className="profile-danger-zone" onClick={() => {
-                        if (window.confirm("Deletar minha conta?")) {
-                            onLogout();
-                            onClose();
-                            showToast("Sua conta foi removida.");
-                        }
-                    }}>
-                        <span className="text-danger">Deletar minha conta</span>
-                        <MenuxLogo height={17} />
+        <>
+            <motion.div
+                className="profile-modal-overlay"
+                initial={{ y: "100%" }}
+                animate={{ y: "0%" }}
+                exit={{ y: "100%" }}
+                transition={{ ease: "easeOut", duration: 0.3 }}
+            >
+                <div className="profile-header">
+                    <MenuxLogo height={24} />
+                    <button className="btn-profile-back" onClick={onClose}>
+                        Voltar ao Cardápio
                     </button>
                 </div>
 
-                <button className="btn-save-profile" onClick={() => {
-                    showToast("Perfil atualizado com sucesso!");
-                    onClose();
-                }}>
-                    Salvar ajustes
-                </button>
-            </div>
-        </motion.div>
+                <div className="profile-content">
+                    <div className="profile-avatar-section">
+                        <div className="profile-avatar" onClick={triggerFileInput} style={{ cursor: 'pointer' }}>
+                            {currentAvatar && (
+                                <img
+                                    src={currentAvatar}
+                                    alt="Profile"
+                                    style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
+                                />
+                            )}
+                            <div className="profile-camera-icon">
+                                <CameraIcon />
+                            </div>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                            />
+                        </div>
+                        <div className="profile-name">{userName || "Visitante"}</div>
+                        <div className="profile-since">
+                            <MenuxFaceIcon />
+                            <span>Há 3 meses usando menuxIA</span>
+                        </div>
+                    </div>
+
+                    <div className="profile-form-group">
+                        <label className="profile-label">Seu Telefone*</label>
+                        <div className="profile-input-row">
+                            <input type="text" className="profile-input-ddi" defaultValue="+55" readOnly />
+                            <input type="text" className="profile-input" value={phone || "(00) 00000-0000"} readOnly />
+                        </div>
+                    </div>
+
+                    <div className="profile-form-group">
+                        <label className="profile-label">Seu Nome*</label>
+                        <input type="text" className="profile-input" value={userName || "Visitante"} readOnly />
+                    </div>
+
+                    <div className="profile-form-group">
+                        <label className="profile-label">Zona de Perigo</label>
+                        <button className="profile-danger-zone" onClick={() => setShowDeleteConfirm(true)}>
+                            <span className="text-danger">Deletar minha conta</span>
+                            <MenuxLogo height={17} />
+                        </button>
+                    </div>
+
+                    <button className="btn-save-profile" onClick={() => {
+                        showToast("Perfil atualizado com sucesso!");
+                        onClose();
+                    }}>
+                        Salvar ajustes
+                    </button>
+                </div>
+            </motion.div>
+
+            <AnimatePresence>
+                {showDeleteConfirm && (
+                    <DeleteAccountModal
+                        onClose={() => setShowDeleteConfirm(false)}
+                        onConfirm={() => {
+                            onLogout();
+                            setShowDeleteConfirm(false);
+                            onClose();
+                            showToast("Sua conta foi removida.");
+                        }}
+                    />
+                )}
+            </AnimatePresence>
+        </>
     );
 }

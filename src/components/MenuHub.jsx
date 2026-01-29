@@ -243,6 +243,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
     const [maestroInitialView, setMaestroInitialView] = useState('welcome');
     const [activeOrderCode, setActiveOrderCode] = useState(null);
     const [activeOrderItems, setActiveOrderItems] = useState([]);
+    const [orderHistory, setOrderHistory] = useState([]);
     const [isMyOrdersOpen, setIsMyOrdersOpen] = useState(false);
     const { showToast } = useToast();
 
@@ -256,6 +257,9 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
 
         const savedItems = localStorage.getItem('menux_active_items');
         if (savedItems) setActiveOrderItems(JSON.parse(savedItems));
+
+        const savedHistory = localStorage.getItem('menux_order_history');
+        if (savedHistory) setOrderHistory(JSON.parse(savedHistory));
     }, []);
 
     useEffect(() => {
@@ -269,6 +273,10 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
     useEffect(() => {
         if (activeOrderCode) localStorage.setItem('menux_active_order', activeOrderCode);
     }, [activeOrderCode]);
+
+    useEffect(() => {
+        localStorage.setItem('menux_order_history', JSON.stringify(orderHistory));
+    }, [orderHistory]);
     const { branding, categories: dynamicCategories, products: dynamicProducts } = useStudio();
 
     // Memoize the data merging to prevent infinite render loops
@@ -355,8 +363,22 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
     const handleFinishOrder = () => {
         const orderId = "#" + Math.floor(1000 + Math.random() * 9000);
         const currentItems = [...cart];
+
+        const newOrder = {
+            id: orderId,
+            time: `Pedido hoje às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`,
+            status: "waiting",
+            statusLabel: "Aguardando Garçom",
+            items: currentItems,
+            timestamp: Date.now()
+        };
+
         setActiveOrderCode(orderId);
         setActiveOrderItems(currentItems);
+
+        // Add to history
+        setOrderHistory(prev => [newOrder, ...prev]);
+
         setIsProcessing(true);
         setTimeout(() => {
             setIsProcessing(false);
@@ -697,6 +719,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                         userName={userName}
                         activeOrderCode={activeOrderCode}
                         activeOrderItems={activeOrderItems}
+                        orderHistory={orderHistory}
                         onReorder={handleReorder}
                     />
                 )}

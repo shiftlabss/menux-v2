@@ -124,15 +124,28 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
     const [inputValue, setInputValue] = useState('');
 
     const [messages, setMessages] = useState(() => {
+        const lastActivity = localStorage.getItem('maestro_last_activity');
+        const now = Date.now();
+        const THREE_HOURS = 3 * 60 * 60 * 1000;
+
+        // Se passaram mais de 3 horas, limpa tudo para uma nova conversa
+        if (lastActivity && (now - parseInt(lastActivity)) > THREE_HOURS) {
+            localStorage.removeItem('maestro_messages');
+            localStorage.removeItem('maestro_current_view');
+            localStorage.removeItem('menux_user_id');
+            return [];
+        }
+
         const saved = localStorage.getItem('maestro_messages');
         return saved ? JSON.parse(saved) : [];
     });
     const { showToast } = useToast();
 
-    // Efeito para salvar o estado sempre que mudar
+    // Efeito para salvar o estado e atualizar o timer de atividade
     useEffect(() => {
         localStorage.setItem('maestro_current_view', view);
         localStorage.setItem('maestro_messages', JSON.stringify(messages));
+        localStorage.setItem('maestro_last_activity', Date.now().toString());
     }, [view, messages]);
 
     const [isTyping, setIsTyping] = useState(false);
@@ -252,7 +265,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
             }
 
             if (!aiResponse) {
-                aiResponse = "Desculpe, tive um problema para processar sua mensagem. Verifique a estrutura da resposta do n8n.";
+                aiResponse = "Ops! Algo não saiu como esperado. Não foi possível processar sua solicitação no momento. Tente novamente em instantes.";
             }
 
             const aiMsg = {
@@ -325,7 +338,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
     const renderChat = () => (
         <div className="chat-view-container">
             <ModalHeader
-                title="Menux Maestro"
+                title="Menux"
                 status="Sempre online"
                 icon={<img src="/icon-menux.svg" alt="Menux" style={{ width: '20px' }} />}
             />
@@ -409,7 +422,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                     </button>
                     <ModalHeader
-                        title="Menux Maestro"
+                        title="Menux"
                         status="Sempre online"
                         icon={<img src="/icon-menux.svg" alt="Menux" style={{ width: '20px' }} />}
                     />
@@ -480,24 +493,48 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                             </div>
                         </div>
                         <div className="wizard-results-list">
-                            {mockResults.map((item, index) => (
-                                <div key={item.id} className="wizard-result-wrapper">
-                                    <div className="wizard-result-item">
-                                        <div className="wizard-result-info">
-                                            <span className="wizard-result-name">{item.name}</span>
-                                            <p className="wizard-result-desc">{item.desc}</p>
-                                            <div className="wizard-result-actions">
-                                                <div className="wizard-result-price-capsule">{item.price}</div>
-                                                <button className="btn-wizard-add" onClick={() => { onAddToCart(item); showToast("Item adicionado ao pedido!"); }}>Adicionar</button>
+                            {mockResults.map((item, index) => {
+                                const isInCart = cart.some(c => c.id === item.id);
+                                return (
+                                    <div key={item.id} className="wizard-result-wrapper">
+                                        <div className="wizard-result-item">
+                                            <div className="wizard-result-info">
+                                                <span className="wizard-result-name">{item.name}</span>
+                                                <p className="wizard-result-desc">{item.desc}</p>
+                                                <div className="wizard-result-actions">
+                                                    <div className="wizard-result-price-capsule">{item.price}</div>
+                                                    {isInCart ? (
+                                                        <button
+                                                            className="btn-wizard-add remove"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                if (onRemoveFromCart) onRemoveFromCart(item);
+                                                                showToast("Item removido do pedido");
+                                                            }}
+                                                        >
+                                                            Remover
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            className="btn-wizard-add"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                if (onAddToCart) onAddToCart(item);
+                                                                showToast("Item adicionado ao pedido!");
+                                                            }}
+                                                        >
+                                                            Adicionar
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </div>
+                                            <div className="wizard-result-image" style={{ backgroundImage: item.image ? `url(${item.image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
                                         </div>
-                                        <div className="wizard-result-image" style={{ backgroundImage: item.image ? `url(${item.image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
+                                        {index < mockResults.length - 1 && <div className="wizard-result-divider" />}
                                     </div>
-                                    {index < mockResults.length - 1 && <div className="wizard-result-divider" />}
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
-
                         <div className="wizard-results-footer">
                             <button className="btn-back-to-menu-full" onClick={onClose}>
                                 Voltar para o cardápio
@@ -505,23 +542,19 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                         </div>
                     </div>
                 )}
+
+
+                {step < 4 && (
+                    <div className="wizard-footer">
+                        <button className="btn-wizard-next" onClick={handleNextStep}>
+                            Avançar
+                        </button>
+                    </div>
+                )}
             </div>
-
-
-            {step <= 3 && (
-                <div className="wizard-footer">
-                    <button
-                        className="btn-wizard-action"
-                        onClick={handleNextStep}
-                        disabled={(step === 2 && !orderStyle) || (step === 3 && !dietaryRestriction)}
-                        style={{ opacity: ((step === 2 && !orderStyle) || (step === 3 && !dietaryRestriction)) ? 0.5 : 1 }}
-                    >
-                        Continuar
-                    </button>
-                </div>
-            )}
         </div>
-    );
+    )
+
 
     const renderContent = () => {
         switch (view) {
@@ -550,3 +583,4 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
         </motion.div>
     );
 }
+

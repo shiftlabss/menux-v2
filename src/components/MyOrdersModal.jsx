@@ -7,60 +7,7 @@ const ChevronLeft = () => (
     </svg>
 );
 
-const MOCK_TODAY = [
-    {
-        id: "#5872",
-        time: "Pedido hoje ás 12h34",
-        status: "waiting", // waiting, annotated, completed
-        statusLabel: "Aguardando Garçom",
-        items: [
-            { qty: 1, name: "Filé Mignon ao Poivre" },
-            { qty: 1, name: "Coca-Cola Zero" }
-        ]
-    },
-    {
-        id: "#5871",
-        time: "Pedido hoje ás 12h10",
-        status: "annotated",
-        statusLabel: "Anotado",
-        items: [
-            { qty: 1, name: "Carpaccio de Carne" }
-        ]
-    },
-    {
-        id: "#5870",
-        time: "Pedido hoje ás 11h55",
-        status: "completed",
-        statusLabel: "Concluido",
-        items: [
-            { qty: 2, name: "Água com Gás" }
-        ]
-    }
-];
-
-const MOCK_HISTORY = [
-    {
-        id: "#5420",
-        time: "Pedido ás 19h30",
-        status: "completed",
-        statusLabel: "Concluido",
-        items: [
-            { qty: 1, name: "Pizza Marguerita" },
-            { qty: 2, name: "Heineken Long Neck" }
-        ]
-    },
-    {
-        id: "#5419",
-        time: "Pedido ás 18h45",
-        status: "completed",
-        statusLabel: "Concluido",
-        items: [
-            { qty: 1, name: "Dadinho de Tapioca" }
-        ]
-    }
-];
-
-export default function MyOrdersModal({ onClose, userName, activeOrderCode, activeOrderItems = [], onReorder }) {
+export default function MyOrdersModal({ onClose, userName, activeOrderCode, activeOrderItems = [], orderHistory = [], onReorder }) {
     // Current date formatted
     const todayDate = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' });
 
@@ -126,93 +73,54 @@ export default function MyOrdersModal({ onClose, userName, activeOrderCode, acti
                     </div>
                 )}
 
-                {/* MOCK_TODAY items */}
-                {MOCK_TODAY.map((order, idx) => (
-                    <div key={idx} className="order-card-container">
-                        <div className="order-card-header">
-                            <div className="order-info-group">
-                                <span className="order-number">{order.id}</span>
-                                <span className="order-time">{order.time}</span>
-                            </div>
-                            <div className={`status-badge ${order.status}`}>
-                                {order.status === 'annotated' || order.status === 'completed' ? (
-                                    <span style={{ marginRight: 4, display: 'flex' }}>
-                                        <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M1 4L3.5 6.5L9 1" stroke={order.status === 'completed' ? 'white' : '#2E7D32'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
-                                    </span>
-                                ) : null}
-                                {order.statusLabel}
-                            </div>
-                        </div>
+                {/* History List */}
+                {orderHistory.map((order, idx) => {
+                    // Skip the currently active order if it is displayed above individually
+                    if (activeOrderCode && order.id === activeOrderCode) return null;
 
-                        <div className="order-divider"></div>
-
-                        <div className="order-summary-list">
-                            {order.items.map((item, i) => (
-                                <div key={i} className="summary-item">
-                                    <div className="qty-circle">{item.qty}</div>
-                                    <span className="item-name-summary">{item.name}</span>
+                    return (
+                        <div key={idx} className="order-card-container">
+                            <div className="order-card-header">
+                                <div className="order-info-group">
+                                    <span className="order-number">{order.id}</span>
+                                    <span className="order-time">{order.time}</span>
                                 </div>
-                            ))}
-                        </div>
-
-                        <div className="order-divider"></div>
-
-                        <button
-                            className="btn-reorder"
-                            onClick={() => onReorder && onReorder(order.items)}
-                        >
-                            Pedir novamente
-                        </button>
-                    </div>
-                ))}
-
-                {showHistory && (
-                    <>
-                        {/* Mocking a past date */}
-                        <h3 className="date-section-title" style={{ marginTop: 32 }}>12 de Janeiro</h3>
-                        {MOCK_HISTORY.map((order, idx) => (
-                            <div key={`hist-${idx}`} className="order-card-container">
-                                <div className="order-card-header">
-                                    <div className="order-info-group">
-                                        <span className="order-number">{order.id}</span>
-                                        <span className="order-time">{order.time}</span>
-                                    </div>
-                                    <div className={`status-badge ${order.status}`}>
+                                <div className={`status-badge ${order.status}`}>
+                                    {order.status === 'annotated' || order.status === 'completed' ? (
                                         <span style={{ marginRight: 4, display: 'flex' }}>
                                             <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M1 4L3.5 6.5L9 1" stroke={order.status === 'completed' ? 'white' : '#2E7D32'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                             </svg>
                                         </span>
-                                        {order.statusLabel}
-                                    </div>
+                                    ) : null}
+                                    {order.statusLabel}
                                 </div>
-
-                                <div className="order-divider"></div>
-
-                                <div className="order-summary-list">
-                                    {order.items.map((item, i) => (
-                                        <div key={i} className="summary-item">
-                                            <div className="qty-circle">{item.qty}</div>
-                                            <span className="item-name-summary">{item.name}</span>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <div className="order-divider"></div>
-
-                                <button
-                                    className="btn-reorder"
-                                    onClick={() => onReorder && onReorder(order.items)}
-                                >
-                                    Pedir novamente
-                                </button>
                             </div>
 
-                        ))}
-                    </>
-                )}
+                            <div className="order-divider"></div>
+
+                            <div className="order-summary-list">
+                                {order.items.map((item, i) => (
+                                    <div key={i} className="summary-item">
+                                        <div className="qty-circle">{item.qty}</div>
+                                        <span className="item-name-summary">{item.name}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="order-divider"></div>
+
+                            <button
+                                className="btn-reorder"
+                                onClick={() => onReorder && onReorder(order.items)}
+                            >
+                                Pedir novamente
+                            </button>
+                        </div>
+                    );
+                })}
+
+                {/* Removed usage of MOCK_HISTORY as real history is now used above */}
             </div>
         </motion.div >
     );
