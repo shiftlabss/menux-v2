@@ -65,7 +65,8 @@ export default function Register({ onBack, onNext, phone }) {
                         placeholder="Seu nome"
                         className="phone-input"
                         value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={(e) => setName(e.target.value.slice(0, 20))}
+                        maxLength={20}
                         autoFocus
                     />
                 </div>

@@ -8,14 +8,18 @@ const imgLogo = "/logo-menux.svg";
 
 export default function Login({ onBack, onNext, checkUser }) {
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [rawDigits, setRawDigits] = useState(''); // Store raw digits separately
 
     const { showToast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
 
     const formatPhoneNumber = (value) => {
         if (!value) return value;
+        // Remove all non-digits
         const phone = value.replace(/[^\d]/g, '');
         const phoneLength = phone.length;
+
+        // Format based on length
         if (phoneLength < 3) return phone;
         if (phoneLength < 7) {
             return `(${phone.slice(0, 2)}) ${phone.slice(2)}`;
@@ -24,8 +28,26 @@ export default function Login({ onBack, onNext, checkUser }) {
     };
 
     const handlePhoneChange = (e) => {
-        const formattedValue = formatPhoneNumber(e.target.value);
-        setPhoneNumber(formattedValue);
+        // Extract only digits from paste or input
+        const digitsOnly = e.target.value.replace(/[^\d]/g, '');
+        setRawDigits(digitsOnly);
+        setPhoneNumber(formatPhoneNumber(digitsOnly));
+    };
+
+    const handleKeyDown = (e) => {
+        // Handle backspace specially to avoid getting stuck on formatting characters
+        if (e.key === 'Backspace') {
+            const selection = e.target.selectionStart;
+            const value = e.target.value;
+
+            // Only handle if cursor is at the end (most common case)
+            if (selection === value.length && rawDigits.length > 0) {
+                e.preventDefault();
+                const newDigits = rawDigits.slice(0, -1);
+                setRawDigits(newDigits);
+                setPhoneNumber(formatPhoneNumber(newDigits));
+            }
+        }
     };
 
     const handleNextStep = async () => {
@@ -91,6 +113,7 @@ export default function Login({ onBack, onNext, checkUser }) {
                         className="phone-input"
                         value={phoneNumber}
                         onChange={handlePhoneChange}
+                        onKeyDown={handleKeyDown}
                         maxLength={15}
                         autoFocus
                     />

@@ -58,10 +58,18 @@ const DeleteAccountModal = ({ onClose, onConfirm }) => (
     </motion.div>
 );
 
-export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, userName, phone, onLogout }) {
+export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, userName, phone, onLogout, onSaveProfile }) {
     const fileInputRef = useRef(null);
     const { showToast } = useToast();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+    // Editable states
+    const [editableName, setEditableName] = useState(userName || '');
+    const [editablePhone, setEditablePhone] = useState(phone || '');
+    const [rawDigits, setRawDigits] = useState(() => {
+        // Extract digits from initial phone
+        return phone ? phone.replace(/[^\d]/g, '') : '';
+    });
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -106,6 +114,45 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
         fileInputRef.current.click();
     };
 
+    const formatPhoneNumber = (digits) => {
+        if (!digits) return '';
+        const len = digits.length;
+
+        if (len <= 2) return digits;
+        if (len <= 6) {
+            return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+        }
+        return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
+    };
+
+    const handlePhoneChange = (e) => {
+        const digitsOnly = e.target.value.replace(/[^\d]/g, '');
+        setRawDigits(digitsOnly);
+        setEditablePhone(formatPhoneNumber(digitsOnly));
+    };
+
+    const handlePhoneKeyDown = (e) => {
+        if (e.key === 'Backspace') {
+            const selection = e.target.selectionStart;
+            const value = e.target.value;
+
+            if (selection === value.length && rawDigits.length > 0) {
+                e.preventDefault();
+                const newDigits = rawDigits.slice(0, -1);
+                setRawDigits(newDigits);
+                setEditablePhone(formatPhoneNumber(newDigits));
+            }
+        }
+    };
+
+    const handleNameChange = (e) => {
+        const value = e.target.value.slice(0, 20); // Limit to 20 chars
+        setEditableName(value);
+    };
+
+    // Check if there are any changes
+    const hasChanges = editableName !== (userName || '') || editablePhone !== (phone || '');
+
     return (
         <>
             <motion.div
@@ -143,7 +190,7 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
                                 style={{ display: 'none' }}
                             />
                         </div>
-                        <div className="profile-name">{userName || "Visitante"}</div>
+                        <div className="profile-name">{editableName || "Visitante"}</div>
                         <div className="profile-since">
                             <MenuxFaceIcon />
                             <span>Há 3 meses usando menuxIA</span>
@@ -154,13 +201,28 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
                         <label className="profile-label">Seu Telefone*</label>
                         <div className="profile-input-row">
                             <input type="text" className="profile-input-ddi" defaultValue="+55" readOnly />
-                            <input type="text" className="profile-input" value={phone || "(00) 00000-0000"} readOnly />
+                            <input
+                                type="tel"
+                                className="profile-input"
+                                value={editablePhone || ''}
+                                onChange={handlePhoneChange}
+                                onKeyDown={handlePhoneKeyDown}
+                                placeholder="(00) 00000-0000"
+                                maxLength={15}
+                            />
                         </div>
                     </div>
 
                     <div className="profile-form-group">
                         <label className="profile-label">Seu Nome*</label>
-                        <input type="text" className="profile-input" value={userName || "Visitante"} readOnly />
+                        <input
+                            type="text"
+                            className="profile-input"
+                            value={editableName || ''}
+                            onChange={handleNameChange}
+                            placeholder="Seu nome"
+                            maxLength={20}
+                        />
                     </div>
 
                     <div className="profile-form-group">
@@ -172,10 +234,21 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
                     </div>
 
                     <div className="profile-actions-row">
-                        <button className="btn-save-profile" onClick={() => {
-                            showToast("Perfil atualizado com sucesso!");
-                            onClose();
-                        }}>
+                        <button
+                            className={`btn-save-profile ${hasChanges ? 'active' : ''}`}
+                            style={{
+                                backgroundColor: hasChanges ? '#000' : undefined,
+                                color: hasChanges ? '#fff' : undefined,
+                                cursor: hasChanges ? 'pointer' : 'not-allowed',
+                                opacity: hasChanges ? 1 : undefined
+                            }}
+                            onClick={() => {
+                                if (onSaveProfile) {
+                                    onSaveProfile(editableName, editablePhone);
+                                }
+                                showToast("Perfil atualizado com sucesso!");
+                                onClose();
+                            }}>
                             Salvar ajustes
                         </button>
                         <button className="btn-logout-profile" onClick={() => {

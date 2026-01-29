@@ -14,9 +14,7 @@ function AppContent() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('page') === 'design') return 'design-system';
 
-    // Check if user is already logged in via localStorage
-    const savedPhone = localStorage.getItem('menux_phone');
-    if (savedPhone) return 'hub'; // Direct to hub if logged in
+    // Always start at onboarding - require authentication every time
     return 'onboarding';
   })
 
@@ -59,6 +57,12 @@ function AppContent() {
             userAvatar={userAvatar}
             onUpdateAvatar={setUserAvatar}
             onAuth={() => setStep('login')}
+            onUpdateProfile={(newName, newPhone) => {
+              setUserName(newName);
+              setPhone(newPhone);
+              localStorage.setItem('menux_user', newName);
+              localStorage.setItem('menux_phone', newPhone);
+            }}
             onLogout={() => {
               setUserName('');
               setPhone('');

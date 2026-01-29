@@ -63,9 +63,6 @@ export default function ProductWineModal({ product, onClose, onAddToCart }) {
                     <button className="wine-back-circle" onClick={onClose}>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                     </button>
-                    <button className="wine-back-pill" onClick={onClose}>
-                        <span className="wine-back-text">Voltar ao Cardápio</span>
-                    </button>
                 </div>
 
                 <div className="wine-image-wrapper">

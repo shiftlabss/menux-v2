@@ -218,7 +218,7 @@ const MENU_DATA = [
     }
 ];
 
-export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogout, userAvatar, onUpdateAvatar }) {
+export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogout, userAvatar, onUpdateAvatar, onUpdateProfile }) {
     const scrollAreaRef = useRef(null);
     const tabsRef = useRef(null);
     const pillsRef = useRef(null);
@@ -639,6 +639,7 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
                         userName={userName}
                         phone={phone}
                         onLogout={onLogout}
+                        onSaveProfile={onUpdateProfile}
                     />
                 )}
                 {isMyOrdersOpen && (
