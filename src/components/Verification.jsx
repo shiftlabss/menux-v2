@@ -149,7 +149,7 @@ export default function Verification({ phone, onBack, onChangePhone, onFinish, i
                         disabled={timer > 0 || isLoading}
                         onClick={handleResend}
                     >
-                        {timer > 0 ? `Reenviar código em ${timer}s` : "Re-enviar código"}
+                        {timer > 0 ? `Reenviar código em ${timer}s` : "Reenviar código"}
                     </button>
                     {!isReturningUser && (
                         <button className="btn-outline" onClick={onChangePhone}>Mudar o número</button>
