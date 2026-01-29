@@ -171,12 +171,20 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
                         </button>
                     </div>
 
-                    <button className="btn-save-profile" onClick={() => {
-                        showToast("Perfil atualizado com sucesso!");
-                        onClose();
-                    }}>
-                        Salvar ajustes
-                    </button>
+                    <div className="profile-actions-row">
+                        <button className="btn-save-profile" onClick={() => {
+                            showToast("Perfil atualizado com sucesso!");
+                            onClose();
+                        }}>
+                            Salvar ajustes
+                        </button>
+                        <button className="btn-logout-profile" onClick={() => {
+                            onLogout();
+                            onClose();
+                        }}>
+                            Sair da Conta
+                        </button>
+                    </div>
                 </div>
             </motion.div>
 

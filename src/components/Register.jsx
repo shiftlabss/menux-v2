@@ -25,7 +25,7 @@ export default function Register({ onBack, onNext, phone }) {
                 return;
             }
 
-            const result = await otpService.solicitarCodigo(rawPhone);
+            const result = await otpService.solicitarCodigo(rawPhone, name, '+55');
             if (result.success) {
                 onNext(name);
             } else {

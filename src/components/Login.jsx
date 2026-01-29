@@ -45,7 +45,7 @@ export default function Login({ onBack, onNext, checkUser }) {
             const userExists = checkUser ? checkUser(phoneNumber) : false;
 
             if (userExists) {
-                const result = await otpService.solicitarCodigo(rawPhone);
+                const result = await otpService.solicitarCodigo(rawPhone, '', '+55');
                 if (result.success) {
                     onNext(phoneNumber);
                 } else {

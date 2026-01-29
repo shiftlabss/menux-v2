@@ -12,11 +12,23 @@ import './index.css'
 function AppContent() {
   const [step, setStep] = useState(() => {
     const params = new URLSearchParams(window.location.search);
-    return params.get('page') === 'design' ? 'design-system' : 'onboarding';
+    if (params.get('page') === 'design') return 'design-system';
+
+    // Check if user is already logged in via localStorage
+    const savedPhone = localStorage.getItem('menux_phone');
+    if (savedPhone) return 'hub'; // Direct to hub if logged in
+    return 'onboarding';
   })
-  const [phone, setPhone] = useState('')
-  const [userName, setUserName] = useState('')
+
+  const [phone, setPhone] = useState(() => localStorage.getItem('menux_phone') || '')
+  const [userName, setUserName] = useState(() => localStorage.getItem('menux_user') || '')
   const [isReturningUser, setIsReturningUser] = useState(false)
+
+  // Update storage when state changes
+  useEffect(() => {
+    if (phone) localStorage.setItem('menux_phone', phone);
+    if (userName) localStorage.setItem('menux_user', userName);
+  }, [phone, userName]);
 
   return (
     <main className="app-container" style={step === 'design-system' ? { maxWidth: '100%', height: 'auto', borderRadius: 0, boxShadow: 'none' } : {}}>
@@ -24,7 +36,7 @@ function AppContent() {
         {step === 'onboarding' && (
           <Onboarding
             key="onboarding"
-            savedUser={userName}
+            savedUser={userName} // Pass saved name for welcome back message if needed
             onStart={(target) => {
               if (target === 'auth') setStep('login')
               else if (target === 'direct-access' || target === 'menu') setStep('hub')
@@ -42,6 +54,8 @@ function AppContent() {
             onLogout={() => {
               setUserName('');
               setPhone('');
+              localStorage.removeItem('menux_phone');
+              localStorage.removeItem('menux_user');
               setStep('onboarding');
             }}
           />
@@ -68,7 +82,8 @@ function AppContent() {
                 setStep('verification')
               } else {
                 setIsReturningUser(false)
-                if (userName) {
+                if (userName && userName !== '') {
+                  // If name exists (from storage), verify
                   setStep('verification')
                 } else {
                   setStep('register')

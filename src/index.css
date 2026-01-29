@@ -1830,18 +1830,42 @@ body,
   font-weight: 500;
 }
 
-.btn-save-profile {
+.profile-actions-row {
   width: 100%;
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.btn-save-profile {
+  flex: 1;
   height: 59px;
-  background: #D0D0D0;
+  background: #C4C4C4;
+  /* Matching the gray in the image */
   color: #7A7A7A;
+  border: none;
+  border-radius: 100px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  /* Increased weight slightly for better visibility */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-logout-profile {
+  flex: 1;
+  height: 59px;
+  background: #FFECEC;
+  color: #FF4444;
   border: none;
   border-radius: 100px;
   font-family: 'Bricolage Grotesque', sans-serif;
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  margin-top: auto;
   display: flex;
   align-items: center;
   justify-content: center;

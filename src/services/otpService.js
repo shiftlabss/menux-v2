@@ -11,9 +11,9 @@ class OTPVerification {
      * PASSO 1: Solicitar código OTP
      * Faz POST para webhook inicial e salva a resumeUrl retornada
      */
-    async solicitarCodigo(numeroDoCliente) {
+    async solicitarCodigo(numeroDoCliente, nome, ddi = '+55') {
         try {
-            console.log('📤 Solicitando código OTP para:', numeroDoCliente);
+            console.log('📤 Solicitando código OTP para:', numeroDoCliente, 'Nome:', nome, 'DDI:', ddi);
 
             const response = await fetch(this.webhookInicial, {
                 method: 'POST',
@@ -21,7 +21,9 @@ class OTPVerification {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    numeroDoCliente: numeroDoCliente  // Apenas números: "11999999999"
+                    numeroDoCliente: numeroDoCliente,
+                    nome: nome,
+                    ddi: ddi
                 })
             });
 
