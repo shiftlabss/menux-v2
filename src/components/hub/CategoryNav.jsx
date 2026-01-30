@@ -39,8 +39,8 @@ export default function CategoryNav({
                     <button
                         key={sub.id || sub.name}
                         ref={el => { if (subcategoryRefs?.current) subcategoryRefs.current[`${activeCategory}-${sub.id || sub.name}`] = el }}
-                        className={`filter-pill ${activeSubcategory === (sub.name || sub.id) ? 'active' : ''}`}
-                        onClick={() => onSubcategoryChange(sub.name || sub.id)}
+                        className={`filter-pill ${activeSubcategory === (sub.id || sub.name) ? 'active' : ''}`}
+                        onClick={() => onSubcategoryChange(sub.id || sub.name)}
                     >
                         {sub.name}
                     </button>

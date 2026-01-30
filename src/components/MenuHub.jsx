@@ -428,7 +428,20 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
         }
 
         // This relies on the IDs set in ProductGrid: `cat-{id}` and `sub-{catId}-{subId}`
-        const targetId = type === 'category' ? `cat-${id}` : `sub-${activeCategory}-${id}`;
+        // For subcategories, we need to match the normalization logic in ProductGrid.jsx line 39
+        let targetId;
+        if (type === 'category') {
+            targetId = `cat-${id}`;
+        } else {
+            // ProductGrid uses: sub.id || sub.name.replace(/\s+/g, '-').toLowerCase()
+            // If id is a number or doesn't have spaces, use it directly
+            // Otherwise normalize it like ProductGrid does
+            const normalizedId = (typeof id === 'number' || !id?.includes(' '))
+                ? id
+                : id.replace(/\s+/g, '-').toLowerCase();
+            targetId = `sub-${activeCategory}-${normalizedId}`;
+        }
+
         const element = document.getElementById(targetId); // Fallback to DOM lookup if ref not handy or complex
 
         if (element) {
