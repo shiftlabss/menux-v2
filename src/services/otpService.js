@@ -2,28 +2,18 @@ import { CONFIG } from '../config';
 
 class OTPVerification {
     constructor() {
-        // URL fixa do webhook inicial
-        this.webhookInicial = CONFIG.WEBHOOK_OTP;
-
-        // URL dinâmica retornada pelo workflow (única por tentativa)
-        this.resumeUrl = null;
-
-        // Dados da última requisição para permitir reenvio
-        this.lastRequestData = null;
+        this.generateUrl = 'https://lottoluck.app.n8n.cloud/webhook/74de1fb3-5e1d-4866-a824-a58d5db47407';
+        this.verifyUrl = 'https://lottoluck.app.n8n.cloud/webhook/verify-otp';
     }
 
     /**
      * PASSO 1: Solicitar código OTP
-     * Faz POST para webhook inicial e salva a resumeUrl retornada
      */
     async solicitarCodigo(numeroDoCliente, nome, ddi = '+55') {
         try {
             console.log('📤 Solicitando código OTP para:', numeroDoCliente, 'Nome:', nome, 'DDI:', ddi);
 
-            // Salva dados para possível reenvio
-            this.lastRequestData = { numeroDoCliente, nome, ddi };
-
-            const response = await fetch(this.webhookInicial, {
+            const response = await fetch(this.generateUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -35,27 +25,17 @@ class OTPVerification {
                 })
             });
 
-            // Se a resposta não for OK, lança erro antes de tentar ler o JSON
             if (!response.ok) {
                 const text = await response.text();
                 throw new Error(`HTTP ${response.status}: ${text || response.statusText}`);
             }
 
             const data = await response.json();
-
-            // ⚠️ CRÍTICO: Salvar a resumeUrl retornada
-            if (data.resumeUrl) {
-                this.resumeUrl = data.resumeUrl.trim(); // Trim por segurança
-            } else {
-                console.error('⚠️ Resposta sem resumeUrl:', data);
-                // Opcional: throw new Error('Servidor não retornou URL de verificação');
-            }
-
-            console.log('✅ Código enviado! Resume URL:', this.resumeUrl);
+            console.log('✅ Código enviado!', data);
 
             return {
                 success: true,
-                resumeUrl: this.resumeUrl
+                data: data
             };
 
         } catch (error) {
@@ -69,49 +49,68 @@ class OTPVerification {
 
     /**
      * PASSO 2: Verificar código digitado pelo usuário
-     * Faz GET para a resumeUrl com o código como query parameter
      */
-    async verificarCodigo(codigoDigitado) {
-        // Validação: resumeUrl deve existir
-        if (!this.resumeUrl) {
-            console.error('❌ Erro: resumeUrl não encontrada. Solicite um código primeiro!');
-            return { success: false, message: 'Sessão expirada ou código não solicitado.' };
-        }
-
+    async verificarCodigo(codigoDigitado, numeroDoCliente, ddi = '+55') {
         try {
-            console.log('🔍 Verificando código:', codigoDigitado);
+            console.log('🔍 Verificando código:', codigoDigitado, 'para:', numeroDoCliente);
 
-            const cleanCode = codigoDigitado.trim();
-            // ⚠️ CRÍTICO: GET com query parameter, NÃO POST com body!
-            const url = `${this.resumeUrl}?otpCode=${cleanCode}`;
-            console.log('📡 Requisição completa:', url);
-
-            const response = await fetch(url, {
-                method: 'GET'  // ⚠️ IMPORTANTE: GET, não POST!
+            const response = await fetch(this.verifyUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    numeroDoCliente: numeroDoCliente,
+                    ddi: ddi,
+                    otpCode: codigoDigitado
+                })
             });
 
-            // Tenta ler o JSON
-            let resultado;
-            try {
-                resultado = await response.json();
-                console.log('📥 Resposta recebida:', resultado);
-            } catch (e) {
-                console.warn('Resposta não é JSON:', e);
-                return { success: false, message: 'Erro no servidor (resposta inválida)' };
-            }
+            const text = await response.text();
+            console.log('📥 Resposta bruta da verificação:', text);
 
-            // Verificar se foi sucesso (código 200 e success: true)
-            if (response.ok && resultado.success) {
-                console.log('✅ Código correto! Usuário autenticado');
-                return {
-                    success: true,
-                    data: resultado
-                };
-            } else {
-                console.log('❌ Código incorreto ou expirado');
+            let result;
+            try {
+                result = text ? JSON.parse(text) : {};
+            } catch (e) {
+                console.warn('Resposta não é JSON válido:', text);
                 return {
                     success: false,
-                    message: resultado.message || 'Código inválido'
+                    message: 'Erro no servidor: Resposta inválida.'
+                };
+            }
+
+            if (response.ok) {
+                // VERIFICAÇÃO DE SEGURANÇA:
+                // Se o n8n estiver configurado como "Respond Immediately", ele retorna 200 com "Workflow was started".
+                // Isso NÃO é uma validação de código válida. Precisamos bloquear.
+                if (result && result.message === 'Workflow was started') {
+                    console.warn("⚠️ O webhook do N8N está retornando 'Workflow was started'. Altere para 'Respond: When Last Node Executed'.");
+                    return {
+                        success: false,
+                        message: 'Erro de configuração: O servidor não validou o código (Retorno Async).'
+                    };
+                }
+
+                // Verifica se o corpo traz indicativo de erro mesmo com status 200
+                if (result.success === false || result.valid === false || result.error) {
+                    console.log('❌ Status 200, mas corpo indica erro:', result);
+                    return {
+                        success: false,
+                        message: result.message || result.error || 'Código incorreto.'
+                    };
+                }
+
+                console.log('✅ Código correto! Usuário autenticado', result);
+                return {
+                    success: true,
+                    data: result
+                };
+            } else {
+                console.log('❌ Código incorreto ou erro:', result);
+                return {
+                    success: false,
+                    message: result.message || result.error || 'Código incorreto ou expirado.'
                 };
             }
 
@@ -119,25 +118,18 @@ class OTPVerification {
             console.error('❌ Erro ao verificar código:', error);
             return {
                 success: false,
-                message: 'Erro ao verificar código'
+                message: 'Erro ao verificar código. Tente novamente.'
             };
         }
     }
 
     /**
-     * Reenviar código (gera nova execução e nova resumeUrl)
+     * Reenviar código
      */
-    async reenviarCodigo(numeroDoCliente) {
+    async reenviarCodigo(numeroDoCliente, nome = '', ddi = '+55') {
         console.log('🔄 Reenviando código...');
-
-        if (this.lastRequestData && this.lastRequestData.numeroDoCliente === numeroDoCliente) {
-            // Usa dados cacheados para garantir que nome e ddi sejam enviados
-            const { numeroDoCliente, nome, ddi } = this.lastRequestData;
-            return await this.solicitarCodigo(numeroDoCliente, nome, ddi);
-        }
-
-        // Fallback (caso antigo ou sem cache)
-        return await this.solicitarCodigo(numeroDoCliente, '', '+55');
+        // Reusa a lógica de solicitar código
+        return await this.solicitarCodigo(numeroDoCliente, nome, ddi);
     }
 }
 

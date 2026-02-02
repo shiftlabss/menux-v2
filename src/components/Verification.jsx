@@ -45,9 +45,12 @@ export default function Verification({ phone, onBack, onChangePhone, onFinish, i
     const handleVerifyParams = async () => {
         setIsLoading(true);
         const codeString = code.join('');
+        // Remove formatting to send raw numbers
+        const rawPhone = phone.replace(/[^\d]/g, '');
 
         try {
-            const result = await otpService.verificarCodigo(codeString);
+            // Updated to pass phone number and default DDI
+            const result = await otpService.verificarCodigo(codeString, rawPhone, '+55');
 
             if (result.success) {
                 console.log("Chamando onFinish com sucesso (Navigation trigger)");
@@ -75,8 +78,14 @@ export default function Verification({ phone, onBack, onChangePhone, onFinish, i
         setIsLoading(true);
 
         try {
-            const success = await otpService.reenviarCodigo(rawPhone);
-            if (success) {
+            // If returning user, we might not have the name handy here easily unless passed down.
+            // Using empty name for returning users or if generic resend.
+            const nameToUse = isReturningUser ? '' : '';
+            // Ideally we would want the name if it's a new registration, but usually safe to send empty for resend if backend handles it.
+            // Or we could pass 'name' prop to Verification if available from Register.
+
+            const result = await otpService.reenviarCodigo(rawPhone, nameToUse, '+55');
+            if (result.success) {
                 showToast("Código reenviado!");
                 setTimer(30);
             } else {

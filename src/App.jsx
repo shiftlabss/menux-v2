@@ -25,13 +25,28 @@ function AppContent() {
     return localStorage.getItem('menux_is_returning') === 'true';
   })
 
-  // Update storage when state changes
+  // Update storage manually only when needed
+  const persistUser = (name, phoneVal, avatar, returning) => {
+    if (phoneVal) localStorage.setItem('menux_phone', phoneVal);
+    if (name) localStorage.setItem('menux_user', name);
+    if (avatar) localStorage.setItem('menux_avatar', avatar);
+    localStorage.setItem('menux_is_returning', returning ? 'true' : 'false');
+  }
+
+  // Reset state to storage when returning to onboarding (discarding partial flow data)
   useEffect(() => {
-    if (phone) localStorage.setItem('menux_phone', phone);
-    if (userName) localStorage.setItem('menux_user', userName);
-    if (userAvatar) localStorage.setItem('menux_avatar', userAvatar);
-    localStorage.setItem('menux_is_returning', isReturningUser);
-  }, [phone, userName, userAvatar, isReturningUser]);
+    if (step === 'onboarding') {
+      const storedPhone = localStorage.getItem('menux_phone') || '';
+      const storedUser = localStorage.getItem('menux_user') || '';
+      const storedAvatar = localStorage.getItem('menux_avatar') || null;
+      const storedReturning = localStorage.getItem('menux_is_returning') === 'true';
+
+      if (phone !== storedPhone) setPhone(storedPhone);
+      if (userName !== storedUser) setUserName(storedUser);
+      if (userAvatar !== storedAvatar) setUserAvatar(storedAvatar);
+      if (isReturningUser !== storedReturning) setIsReturningUser(storedReturning);
+    }
+  }, [step]);
 
   return (
     <main className="app-container" style={step === 'design-system' ? { maxWidth: '100%', height: 'auto', borderRadius: 0, boxShadow: 'none' } : {}}>
@@ -55,7 +70,10 @@ function AppContent() {
             userName={userName}
             phone={phone}
             userAvatar={userAvatar}
-            onUpdateAvatar={setUserAvatar}
+            onUpdateAvatar={(newAvatar) => {
+              setUserAvatar(newAvatar);
+              localStorage.setItem('menux_avatar', newAvatar);
+            }}
             onAuth={() => setStep('login')}
             onUpdateProfile={(newName, newPhone) => {
               setUserName(newName);
@@ -67,6 +85,7 @@ function AppContent() {
               setUserName('');
               setPhone('');
               setUserAvatar(null);
+              setIsReturningUser(false);
               localStorage.removeItem('menux_phone');
               localStorage.removeItem('menux_user');
               localStorage.removeItem('menux_avatar');
@@ -129,9 +148,16 @@ function AppContent() {
             onChangePhone={() => setStep('login')}
             onFinish={() => {
               // Simulate Auth Success (usually save token)
+              let finalName = userName;
               if (isReturningUser) {
-                setUserName("Usuário Retorno"); // Simulated name fetch
+                finalName = "Usuário Retorno"; // Simulated name fetch
+                setUserName(finalName);
               }
+
+              // SALVAR NO LOCALSTORAGE APENAS AQUI
+              persistUser(finalName, phone, userAvatar, true);
+              setIsReturningUser(true);
+
               setStep('hub');
             }}
           />
