@@ -6,7 +6,7 @@ import { useToast } from '../context/ToastContext';
 
 const imgLogo = "/logo-menux.svg";
 
-export default function Login({ onBack, onNext, checkUser }) {
+export default function Login({ onBack, onNext, checkUser, savedName }) {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [rawDigits, setRawDigits] = useState(''); // Store raw digits separately
 
@@ -57,16 +57,10 @@ export default function Login({ onBack, onNext, checkUser }) {
 
         try {
             // Check if user exists (logic passed from parent)
-            // If checkUser is not provided, assume new user or safe default? 
-            // Actually, let's assume parent provides it.
-            // If exists -> Send OTP. 
-            // If new -> Skip OTP (will send after name).
-
-            // Note: We need to know if we should send OTP.
-            // Using the checkUser prop which we will add.
             const userExists = checkUser ? checkUser(phoneNumber) : false;
 
             if (userExists) {
+                // Existing user: Send OTP (no name needed)
                 const result = await otpService.solicitarCodigo(rawPhone, '', '+55');
                 if (result.success) {
                     onNext(phoneNumber);
@@ -74,8 +68,19 @@ export default function Login({ onBack, onNext, checkUser }) {
                     showToast(result.error || "Erro ao enviar código. Tente novamente.");
                 }
             } else {
-                // New user - skip OTP, go to register
-                onNext(phoneNumber);
+                // New user
+                if (savedName && savedName.trim() !== '') {
+                    // If we have a saved name (e.g. from previous attempt), send OTP now!
+                    const result = await otpService.solicitarCodigo(rawPhone, savedName, '+55');
+                    if (result.success) {
+                        onNext(phoneNumber);
+                    } else {
+                        showToast(result.error || "Erro ao enviar código.");
+                    }
+                } else {
+                    // No name saved, go to Register screen (skip OTP here)
+                    onNext(phoneNumber);
+                }
             }
         } catch (error) {
             console.error(error);

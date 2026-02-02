@@ -107,6 +107,7 @@ function AppContent() {
             key="login"
             onBack={() => setStep('onboarding')}
             checkUser={(phoneValue) => phoneValue === '(11) 99999-9999'}
+            savedName={userName} // Pass saved name to allow auto-OTP for new users
             onNext={(phoneValue) => {
               setPhone(phoneValue)
 
@@ -116,8 +117,10 @@ function AppContent() {
                 setStep('verification')
               } else {
                 setIsReturningUser(false)
-                if (userName && userName !== '') {
-                  // If name exists (from storage), verify
+
+                // Logic updated: Login.jsx now sends OTP if savedName is present.
+                // So if we have a name, we can go straight to verification.
+                if (userName && userName.trim() !== '') {
                   setStep('verification')
                 } else {
                   setStep('register')
@@ -131,6 +134,7 @@ function AppContent() {
           <Register
             key="register"
             phone={phone}
+            initialName={userName}
             onBack={() => setStep('login')}
             onNext={(nameValue) => {
               setUserName(nameValue)
@@ -145,7 +149,12 @@ function AppContent() {
             phone={phone}
             isReturningUser={isReturningUser}
             onBack={() => isReturningUser ? setStep('login') : setStep('register')}
-            onChangePhone={() => setStep('login')}
+            onChangePhone={() => {
+              // Keep userName, clear phone, go to login. 
+              // Login will see the name and trigger auto-OTP if the new number is valid.
+              setPhone('');
+              setStep('login');
+            }}
             onFinish={() => {
               // Simulate Auth Success (usually save token)
               let finalName = userName;

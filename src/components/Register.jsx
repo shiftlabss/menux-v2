@@ -6,8 +6,8 @@ import { useToast } from '../context/ToastContext';
 
 const imgLogo = "/logo-menux.svg";
 
-export default function Register({ onBack, onNext, phone }) {
-    const [name, setName] = useState('');
+export default function Register({ onBack, onNext, phone, initialName = '' }) {
+    const [name, setName] = useState(initialName);
     const { showToast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
 
