@@ -42,13 +42,8 @@ export default function ProductWineModal({ product, onClose, onAddToCart }) {
 
     if (!product) return null;
 
-    // Default facts if not provided
-    const facts = product.facts || {
-        vinicola: 'Marchesi Antinori',
-        uvas: 'Cabernet',
-        regiao: 'Toscana',
-        estilo: 'Tinto Encorpado'
-    };
+    // Only show facts if the product actually has them
+    const facts = product.facts || null;
 
     return (
         <motion.div
@@ -94,41 +89,51 @@ export default function ProductWineModal({ product, onClose, onAddToCart }) {
 
                     <div className="wine-divider"></div>
 
-                    <div className="wine-facts-section">
-                        <h3 className="wine-facts-title">Fatos sobre o Vinho</h3>
+                    {facts && (
+                        <div className="wine-facts-section">
+                            <h3 className="wine-facts-title">Fatos sobre o Vinho</h3>
 
-                        <div className="wine-fact-row">
-                            <div className="wine-fact-label-group">
-                                <FactoryIcon />
-                                <span className="wine-fact-label">Vinícola</span>
-                            </div>
-                            <span className="wine-fact-value">{facts.vinicola}</span>
-                        </div>
+                            {facts.vinicola && (
+                                <div className="wine-fact-row">
+                                    <div className="wine-fact-label-group">
+                                        <FactoryIcon />
+                                        <span className="wine-fact-label">Vinícola</span>
+                                    </div>
+                                    <span className="wine-fact-value">{facts.vinicola}</span>
+                                </div>
+                            )}
 
-                        <div className="wine-fact-row">
-                            <div className="wine-fact-label-group">
-                                <GrapesIcon />
-                                <span className="wine-fact-label">Uvas</span>
-                            </div>
-                            <span className="wine-fact-value">{facts.uvas}</span>
-                        </div>
+                            {facts.uvas && (
+                                <div className="wine-fact-row">
+                                    <div className="wine-fact-label-group">
+                                        <GrapesIcon />
+                                        <span className="wine-fact-label">Uvas</span>
+                                    </div>
+                                    <span className="wine-fact-value">{facts.uvas}</span>
+                                </div>
+                            )}
 
-                        <div className="wine-fact-row">
-                            <div className="wine-fact-label-group">
-                                <MapPinIcon />
-                                <span className="wine-fact-label">Região</span>
-                            </div>
-                            <span className="wine-fact-value">{facts.regiao}</span>
-                        </div>
+                            {facts.regiao && (
+                                <div className="wine-fact-row">
+                                    <div className="wine-fact-label-group">
+                                        <MapPinIcon />
+                                        <span className="wine-fact-label">Região</span>
+                                    </div>
+                                    <span className="wine-fact-value">{facts.regiao}</span>
+                                </div>
+                            )}
 
-                        <div className="wine-fact-row">
-                            <div className="wine-fact-label-group">
-                                <WineIcon />
-                                <span className="wine-fact-label">Estilo</span>
-                            </div>
-                            <span className="wine-fact-value">{facts.estilo}</span>
+                            {facts.estilo && (
+                                <div className="wine-fact-row">
+                                    <div className="wine-fact-label-group">
+                                        <WineIcon />
+                                        <span className="wine-fact-label">Estilo</span>
+                                    </div>
+                                    <span className="wine-fact-value">{facts.estilo}</span>
+                                </div>
+                            )}
                         </div>
-                    </div>
+                    )}
                 </div>
 
                 <div className="wine-footer-action">

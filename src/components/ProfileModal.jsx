@@ -150,8 +150,8 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
         setEditableName(value);
     };
 
-    // Check if there are any changes
-    const hasChanges = editableName !== (userName || '') || editablePhone !== (phone || '');
+    // Check if there are any changes (phone is read-only, only name can change)
+    const hasChanges = editableName !== (userName || '');
 
     return (
         <>
@@ -205,12 +205,15 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
                                 type="tel"
                                 className="profile-input"
                                 value={editablePhone || ''}
-                                onChange={handlePhoneChange}
-                                onKeyDown={handlePhoneKeyDown}
+                                readOnly
+                                style={{ opacity: 0.6, cursor: 'not-allowed' }}
                                 placeholder="(00) 00000-0000"
                                 maxLength={15}
                             />
                         </div>
+                        <span style={{ fontSize: '11px', color: '#999', marginTop: '4px', display: 'block' }}>
+                            Para alterar o telefone, saia da conta e faça login com o novo número.
+                        </span>
                     </div>
 
                     <div className="profile-form-group">

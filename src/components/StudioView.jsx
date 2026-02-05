@@ -25,7 +25,7 @@ export default function StudioView({ onClose }) {
 
         // Validação de tamanho (max 2MB para evitar erro de LocalStorage)
         if (file.size > 2 * 1024 * 1024) {
-            alert("A imagem é muito grande! Por favor, escolha uma imagem menor que 2MB para não sobrecarregar o navegador.");
+            showToast("Imagem muito grande! Escolha uma menor que 2MB.");
             return;
         }
 
@@ -66,7 +66,7 @@ export default function StudioView({ onClose }) {
             setEditingProductId(null);
             showToast('Produto atualizado!');
         } else {
-            setProducts([...products, { ...newProd, id: Date.now() }]);
+            setProducts([...products, { ...newProd, id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}` }]);
             showToast('Produto adicionado!');
         }
 
@@ -193,7 +193,13 @@ export default function StudioView({ onClose }) {
                                         <div key={cat.id} className="category-group-preview">
                                             <div className="admin-list-item category-item">
                                                 <strong>{cat.name.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</strong>
-                                                <button className="admin-btn-remove" onClick={() => setCategories(categories.filter(c => c.id !== cat.id))}>&times;</button>
+                                                <button className="admin-btn-remove" onClick={() => {
+                                                    if (confirm(`Remover "${cat.name}"? Os produtos desta categoria também serão removidos.`)) {
+                                                        setProducts(products.filter(p => p.categoryId !== cat.id));
+                                                        setCategories(categories.filter(c => c.id !== cat.id));
+                                                        showToast('Categoria e produtos removidos.');
+                                                    }
+                                                }}>&times;</button>
                                             </div>
                                             <div className="subcategory-list-preview">
                                                 {cat.subcategories?.length === 0 && <span className="admin-hint-text">Sem subcategorias</span>}
@@ -256,7 +262,21 @@ export default function StudioView({ onClose }) {
 
                             <div className="admin-field">
                                 <label>Preço</label>
-                                <input type="text" placeholder="R$ 0,00" value={newProd.price} onChange={e => setNewProd({ ...newProd, price: e.target.value })} />
+                                <input
+                                    type="text"
+                                    placeholder="R$ 0,00"
+                                    value={newProd.price}
+                                    onChange={e => {
+                                        let val = e.target.value;
+                                        // Auto-prefix R$ and allow only digits, comma, dot
+                                        const digits = val.replace(/[^\d,\.]/g, '');
+                                        if (digits) {
+                                            setNewProd({ ...newProd, price: `R$ ${digits}` });
+                                        } else {
+                                            setNewProd({ ...newProd, price: '' });
+                                        }
+                                    }}
+                                />
                             </div>
 
                             <div className="admin-field">

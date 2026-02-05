@@ -34,6 +34,8 @@ function AppContent() {
   }
 
   // Reset state to storage when returning to onboarding (discarding partial flow data)
+  // Note: Only depends on [step] intentionally — adding state vars would cause infinite loop
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (step === 'onboarding') {
       const storedPhone = localStorage.getItem('menux_phone') || '';
@@ -41,10 +43,10 @@ function AppContent() {
       const storedAvatar = localStorage.getItem('menux_avatar') || null;
       const storedReturning = localStorage.getItem('menux_is_returning') === 'true';
 
-      if (phone !== storedPhone) setPhone(storedPhone);
-      if (userName !== storedUser) setUserName(storedUser);
-      if (userAvatar !== storedAvatar) setUserAvatar(storedAvatar);
-      if (isReturningUser !== storedReturning) setIsReturningUser(storedReturning);
+      setPhone(storedPhone);
+      setUserName(storedUser);
+      setUserAvatar(storedAvatar);
+      setIsReturningUser(storedReturning);
     }
   }, [step]);
 
@@ -86,10 +88,20 @@ function AppContent() {
               setPhone('');
               setUserAvatar(null);
               setIsReturningUser(false);
+              // Clear user identity
               localStorage.removeItem('menux_phone');
               localStorage.removeItem('menux_user');
               localStorage.removeItem('menux_avatar');
               localStorage.removeItem('menux_is_returning');
+              // Clear cart, orders and Maestro data
+              localStorage.removeItem('menux_cart');
+              localStorage.removeItem('menux_active_order');
+              localStorage.removeItem('menux_active_items');
+              localStorage.removeItem('menux_order_history');
+              localStorage.removeItem('maestro_messages');
+              localStorage.removeItem('maestro_current_view');
+              localStorage.removeItem('maestro_last_activity');
+              localStorage.removeItem('menux_user_id');
               setStep('onboarding');
             }}
           />

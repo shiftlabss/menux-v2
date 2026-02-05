@@ -38,10 +38,14 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                 <div className="pd-content">
                     <h2 className="pd-title">{product.name}</h2>
 
-                    <div className="pd-chips-row">
-                        <span className="pd-chip">Serve 2 pessoas</span>
-                        <span className="pd-chip">Sem glúten</span>
-                    </div>
+                    {(product.servings || product.tags) && (
+                        <div className="pd-chips-row">
+                            {product.servings && <span className="pd-chip">{product.servings}</span>}
+                            {product.tags && product.tags.map((tag, i) => (
+                                <span key={i} className="pd-chip">{tag}</span>
+                            ))}
+                        </div>
+                    )}
 
                     <p className="pd-description">{product.desc}</p>
                     <div className="pd-price">{product.price}</div>

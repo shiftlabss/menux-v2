@@ -23,6 +23,15 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
     const { showToast } = useToast();
     const isEmpty = cartItems.length === 0;
 
+    // Calculate cart total
+    const cartTotal = cartItems.reduce((sum, item) => {
+        const priceStr = (item.price || '').replace('R$', '').replace(/\s/g, '').replace('.', '').replace(',', '.');
+        const price = parseFloat(priceStr) || 0;
+        return sum + (price * item.qty);
+    }, 0);
+
+    const formattedTotal = cartTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
     const handleMaestroClick = (e) => {
         e.preventDefault();
         onOpenChat();
@@ -47,7 +56,24 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
                 <div className="order-items-list">
                     {isEmpty ? (
                         <div className="empty-cart-message" style={{ textAlign: 'center', padding: '40px 20px', color: '#8A8A8A', fontFamily: 'Geist, sans-serif' }}>
-                            Seu carrinho está vazio. Adicione algum item do cardápio!
+                            <p>Seu carrinho está vazio. Adicione algum item do cardápio!</p>
+                            <button
+                                onClick={onClose}
+                                style={{
+                                    marginTop: '16px',
+                                    padding: '10px 24px',
+                                    borderRadius: '10px',
+                                    border: '1.5px solid #E0E0E0',
+                                    background: '#fff',
+                                    fontFamily: 'Geist, sans-serif',
+                                    fontSize: '14px',
+                                    fontWeight: '500',
+                                    cursor: 'pointer',
+                                    color: '#333'
+                                }}
+                            >
+                                Voltar ao cardápio
+                            </button>
                         </div>
                     ) : (
                         cartItems.map((item, index) => (
@@ -75,7 +101,7 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
                                                         justifyContent: 'center',
                                                         flexShrink: 0,
                                                         fontFamily: 'Geist, sans-serif'
-                                                    }}>1</div>
+                                                    }}>{i + 1}</div>
                                                     <span style={{
                                                         fontFamily: 'Geist, sans-serif',
                                                         fontSize: '14px',
@@ -166,7 +192,17 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
             </div>
 
             <div className="order-footer-actions">
-                <button className="btn-finish-order" onClick={onFinish}>
+                {!isEmpty && (
+                    <div style={{ textAlign: 'center', marginBottom: '10px', fontFamily: 'Geist, sans-serif', fontSize: '15px', fontWeight: '600', color: '#333' }}>
+                        Total: {formattedTotal}
+                    </div>
+                )}
+                <button
+                    className="btn-finish-order"
+                    onClick={onFinish}
+                    disabled={isEmpty}
+                    style={isEmpty ? { opacity: 0.4, cursor: 'not-allowed' } : {}}
+                >
                     Concluir e Chamar Garçom
                 </button>
             </div>

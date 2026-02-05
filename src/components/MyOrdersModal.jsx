@@ -50,7 +50,7 @@ export default function MyOrdersModal({ onClose, userName, activeOrderCode, acti
 
                         <div className="order-summary-list">
                             {activeOrderItems.length > 0 ? activeOrderItems.map((item, i) => (
-                                <div key={i} className="summary-item">
+                                <div key={item.id || `active-${i}`} className="summary-item">
                                     <div className="qty-circle">{item.qty || 1}</div>
                                     <span className="item-name-summary">{item.name}</span>
                                 </div>
@@ -79,7 +79,7 @@ export default function MyOrdersModal({ onClose, userName, activeOrderCode, acti
                     if (activeOrderCode && order.id === activeOrderCode) return null;
 
                     return (
-                        <div key={idx} className="order-card-container">
+                        <div key={order.id || `history-${idx}`} className="order-card-container">
                             <div className="order-card-header">
                                 <div className="order-info-group">
                                     <span className="order-number">{order.id}</span>
@@ -101,7 +101,7 @@ export default function MyOrdersModal({ onClose, userName, activeOrderCode, acti
 
                             <div className="order-summary-list">
                                 {order.items.map((item, i) => (
-                                    <div key={i} className="summary-item">
+                                    <div key={item.id || `order-item-${i}`} className="summary-item">
                                         <div className="qty-circle">{item.qty}</div>
                                         <span className="item-name-summary">{item.name}</span>
                                     </div>

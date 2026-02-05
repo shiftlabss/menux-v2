@@ -57,7 +57,7 @@ const MENU_DATA = [
             {
                 name: 'Quentes', items: [
                     { id: 103, name: "Bolinho de Costela", desc: "6 unidades de bolinhos crocantes de costela desfiada com cream cheese.", price: "R$ 38,00", image: "/imgs/entrada/entrada-bolinho-costela.jpg" },
-                    { id: 104, name: "Camarão Crocante", desc: "Camarões empanados na farinha panko com molho agridoce.", price: "R$ 62,00", image: "/imgs/entrada/entrada-camarão.jpg" },
+                    { id: 104, name: "Camarão Empanado", desc: "Camarões empanados crocantes com molho agridoce.", price: "R$ 56,00", image: "/imgs/entrada/entrada-camarão.jpg" },
                     { id: 106, name: "Dadinho de Tapioca", desc: "Dadinhos de tapioca com queijo coalho servidos com geleia de pimenta.", price: "R$ 32,00", image: "/imgs/entrada/entrada-dadinho.jpg" },
                     { id: 107, name: "Tábua de Frios", desc: "Seleção de queijos e embutidos artesanais, acompanhados de pães e antepastos.", price: "R$ 89,00", image: "/imgs/entrada/entrada-tabua.jpg" },
                 ]
@@ -315,13 +315,40 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
         }, 800);
     };
 
-    // (Keeping the ref-based logic simple for the timer)
+    // PIN access with rate-limiting (max 3 attempts, 60s lockout)
     const pressTimer = useRef(null);
+    const pinAttemptsRef = useRef(0);
+    const pinLockedUntilRef = useRef(0);
+
     const onLongPressStart = () => {
         pressTimer.current = setTimeout(() => {
-            const pin = window.prompt("Digite o PIN de acesso (1234):");
-            if (pin === "1234") onOpenStudio();
-            else if (pin !== null) alert("PIN Incorreto");
+            const now = Date.now();
+
+            // Check lockout
+            if (pinLockedUntilRef.current > now) {
+                const secondsLeft = Math.ceil((pinLockedUntilRef.current - now) / 1000);
+                showToast(`Acesso bloqueado. Tente novamente em ${secondsLeft}s.`);
+                return;
+            }
+
+            const pin = window.prompt("Digite o PIN de acesso:");
+            if (pin === null) return; // User cancelled
+
+            if (pin === "1234") {
+                pinAttemptsRef.current = 0;
+                onOpenStudio();
+            } else {
+                pinAttemptsRef.current += 1;
+                const remaining = 3 - pinAttemptsRef.current;
+
+                if (remaining <= 0) {
+                    pinLockedUntilRef.current = Date.now() + 60000; // Lock for 60s
+                    pinAttemptsRef.current = 0;
+                    showToast("PIN incorreto 3 vezes. Bloqueado por 60 segundos.");
+                } else {
+                    showToast(`PIN incorreto. ${remaining} tentativa${remaining > 1 ? 's' : ''} restante${remaining > 1 ? 's' : ''}.`);
+                }
+            }
         }, 800);
     };
     const onLongPressEnd = () => clearTimeout(pressTimer.current);
@@ -374,7 +401,10 @@ export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogou
     };
 
     const handleFinishOrder = () => {
-        const orderId = "#" + Math.floor(1000 + Math.random() * 9000);
+        // Generate unique order code: timestamp base36 + random suffix (e.g. #K7F2X)
+        const ts = Date.now().toString(36).slice(-3).toUpperCase();
+        const rand = Math.random().toString(36).slice(2, 4).toUpperCase();
+        const orderId = "#" + ts + rand;
         const currentItems = [...cart];
         const newOrder = {
             id: orderId,

@@ -93,7 +93,7 @@ export default function ProductPizzaModal({ product, onClose, onAddToCart }) {
         onClose();
     };
 
-    const canAdd = selections.dough && selections.flavors.filter(Boolean).length === selections.quantity && selections.crust;
+    const canAdd = selections.dough && selections.flavors.length === selections.quantity && selections.flavors.every(Boolean) && selections.crust;
 
     return (
         <motion.div

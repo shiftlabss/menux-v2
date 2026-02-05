@@ -166,19 +166,27 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
         setStep(1);
     };
 
+    const safetyTimeoutRef = useRef(null);
+
     const handleNextStep = () => {
         if (step === 3) {
             setStep(4);
-            // Simulate AI searching
-            // Safety timeout to prevent infinite loading
-            const safetyTimeout = setTimeout(() => {
+            // Simulate AI searching with proper cleanup
+            if (safetyTimeoutRef.current) clearTimeout(safetyTimeoutRef.current);
+            safetyTimeoutRef.current = setTimeout(() => {
                 setStep(5);
             }, 3000);
-            return () => clearTimeout(safetyTimeout);
         } else {
             setStep(step + 1);
         }
     };
+
+    // Cleanup timeout on unmount
+    useEffect(() => {
+        return () => {
+            if (safetyTimeoutRef.current) clearTimeout(safetyTimeoutRef.current);
+        };
+    }, []);
 
     const handlePrevStep = () => {
         if (step > 1) setStep(step - 1);
@@ -352,14 +360,14 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                             <div className="chat-suggestions-grid">
                                 {msg.suggestions.map((id, idx) => {
                                     // 1. Try Direct Lookup (Fastest)
-                                    let product = products?.find(p => p.id == id);
+                                    let product = products?.find(p => String(p.id) === String(id));
 
                                     // 2. Fallback: ID Translation via Name
                                     if (!product && staticMenuData) {
                                         // Find the "concept" in static data to get the name
                                         const staticProduct = staticMenuData
                                             .flatMap(cat => cat.subcategories.flatMap(sub => sub.items))
-                                            .find(p => p.id == id);
+                                            .find(p => String(p.id) === String(id));
 
                                         if (staticProduct) {
                                             // Find the "real" product in current data by Name

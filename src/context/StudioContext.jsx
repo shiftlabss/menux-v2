@@ -2,6 +2,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const StudioContext = createContext();
 
+// Atomic ID counter to prevent collisions from Date.now()
+let _idCounter = 0;
+const generateUniqueId = () => `${Date.now()}-${++_idCounter}`;
+
 // Dados padrão iniciais (fallback)
 const DEFAULT_BRANDING = {
     restName: 'Menux Restaurante',
@@ -252,7 +256,7 @@ export const StudioProvider = ({ children }) => {
         } catch (error) {
             console.error("Erro ao salvar branding:", error);
             if (error.name === 'QuotaExceededError') {
-                alert("Limite de armazenamento do navegador excedido! Tente usar imagens menores na capa ou logo.");
+                console.warn("Limite de armazenamento excedido para branding. Use imagens menores.");
             }
         }
     }, [branding]);
@@ -271,7 +275,7 @@ export const StudioProvider = ({ children }) => {
         } catch (error) {
             console.error("Erro ao salvar produtos:", error);
             if (error.name === 'QuotaExceededError') {
-                alert("Limite de armazenamento excedido! Tente usar menos imagens ou imagens menores nos produtos.");
+                console.warn("Limite de armazenamento excedido para produtos. Use imagens menores.");
             }
         }
     }, [products]);
@@ -321,7 +325,7 @@ export const StudioProvider = ({ children }) => {
         localStorage.removeItem('menux_studio_branding');
         localStorage.removeItem('menux_studio_categories');
         localStorage.removeItem('menux_studio_products');
-        alert("Dados redefinidos com sucesso!");
+        // Toast handled by caller (StudioView)
     };
 
     const addCategory = (name) => {
@@ -341,7 +345,7 @@ export const StudioProvider = ({ children }) => {
     };
 
     const addProduct = (product) => {
-        setProducts([...products, { ...product, id: Date.now() }]);
+        setProducts([...products, { ...product, id: generateUniqueId() }]);
     };
 
     const updateBranding = (data) => {

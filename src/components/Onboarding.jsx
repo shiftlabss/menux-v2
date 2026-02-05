@@ -25,7 +25,7 @@ export default function Onboarding({ onStart, savedUser, userAvatar }) {
 
         <div className="logo-text-group">
           <h1 className="welcome-title">
-            Bem vindo ao, Menux
+            Bem-vindo ao Menux
             <img src={imgVerify} alt="Verificado" className="verified-icon" style={{ marginLeft: '6px' }} />
           </h1>
           <p className="welcome-subtitle">Veja o cardápio e monte seu pedido.</p>
