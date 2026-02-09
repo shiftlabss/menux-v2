@@ -2,6 +2,8 @@ import { IRestaurantRepository } from '@domain/repositories/IRestaurantRepositor
 import { Restaurant } from '@domain/entities/Restaurant';
 import { AppError } from '../../../shared/errors';
 import { slugify } from '../../../shared/utils/slugify';
+import { ICachePort } from '@application/ports/ICachePort';
+import { processImageField } from '@infrastructure/storage/S3Service';
 
 interface IRequest {
     id: string;
@@ -10,6 +12,7 @@ interface IRequest {
     corporateName?: string;
     cnpj?: string;
     logoUrl?: string;
+    headerUrl?: string;
     description?: string;
     phone?: string;
     email?: string;
@@ -23,7 +26,8 @@ interface IRequest {
 
 export class UpdateRestaurant {
     constructor(
-        private restaurantRepository: IRestaurantRepository
+        private restaurantRepository: IRestaurantRepository,
+        private cachePort: ICachePort
     ) { }
 
     private async generateUniqueSlug(name: string, currentRestaurantId: string): Promise<string> {
@@ -46,9 +50,19 @@ export class UpdateRestaurant {
             throw new AppError('Restaurant not found.', 404);
         }
 
+        const originalSlug = restaurant.slug;
+
         // Handle slug generation automatically only if name changes
         if (data.name && data.name !== restaurant.name) {
             restaurant.slug = await this.generateUniqueSlug(data.name, restaurant.id);
+        }
+
+        // Process images: upload to S3 if base64
+        if (data.logoUrl !== undefined) {
+            data.logoUrl = await processImageField(data.logoUrl, 'restaurants/logos') || undefined;
+        }
+        if (data.headerUrl !== undefined) {
+            data.headerUrl = await processImageField(data.headerUrl, 'restaurants/headers') || undefined;
         }
 
         // Update fields
@@ -57,6 +71,7 @@ export class UpdateRestaurant {
         if (data.corporateName !== undefined) restaurant.corporateName = data.corporateName;
         if (data.cnpj !== undefined) restaurant.cnpj = data.cnpj;
         if (data.logoUrl !== undefined) restaurant.logoUrl = data.logoUrl;
+        if (data.headerUrl !== undefined) restaurant.headerUrl = data.headerUrl;
         if (data.description !== undefined) restaurant.description = data.description;
         if (data.phone !== undefined) restaurant.phone = data.phone;
         if (data.email !== undefined) restaurant.email = data.email;
@@ -67,6 +82,13 @@ export class UpdateRestaurant {
         if (data.whatsapp !== undefined) restaurant.whatsapp = data.whatsapp;
         if (data.website !== undefined) restaurant.website = data.website;
 
-        return this.restaurantRepository.save(restaurant);
+        const updatedRestaurant = await this.restaurantRepository.save(restaurant);
+
+        await this.cachePort.del(`restaurant:slug:${originalSlug}`);
+        if (originalSlug !== updatedRestaurant.slug) {
+            await this.cachePort.del(`restaurant:slug:${updatedRestaurant.slug}`);
+        }
+
+        return updatedRestaurant;
     }
 }

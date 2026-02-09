@@ -5,6 +5,9 @@ import { UpdateCategory } from '@application/use-cases/category/UpdateCategory';
 import { DeleteCategory } from '@application/use-cases/category/DeleteCategory';
 import { ReorderCategories } from '@application/use-cases/category/ReorderCategories';
 import { RedisCacheAdapter } from '@infrastructure/cache/redis/RedisCacheAdapter';
+import { AppError } from '@shared/errors';
+
+import { logActivity } from '@shared/utils/auditLogger';
 
 export class CategoriesController {
     private invalidateMenuCache = async (restaurantId: string): Promise<void> => {
@@ -14,7 +17,7 @@ export class CategoriesController {
     }
 
     public create = async (req: Request, res: Response): Promise<Response> => {
-        const { name, order, isActive, restaurantId, pai } = req.body;
+        const { name, order, isActive, restaurantId, pai, isComposition, isVisible, maxChoices, canPriceBeZero, isOptional, priceRule } = req.body;
 
         const categoryRepository = new TypeOrmCategoryRepository();
         const createCategory = new CreateCategory(categoryRepository);
@@ -25,19 +28,41 @@ export class CategoriesController {
             isActive,
             restaurantId: restaurantId || req.user?.restaurantId,
             pai,
+            isComposition,
+            isVisible,
+            maxChoices,
+            canPriceBeZero,
+            isOptional,
+            priceRule
         });
 
         await this.invalidateMenuCache(category.restaurantId);
+
+        // Audit Log
+        if (req.user?.id) {
+            await logActivity(
+                req.user.id,
+                'CREATE',
+                'Category',
+                `Created category: ${category.name}`,
+                category.id,
+                { ...category },
+                req
+            );
+        }
 
         return res.status(201).json(category);
     }
 
     public update = async (req: Request, res: Response): Promise<Response> => {
         const { id } = req.params;
-        const { name, order, isActive, pai } = req.body;
+        const { name, order, isActive, pai, isComposition, isVisible, maxChoices, canPriceBeZero, isOptional, priceRule } = req.body;
 
         const categoryRepository = new TypeOrmCategoryRepository();
         const updateCategory = new UpdateCategory(categoryRepository);
+
+        // Fetch old data for audit log
+        const oldCategory = await categoryRepository.findById(id);
 
         const category = await updateCategory.execute({
             id,
@@ -45,9 +70,30 @@ export class CategoriesController {
             order,
             isActive,
             pai,
+            isComposition,
+            isVisible,
+            maxChoices,
+            canPriceBeZero,
+            isOptional,
+            priceRule
         });
 
         await this.invalidateMenuCache(category.restaurantId);
+
+        if (req.user?.id) {
+            await logActivity(
+                req.user.id,
+                'UPDATE',
+                'Category',
+                `Updated category: ${category.name}`,
+                category.id,
+                {
+                    oldValue: oldCategory,
+                    newValue: category
+                },
+                req
+            );
+        }
 
         return res.json(category);
     }
@@ -56,6 +102,8 @@ export class CategoriesController {
         const restaurantId = req.query.restaurantId as string || req.user?.restaurantId;
         const pai = req.query.pai as string;
         const system = req.query.system === 'true';
+
+        console.log('System', system);
 
         const categoryRepository = new TypeOrmCategoryRepository();
 
@@ -104,12 +152,33 @@ export class CategoriesController {
         const categoryRepository = new TypeOrmCategoryRepository();
         const deleteCategory = new DeleteCategory(categoryRepository);
 
-        await deleteCategory.execute(id);
+        try {
+            await deleteCategory.execute(id);
 
-        const restaurantId = req.user?.restaurantId;
-        if (restaurantId) await this.invalidateMenuCache(restaurantId);
+            const restaurantId = req.user?.restaurantId;
+            if (restaurantId) await this.invalidateMenuCache(restaurantId);
 
-        return res.status(204).send();
+            if (req.user?.id) {
+                await logActivity(
+                    req.user.id,
+                    'DELETE',
+                    'Category',
+                    `Deleted category with ID: ${id}`,
+                    id,
+                    null,
+                    req
+                );
+            }
+
+            return res.status(204).send();
+        } catch (error) {
+            if (error instanceof AppError) {
+                return res.status(error.code).json({
+                    message: error.message
+                });
+            }
+            throw error;
+        }
     }
 
     public reorder = async (req: Request, res: Response): Promise<Response> => {
@@ -122,6 +191,18 @@ export class CategoriesController {
 
         const restaurantId = req.user?.restaurantId;
         if (restaurantId) await this.invalidateMenuCache(restaurantId);
+
+        if (req.user?.id) {
+            await logActivity(
+                req.user.id,
+                'UPDATE',
+                'Category',
+                'Reordered categories',
+                undefined,
+                { ids },
+                req
+            );
+        }
 
         return res.status(204).send();
     }

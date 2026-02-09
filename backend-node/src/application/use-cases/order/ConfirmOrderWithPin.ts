@@ -1,6 +1,7 @@
 import { IOrderRepository } from '@domain/repositories/IOrderRepository';
 import { IWaiterRepository } from '@domain/repositories/IWaiterRepository';
 import { Order, OrderStatus } from '@domain/entities/Order';
+import { UpdateRestaurantDailyMetrics } from '@application/use-cases/analytics/UpdateRestaurantDailyMetrics';
 import { AppError } from '../../../shared/errors';
 
 interface IRequest {
@@ -12,7 +13,8 @@ interface IRequest {
 export class ConfirmOrderWithPin {
     constructor(
         private orderRepository: IOrderRepository,
-        private waiterRepository: IWaiterRepository
+        private waiterRepository: IWaiterRepository,
+        private updateRestaurantDailyMetrics: UpdateRestaurantDailyMetrics
     ) { }
 
     async execute({ orderId, pinCode, restaurantId }: IRequest): Promise<Order> {
@@ -39,6 +41,10 @@ export class ConfirmOrderWithPin {
             order.status = OrderStatus.PREPARING;
         }
 
-        return this.orderRepository.save(order);
+        const savedOrder = await this.orderRepository.save(order);
+
+        await this.updateRestaurantDailyMetrics.execute(restaurantId, savedOrder.createdAt);
+
+        return savedOrder;
     }
 }

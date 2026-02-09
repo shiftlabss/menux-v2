@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers/AuthController';
 import { ensureAuthenticated } from '../middlewares/ensureAuthenticated';
+import { asyncHandler } from '@shared/utils/asyncHandler';
 
 const authRouter = Router();
 const authController = new AuthController();
@@ -47,7 +48,7 @@ const authController = new AuthController();
  *       401:
  *         description: Invalid credentials
  */
-authRouter.post('/login', authController.login);
+authRouter.post('/login', asyncHandler(authController.login));
 
 /**
  * @swagger
@@ -67,6 +68,6 @@ authRouter.post('/login', authController.login);
  *       401:
  *         description: Unauthorized
  */
-authRouter.get('/me', ensureAuthenticated, authController.me);
+authRouter.get('/me', ensureAuthenticated, asyncHandler(authController.me));
 
 export { authRouter };

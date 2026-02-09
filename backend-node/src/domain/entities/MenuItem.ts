@@ -4,12 +4,38 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  DeleteDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
+  AfterLoad,
+
 } from 'typeorm';
+
+import { Type } from 'class-transformer';
 import { Category } from './Category';
 
+
 import { Menu } from './Menu';
+import { ChoiceItem } from './ChoiceItem';
+
+interface OptionsConfig {
+  sort_order: string[],
+  option_groups: {
+    id: string;
+    name?: string;
+    description?: string;
+    min_selected: number;
+    max_selected?: number;
+    max_selected_dynamic?: string;
+    options: {
+      id: string;
+      name?: string;
+      extra_price: number;
+      max_flavors?: number;
+    }[];
+  }[];
+}
 
 @Entity('menu_items')
 export class MenuItem {
@@ -59,6 +85,58 @@ export class MenuItem {
   @CreateDateColumn()
   createdAt: Date;
 
+  @Column({
+    type: 'enum',
+    enum: ['PRODUCT', 'WINE', 'PIZZA'],
+    default: 'PRODUCT'
+  })
+  menuType: 'PRODUCT' | 'WINE' | 'PIZZA';
+
+  @Column({ type: 'int', default: 1, nullable: true })
+  maxChoices: number;
+
+
+  @Column({ type: 'json', nullable: true, select: false })
+  optionsConfig: OptionsConfig;
+
+  @Type(() => ChoiceItem)
+  @OneToMany(() => ChoiceItem, (choice) => choice.parentMenuItem, { cascade: true, orphanedRowAction: 'delete' })
+  choiceItems: ChoiceItem[];
+
+  // Wine-specific fields
+  @Column({ nullable: true })
+  vintage: string;
+
+  @Column({ nullable: true })
+  country: string;
+
+  @Column({ nullable: true })
+  winery: string;
+
+  @Column({ nullable: true })
+  grape: string;
+
+  @Column({ nullable: true })
+  region: string;
+
+  @Column({ nullable: true })
+  style: string;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  glassPrice: number;
+
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
+
+  @AfterLoad()
+  transformImageUrl() {
+    if (this.imageUrl && !this.imageUrl.startsWith('http')) {
+      const bucketUrl = process.env.AWS_S3_BUCKET_URL || 'https://menux-bucket.s3.us-east-2.amazonaws.com/';
+      this.imageUrl = `${bucketUrl}${this.imageUrl}`;
+    }
+  }
 }
+

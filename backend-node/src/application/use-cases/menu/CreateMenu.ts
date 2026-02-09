@@ -1,11 +1,12 @@
 import { IMenuRepository } from '@domain/repositories/IMenuRepository';
-import { Menu } from '@domain/entities/Menu';
+import { Menu, MenuType } from '@domain/entities/Menu';
 
 interface IRequest {
     name: string;
     description?: string;
     restaurantId: string;
     isActive?: boolean;
+    type?: MenuType;
 }
 
 export class CreateMenuUseCase {
@@ -17,6 +18,7 @@ export class CreateMenuUseCase {
             description: data.description,
             restaurantId: data.restaurantId,
             isActive: data.isActive ?? true,
+            type: data.type || MenuType.PRODUCT
         });
         return menu;
     }

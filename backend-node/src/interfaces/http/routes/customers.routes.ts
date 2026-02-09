@@ -4,6 +4,7 @@ import { TypeOrmCustomerRepository } from '@infrastructure/repositories/TypeOrmC
 import { ListCustomersByRestaurant } from '@application/use-cases/customer/ListCustomersByRestaurant';
 import { GetCustomerDetails } from '@application/use-cases/customer/GetCustomerDetails';
 import { ensureAuthenticated } from '../middlewares/ensureAuthenticated';
+import { asyncHandler } from '@shared/utils/asyncHandler';
 
 const customersRouter = Router();
 
@@ -34,7 +35,7 @@ const customersController = new CustomersController(
  *       200:
  *         description: A list of customers
  */
-customersRouter.get('/', ensureAuthenticated, (req, res, next) => customersController.index(req, res, next));
+customersRouter.get('/', ensureAuthenticated, asyncHandler((req, res, next) => customersController.index(req, res, next)));
 
 /**
  * @swagger
@@ -54,6 +55,6 @@ customersRouter.get('/', ensureAuthenticated, (req, res, next) => customersContr
  *       200:
  *         description: Customer details with order history
  */
-customersRouter.get('/:id', ensureAuthenticated, (req, res, next) => customersController.show(req, res, next));
+customersRouter.get('/:id', ensureAuthenticated, asyncHandler((req, res, next) => customersController.show(req, res, next)));
 
 export { customersRouter };

@@ -8,7 +8,7 @@ export const AppDataSource = new DataSource({
   type: 'postgres',
   url: config.db.url,
   synchronize: false, // Always false in production/strict mode
-  logging: config.env === 'development',
+  logging: false,
   entities: ['src/domain/entities/**/*.ts'],
   migrations: ['src/infrastructure/database/typeorm/migrations/**/*.ts'],
   subscribers: [],

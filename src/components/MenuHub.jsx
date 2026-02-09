@@ -1,4 +1,4 @@
-import { getMenuHighlights, getRestaurantBySlug } from '../services/api';
+import { getMenuHighlights, getRestaurantBySlug, getMenuItemDetails } from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import ProductDetailModal from './ProductDetailModal';
@@ -437,7 +437,10 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
     const currentCategories = useMemo(() => {
         if (dynamicCategories.length === 0) return MENU_DATA;
 
-        return dynamicCategories.map(cat => {
+        // Filter out categories that are not visible
+        const visibleCategories = dynamicCategories.filter(cat => cat.isVisible !== false);
+
+        return visibleCategories.map(cat => {
             const catProducts = dynamicProducts.filter(p => p.categoryId === cat.id);
             let subcategories = [];
 
@@ -476,13 +479,43 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
         setIsMaestroOpen(true);
     };
 
-    // <<<<<<< HEAD
-    // <<<<<<< HEAD
-    //     const handleAddToCart = (product, obs, qty = 1) => {
-    //         addToCart(product, obs, qty);
-    // =======
-    //     const handleAddToCart = (product, obs, qty = 1, decisionTime = 0) => {
-    // =======
+    const [loadingProductId, setLoadingProductId] = useState(null);
+
+    const handleProductClick = async (item) => {
+        analytics.track('click', {
+            itemId: item.id,
+            name: item.name,
+            price: item.price,
+            context: 'menu-list'
+        });
+
+        // If the item has optionsConfig (even if simple), is a pizza, or has choiceItems, fetch full details to get the dynamic rules
+        if (item.optionsConfig || item.type === 'pizza' || (item.choiceItems && item.choiceItems.length > 0)) {
+            setLoadingProductId(item.id);
+            try {
+                const details = await getMenuItemDetails(item.id);
+                // Merge detailed info (specifically optionsConfig) into the existing item structure
+                // API might return optionsConfig as string or object/array
+                const updatedItem = {
+                    ...item,
+                    optionsConfig: details.optionsConfig,
+                    choiceItems: details.choiceItems || item.choiceItems, // Merge choiceItems
+                    // Ensure type is preserved or updated if API sends it
+                    type: details.type || item.type
+                };
+                setSelectedProduct(updatedItem);
+            } catch (error) {
+                console.error("Error fetching product details:", error);
+                // Fallback to opening with existing data
+                setSelectedProduct(item);
+            } finally {
+                setLoadingProductId(null);
+            }
+        } else {
+            setSelectedProduct(item);
+        }
+    };
+
     const handleAddToCart = (product, obs, qty = 1, decisionTime = 0, sourceInfo = {}) => {
 
         setCart(prev => {
@@ -595,7 +628,8 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                     observation: item.obs,
                     decisionTime: item.decisionTime || 0, // Tempo de decisão individual do item
                     isSuggestion: item.isSuggestion || false,
-                    suggestionType: item.suggestionType || null
+                    suggestionType: item.suggestionType || null,
+                    composition: item.composition || [] // Include composition for choice items
                 })),
                 kpis: {
                     totalDecisionTime: totalDecisionTime // Tempo total do ciclo do pedido
@@ -850,13 +884,33 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                     subcategoryRefs={subcategoryRefs}
                 />
 
-                <ProductGrid
-                    categories={currentCategories}
-                    cart={cart}
-                    onAddToCart={(item) => setSelectedProduct(item)}
-                    onRemoveFromCart={removeSingle}
-                    sectionRefs={sectionRefs}
-                />
+                {currentCategories.map(category => (
+                    <div key={category.id} id={category.id} className="menu-section-visible-check">
+                        <div className="menu-list">
+                            <h3 className="section-label">{category.name.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</h3>
+                            {category.subcategories.map(subcategory => (
+                                <div key={subcategory.name} id={`sub-${subcategory.name.replace(/\s+/g, '-').toLowerCase()}`}>
+                                    <p className="subcategory-label">
+                                        {(subcategory.subcategory_label || subcategory.name).toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                                    </p>
+                                    {subcategory.items.length > 0 ? subcategory.items.map(item => (
+                                        <div key={item.id} className={`menu-item ${loadingProductId === item.id ? 'loading' : ''}`} onClick={() => handleProductClick(item)}>
+                                            <div className="item-info">
+                                                <h4 className="item-name">{item.name}</h4>
+                                                <p className="item-desc">{item.desc}</p>
+                                                <div className="item-price">{item.price}</div>
+                                            </div>
+                                            <div className="item-image" style={{ backgroundImage: item.image ? `url(${item.image})` : 'none', backgroundSize: 'cover' }}></div>
+                                        </div>
+                                    )) : (
+                                        <div style={{ padding: '20px 0', opacity: 0.3 }}>Nenhum item disponível no momento.</div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                        <div className="menu-divider-large"></div>
+                    </div>
+                ))}
 
                 <footer className="menu-footer">
                     <span className="menu-footer-text">Desenvolvido por</span>
@@ -898,7 +952,7 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
 
             <AnimatePresence>
                 {selectedProduct && (
-                    selectedProduct.type === 'pizza' ? (
+                    (selectedProduct.type === 'pizza' || selectedProduct.optionsConfig || (selectedProduct.choiceItems && selectedProduct.choiceItems.length > 0)) ? (
                         <ProductPizzaModal
                             product={selectedProduct}
                             onClose={() => setSelectedProduct(null)}

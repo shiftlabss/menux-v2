@@ -67,6 +67,10 @@ const options: swaggerJsdoc.Options = {
             name: { type: 'string' },
             order: { type: 'integer' },
             isActive: { type: 'boolean' },
+            isComposition: { type: 'boolean' },
+            isVisible: { type: 'boolean' },
+            canPriceBeZero: { type: 'boolean' },
+            maxChoices: { type: 'integer', nullable: true },
             pai: { type: 'string', format: 'uuid', nullable: true },
             restaurantId: { type: 'string', format: 'uuid' },
           },
@@ -138,6 +142,23 @@ const options: swaggerJsdoc.Options = {
               }
             }
           },
+        },
+        MenuItemResponse: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            name: { type: 'string' },
+            description: { type: 'string', nullable: true },
+            ingredients: { type: 'string', nullable: true },
+            price: { type: 'number' },
+            allergens: { type: 'array', items: { type: 'string' }, nullable: true },
+            imageUrl: { type: 'string', nullable: true },
+            isActive: { type: 'boolean' },
+            categoryId: { type: 'string', format: 'uuid' },
+            menuId: { type: 'string', format: 'uuid' },
+            menuType: { type: 'string', enum: ['PRODUCT', 'WINE', 'PIZZA'] },
+            optionsConfig: { type: 'object', nullable: true },
+          }
         },
         UpsellRuleResponse: {
           type: 'object',

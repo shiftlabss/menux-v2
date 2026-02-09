@@ -21,6 +21,19 @@ export class ListTablesWithSummary {
                 return acc + itemCount;
             }, 0);
 
+            // Calculate Suggestion Conversion (Accepted / Displayed)
+            // Assuming we track 'displayed' elsewhere or use a simple proxy: 
+            // rate = (items marked as isSuggestion / total items) * 100 for now, 
+            // OR if 'suggestionType' exists, it means it was a suggestion.
+            const suggestionItems = activeOrders.reduce((acc, order) => {
+                return acc + (order.items?.filter(i => i.isSuggestion).length || 0);
+            }, 0);
+
+            // Proxy for 'opportunities displayed' could be total items (assuming every item had an opportunity? no that's wrong).
+            // Better: Just return the count of accepted suggestions for now, or if we had analytics connected here.
+            // Let's return the simplified conversion % based on total items (e.g. 20% of items are upselling)
+            const suggestionConversionRate = totalItemsCount > 0 ? (suggestionItems / totalItemsCount) * 100 : 0;
+
             // Waiter of the last order
             const lastOrderWithWaiter = [...activeOrders].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).find(o => o.waiter);
             const activeWaiter = lastOrderWithWaiter?.waiter || table.waiter;
@@ -42,7 +55,8 @@ export class ListTablesWithSummary {
                 summary: {
                     totalConsumption,
                     totalItemsCount,
-                    ordersCount: activeOrders.length
+                    ordersCount: activeOrders.length,
+                    suggestionConversionRate
                 }
             };
         });

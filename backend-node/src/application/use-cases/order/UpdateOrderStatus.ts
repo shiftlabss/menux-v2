@@ -1,5 +1,6 @@
 import { IOrderRepository } from '@domain/repositories/IOrderRepository';
 import { Order, OrderStatus } from '@domain/entities/Order';
+import { UpdateRestaurantDailyMetrics } from '@application/use-cases/analytics/UpdateRestaurantDailyMetrics';
 import { AppError } from '../../../shared/errors';
 
 interface IRequest {
@@ -10,7 +11,8 @@ interface IRequest {
 
 export class UpdateOrderStatus {
     constructor(
-        private orderRepository: IOrderRepository
+        private orderRepository: IOrderRepository,
+        private updateRestaurantDailyMetrics: UpdateRestaurantDailyMetrics
     ) { }
 
     async execute({ orderId, status, restaurantId }: IRequest): Promise<Order> {
@@ -26,6 +28,10 @@ export class UpdateOrderStatus {
 
         order.status = status;
 
-        return this.orderRepository.save(order);
+        const savedOrder = await this.orderRepository.save(order);
+
+        await this.updateRestaurantDailyMetrics.execute(restaurantId, savedOrder.createdAt);
+
+        return savedOrder;
     }
 }

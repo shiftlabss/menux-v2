@@ -359,6 +359,7 @@ export const StudioProvider = ({ children }) => {
                         newCategories.push({
                             id: cat.id,
                             name: cat.name,
+                            isVisible: cat.isVisible, // Map isVisible from API
                             subcategories: cat.subcategories ? cat.subcategories.map(sub => ({
                                 id: sub.id,
                                 name: sub.name
@@ -375,7 +376,11 @@ export const StudioProvider = ({ children }) => {
                                     price: `R$ ${Number(item.price).toFixed(2).replace('.', ',')}`,
                                     image: item.imageUrl,
                                     categoryId: cat.id,
-                                    subcategoryId: null
+                                    subcategoryId: null,
+                                    // Include extended properties from API
+                                    type: item.type,
+                                    optionsConfig: item.optionsConfig,
+                                    choiceItems: item.choiceItems
                                 });
                             });
                         }
@@ -392,7 +397,11 @@ export const StudioProvider = ({ children }) => {
                                             price: `R$ ${Number(item.price).toFixed(2).replace('.', ',')}`,
                                             image: item.imageUrl,
                                             categoryId: cat.id,
-                                            subcategoryId: sub.id
+                                            subcategoryId: sub.id,
+                                            // Include extended properties from API
+                                            type: item.type,
+                                            optionsConfig: item.optionsConfig,
+                                            choiceItems: item.choiceItems
                                         });
                                     });
                                 }

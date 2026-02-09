@@ -17,6 +17,13 @@ export class DeleteCategory {
             throw new AppError('Cannot delete category with subcategories', 400);
         }
 
-        await this.categoryRepository.delete(id);
+        try {
+            await this.categoryRepository.delete(id);
+        } catch (error: any) {
+            if (error.code === '23503') {
+                throw new AppError('Não é possível excluir esta categoria pois existem produtos vinculados a ela.', 400);
+            }
+            throw error;
+        }
     }
 }

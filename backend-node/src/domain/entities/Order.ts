@@ -50,6 +50,12 @@ export class Order {
     @Column({ type: 'varchar', precision: 10, scale: 2 })
     customerName: string;
 
+    @Column({ name: 'temporary_customer_id', type: 'varchar', nullable: true })
+    temporaryCustomerId: string | null;
+
+    @Column({ name: 'total_decision_time', type: 'int', nullable: true })
+    totalDecisionTime: number | null;
+
     @ManyToOne(() => Customer, (customer) => customer.orders, { nullable: true })
     @JoinColumn({ name: 'customer_id' })
     customer: Customer | null;

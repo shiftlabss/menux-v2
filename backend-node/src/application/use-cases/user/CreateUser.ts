@@ -2,6 +2,7 @@ import { IUserRepository } from '@domain/repositories/IUserRepository';
 import { IHashProvider } from '@domain/providers/IHashProvider';
 import { User } from '@domain/entities/User';
 import { AppError } from '../../../shared/errors';
+import { processImageField } from '@infrastructure/storage/S3Service';
 
 interface IRequest {
     name: string;
@@ -29,6 +30,9 @@ export class CreateUser {
 
         const passwordHash = await this.hashProvider.generateHash(password);
 
+        // Process avatar: upload to S3 if base64
+        const processedAvatarUrl = await processImageField(avatarUrl, 'users');
+
         const user = new User();
         user.name = name;
         user.email = email;
@@ -37,7 +41,7 @@ export class CreateUser {
         user.restaurantId = restaurantId;
         user.jobTitle = jobTitle || '';
         user.phone = phone || '';
-        user.avatarUrl = avatarUrl || '';
+        user.avatarUrl = processedAvatarUrl || '';
 
         return this.userRepository.create(user);
     }

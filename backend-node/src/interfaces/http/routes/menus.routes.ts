@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { MenusController } from '../controllers/MenusController';
 import { ensureAuthenticated } from '../middlewares/ensureAuthenticated';
+import { asyncHandler } from '@shared/utils/asyncHandler';
+
 
 const menusRouter = Router();
 const controller = new MenusController();
@@ -35,10 +37,15 @@ const controller = new MenusController();
  *                 type: string
  *               isActive:
  *                 type: boolean
+ *               type:
+ *                 type: string
+ *                 enum: [PRODUCT, PIZZA, WINE, DESSERT]
  *     responses:
  *       201:
  *         description: Menu created
  */
-menusRouter.post('/', ensureAuthenticated, controller.create);
+menusRouter.post('/', ensureAuthenticated, asyncHandler(controller.create));
+
+
 
 export { menusRouter };

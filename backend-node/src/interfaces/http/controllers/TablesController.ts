@@ -4,6 +4,10 @@ import { UpdateTable } from '@application/use-cases/table/UpdateTable';
 import { DeleteTable } from '@application/use-cases/table/DeleteTable';
 import { ListTablesWithSummary } from '@application/use-cases/table/ListTablesWithSummary';
 import { ListTablesByWaiter } from '@application/use-cases/table/ListTablesByWaiter';
+import { TransferTableOrders } from '@application/use-cases/table/TransferTableOrders';
+import { ChangeTableStatus } from '@application/use-cases/table/ChangeTableStatus';
+import { ReleaseTable } from '@application/use-cases/table/ReleaseTable';
+import { ReleaseTableByNumber } from '@application/use-cases/table/ReleaseTableByNumber';
 
 export class TablesController {
     constructor(
@@ -11,8 +15,50 @@ export class TablesController {
         private updateTable: UpdateTable,
         private deleteTable: DeleteTable,
         private listTables: ListTablesWithSummary,
-        private listTablesByWaiter: ListTablesByWaiter
+        private listTablesByWaiter: ListTablesByWaiter,
+        private transferTableOrders: TransferTableOrders,
+        private changeTableStatus: ChangeTableStatus,
+        private releaseTable: ReleaseTable,
+        private releaseTableByNumber: ReleaseTableByNumber
     ) { }
+
+    async changeStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const restaurantId = (req.query.restaurantId || req.user?.restaurantId) as string;
+            const { tableNumber, status, waiterCode, waiterPassword } = req.body;
+
+            await this.changeTableStatus.execute({
+                restaurantId,
+                tableNumber,
+                status,
+                waiterCode,
+                waiterPassword,
+            });
+
+            res.status(200).json({ message: 'Status da mesa atualizado com sucesso.' });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async transfer(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const restaurantId = (req.query.restaurantId || req.user?.restaurantId) as string;
+            const { sourceTableNumber, destinationTableNumber, waiterCode, waiterPassword } = req.body;
+
+            await this.transferTableOrders.execute({
+                restaurantId,
+                sourceTableNumber,
+                destinationTableNumber,
+                waiterCode,
+                waiterPassword,
+            });
+
+            res.status(200).json({ message: 'Pedidos transferidos com sucesso.' });
+        } catch (error) {
+            next(error);
+        }
+    }
 
     async index(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
@@ -81,6 +127,38 @@ export class TablesController {
             await this.deleteTable.execute(id, restaurantId);
 
             res.status(204).send();
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async release(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { id } = req.params;
+            const restaurantId = req.user.restaurantId;
+
+            const table = await this.releaseTable.execute({
+                tableId: id,
+                restaurantId
+            });
+
+            res.json(table);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async releaseByNumber(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { number } = req.params;
+            const restaurantId = req.user.restaurantId;
+
+            const table = await this.releaseTableByNumber.execute({
+                tableNumber: Number(number),
+                restaurantId
+            });
+
+            res.json(table);
         } catch (error) {
             next(error);
         }

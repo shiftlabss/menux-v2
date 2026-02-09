@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  AfterLoad,
 } from 'typeorm';
 import { Menu } from './Menu';
 import { Category } from './Category';
@@ -32,6 +33,9 @@ export class Restaurant {
 
   @Column({ type: 'text', nullable: true })
   logoUrl: string;
+
+  @Column({ type: 'text', nullable: true })
+  headerUrl: string;
 
   @Column({ type: 'text', nullable: true })
   description: string;
@@ -77,4 +81,16 @@ export class Restaurant {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @AfterLoad()
+  transformImageUrls() {
+    const bucketUrl = process.env.AWS_S3_BUCKET_URL || 'https://menux-bucket.s3.us-east-2.amazonaws.com/';
+    if (this.logoUrl && !this.logoUrl.startsWith('http')) {
+      this.logoUrl = `${bucketUrl}${this.logoUrl}`;
+    }
+    if (this.headerUrl && !this.headerUrl.startsWith('http')) {
+      this.headerUrl = `${bucketUrl}${this.headerUrl}`;
+    }
+  }
 }
+

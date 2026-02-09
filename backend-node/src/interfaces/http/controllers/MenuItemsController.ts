@@ -4,7 +4,13 @@ import { TypeOrmMenuRepository } from '@infrastructure/repositories/TypeOrmMenuR
 import { CreateMenuItem } from '@application/use-cases/menu-item/CreateMenuItem';
 import { UpdateMenuItem } from '@application/use-cases/menu-item/UpdateMenuItem';
 import { DeleteMenuItem } from '@application/use-cases/menu-item/DeleteMenuItem';
+import { FilterMenuItemsByTags } from '@application/use-cases/menu-item/FilterMenuItemsByTags';
 import { RedisCacheAdapter } from '@infrastructure/cache/redis/RedisCacheAdapter';
+import 'reflect-metadata';
+import { instanceToPlain } from 'class-transformer';
+// import { logger } from '@shared/logger';
+
+import { logActivity } from '@shared/utils/auditLogger';
 
 export class MenuItemsController {
 
@@ -15,7 +21,11 @@ export class MenuItemsController {
     }
 
     public create = async (req: Request, res: Response): Promise<Response> => {
-        const { name, description, price, categoryId, isActive, imageUrl, allergens, code, ingredients, tags, menuId } = req.body;
+        const {
+            name, description, price, categoryId, isActive, imageUrl, allergens, code, ingredients, tags, menuId, maxChoices, options_config, menuType,
+            // Wine-specific fields
+            vintage, country, winery, grape, region, style, glassPrice
+        } = req.body;
 
         let targetMenuId = menuId;
 
@@ -49,10 +59,39 @@ export class MenuItemsController {
             ingredients,
             tags,
             menuId: targetMenuId,
+            maxChoices,
+            optionsConfig: options_config,
+            menuType,
+            // Wine-specific
+            vintage,
+            country,
+            winery,
+            grape,
+            region,
+            style,
+            glassPrice,
         });
 
         if (req.user?.restaurantId) {
             await this.invalidateMenuCache(req.user.restaurantId);
+        }
+
+        if (item.choiceItems) {
+            item.choiceItems.forEach((choice: any) => {
+                delete choice.parentMenuItem;
+            });
+        }
+
+        if (req.user?.id) {
+            await logActivity(
+                req.user.id,
+                'CREATE',
+                'MenuItem',
+                `Created menu item: ${item.name}`,
+                item.id,
+                { ...item },
+                req
+            );
         }
 
         return res.status(201).json(item);
@@ -65,16 +104,41 @@ export class MenuItemsController {
         const menuItemRepository = new TypeOrmMenuItemRepository();
         const updateMenuItem = new UpdateMenuItem(menuItemRepository);
 
+        // Fetch old data for audit log
+        const oldItem = await menuItemRepository.findById(id);
+
         const item = await updateMenuItem.execute({
             id,
             ...data,
+            optionsConfig: data.options_config,
         });
 
         if (req.user?.restaurantId) {
             await this.invalidateMenuCache(req.user.restaurantId);
         }
 
-        return res.json(item);
+        if (item.choiceItems) {
+            item.choiceItems.forEach((choice: any) => {
+                delete choice.parentMenuItem;
+            });
+        }
+
+        if (req.user?.id) {
+            await logActivity(
+                req.user.id,
+                'UPDATE',
+                'MenuItem',
+                `Updated menu item: ${item.name}`,
+                item.id,
+                {
+                    oldValue: oldItem,
+                    newValue: item
+                },
+                req
+            );
+        }
+
+        return res.json(instanceToPlain(item));
     }
 
     public delete = async (req: Request, res: Response): Promise<Response> => {
@@ -89,11 +153,23 @@ export class MenuItemsController {
             await this.invalidateMenuCache(req.user.restaurantId);
         }
 
+        if (req.user?.id) {
+            await logActivity(
+                req.user.id,
+                'DELETE',
+                'MenuItem',
+                `Deleted menu item with ID: ${id}`,
+                id,
+                null,
+                req
+            );
+        }
+
         return res.status(204).send();
     }
 
     public index = async (req: Request, res: Response): Promise<Response> => {
-        const { categoryId } = req.query;
+        const { categoryId, menuType } = req.query;
 
         const menuItemRepository = new TypeOrmMenuItemRepository();
 
@@ -102,7 +178,7 @@ export class MenuItemsController {
             items = await menuItemRepository.findByCategoryId(categoryId as string);
         } else {
             const restaurantId = req.user?.restaurantId;
-            items = await menuItemRepository.findByRestaurantId(restaurantId);
+            items = await menuItemRepository.findByRestaurantId(restaurantId, menuType);
         }
 
         const mappedItems = items.map(item => ({
@@ -116,6 +192,8 @@ export class MenuItemsController {
     public show = async (req: Request, res: Response): Promise<Response> => {
         const { id } = req.params;
 
+        // console.info('Chamou!!')
+
         const menuItemRepository = new TypeOrmMenuItemRepository();
         const item = await menuItemRepository.findById(id);
 
@@ -123,6 +201,38 @@ export class MenuItemsController {
             return res.status(404).json({ message: 'Menu item not found' });
         }
 
+        // console.info(item)
         return res.json(item);
+    }
+
+    public filterByTags = async (req: Request, res: Response): Promise<Response> => {
+        const { tags } = req.query;
+        // Assume tags are passed as comma separated string or array?
+        // Express query parser: if url is ?tags=a&tags=b -> ['a','b']. If ?tags=a,b -> 'a,b'.
+        // Let's support both or standardized array via comma split.
+
+        let tagsArray: string[] = [];
+        if (Array.isArray(tags)) {
+            tagsArray = tags as string[];
+        } else if (typeof tags === 'string') {
+            tagsArray = tags.split(',').map(t => t.trim());
+        }
+
+        if (tagsArray.length === 0) {
+            return res.json([]);
+        }
+
+        const restaurantId = req.query.restaurantId as string || req.user?.restaurantId;
+
+        if (!restaurantId) {
+            return res.status(400).json({ message: 'Restaurant ID is required' });
+        }
+
+        const menuItemRepository = new TypeOrmMenuItemRepository();
+        const filterMenuItemsByTags = new FilterMenuItemsByTags(menuItemRepository);
+
+        const items = await filterMenuItemsByTags.execute(tagsArray, restaurantId);
+
+        return res.json(items);
     }
 }

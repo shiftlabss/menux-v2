@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { WaitersController } from '../controllers/WaitersController';
 import { ensureAuthenticated } from '../middlewares/ensureAuthenticated';
+import { asyncHandler } from '@shared/utils/asyncHandler';
 
 const waitersRouter = Router();
 const waitersController = new WaitersController();
@@ -11,6 +12,46 @@ const waitersController = new WaitersController();
  *   name: Waiters
  *   description: Waiter management
  */
+
+/**
+ * @swagger
+ * /waiters/auth:
+ *   post:
+ *     summary: Authenticate a waiter
+ *     tags: [Waiters]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - pinCode
+ *               - restaurantId
+ *             properties:
+ *               pinCode:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               restaurantId:
+ *                 type: string
+ *                 format: uuid
+ *     responses:
+ *       200:
+ *         description: Authentication successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 waiter:
+ *                   $ref: '#/components/schemas/Waiter'
+ *                 token:
+ *                   type: string
+ *       401:
+ *         description: Incorrect code or password
+ */
+waitersRouter.post('/auth', asyncHandler(waitersController.login));
 
 /**
  * @swagger
@@ -44,7 +85,7 @@ const waitersController = new WaitersController();
  *       201:
  *         description: Waiter created
  */
-waitersRouter.post('/', ensureAuthenticated, waitersController.create);
+waitersRouter.post('/', ensureAuthenticated, asyncHandler(waitersController.create));
 
 /**
  * @swagger
@@ -58,7 +99,7 @@ waitersRouter.post('/', ensureAuthenticated, waitersController.create);
  *       200:
  *         description: List of waiters
  */
-waitersRouter.get('/', ensureAuthenticated, waitersController.index);
+waitersRouter.get('/', ensureAuthenticated, asyncHandler(waitersController.index));
 
 /**
  * @swagger
@@ -79,7 +120,7 @@ waitersRouter.get('/', ensureAuthenticated, waitersController.index);
  *       200:
  *         description: Waiter details
  */
-waitersRouter.get('/:id', ensureAuthenticated, waitersController.show);
+waitersRouter.get('/:id', ensureAuthenticated, asyncHandler(waitersController.show));
 
 /**
  * @swagger
@@ -116,7 +157,7 @@ waitersRouter.get('/:id', ensureAuthenticated, waitersController.show);
  *       200:
  *         description: Waiter updated
  */
-waitersRouter.put('/:id', ensureAuthenticated, waitersController.update);
+waitersRouter.put('/:id', ensureAuthenticated, asyncHandler(waitersController.update));
 
 /**
  * @swagger
@@ -137,6 +178,6 @@ waitersRouter.put('/:id', ensureAuthenticated, waitersController.update);
  *       204:
  *         description: Waiter deleted
  */
-waitersRouter.delete('/:id', ensureAuthenticated, waitersController.delete);
+waitersRouter.delete('/:id', ensureAuthenticated, asyncHandler(waitersController.delete));
 
 export { waitersRouter };

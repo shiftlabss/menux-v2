@@ -32,6 +32,9 @@ export class Table {
     @Column({ type: 'integer' })
     number: number;
 
+    @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+    total: number;
+
     @Column({
         type: 'enum',
         enum: TableStatus,

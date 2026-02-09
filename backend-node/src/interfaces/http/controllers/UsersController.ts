@@ -7,6 +7,8 @@ import { DeleteUser } from '@application/use-cases/user/DeleteUser';
 import { TypeOrmUserRepository } from '@infrastructure/repositories/TypeOrmUserRepository';
 import { BCryptHashProvider } from '@infrastructure/providers/BCryptHashProvider';
 
+import { logActivity } from '@shared/utils/auditLogger';
+
 export class UsersController {
     public async create(req: Request, res: Response): Promise<Response> {
         const { name, email, password, role, restaurantId, jobTitle, phone, avatarUrl } = req.body;
@@ -29,6 +31,18 @@ export class UsersController {
             phone,
             avatarUrl,
         });
+
+        if (req.user?.id) {
+            await logActivity(
+                req.user.id,
+                'CREATE',
+                'User',
+                `Created user: ${user.name}`,
+                user.id,
+                { name: user.name, email: user.email, role: user.role },
+                req
+            );
+        }
 
         const userResponse = {
             id: user.id,
@@ -93,6 +107,9 @@ export class UsersController {
         const hashProvider = new BCryptHashProvider();
         const updateUser = new UpdateUser(userRepository, hashProvider);
 
+        // Fetch old data for audit log
+        const oldUser = await userRepository.findById(id);
+
         const user = await updateUser.execute({
             id,
             name,
@@ -104,6 +121,21 @@ export class UsersController {
             phone,
             avatarUrl,
         });
+
+        if (req.user?.id) {
+            await logActivity(
+                req.user.id,
+                'UPDATE',
+                'User',
+                `Updated user: ${user.name}`,
+                user.id,
+                {
+                    oldValue: oldUser ? { name: oldUser.name, email: oldUser.email, role: oldUser.role, jobTitle: oldUser.jobTitle } : null,
+                    newValue: { name, email, role, jobTitle }
+                },
+                req
+            );
+        }
 
         const userResponse = {
             id: user.id,
@@ -125,6 +157,18 @@ export class UsersController {
         const deleteUser = new DeleteUser(userRepository);
 
         await deleteUser.execute({ id });
+
+        if (req.user?.id) {
+            await logActivity(
+                req.user.id,
+                'DELETE',
+                'User',
+                `Deleted user with ID: ${id}`,
+                id,
+                null,
+                req
+            );
+        }
 
         return res.status(204).send();
     }

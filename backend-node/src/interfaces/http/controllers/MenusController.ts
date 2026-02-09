@@ -12,7 +12,7 @@ export class MenusController {
 
     public create = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
-            const { name, description, isActive } = req.body;
+            const { name, description, isActive, type } = req.body;
             const restaurantId = req.user?.restaurantId || req.body.restaurantId;
 
             if (!restaurantId) {
@@ -23,7 +23,8 @@ export class MenusController {
                 name,
                 description,
                 restaurantId,
-                isActive
+                isActive,
+                type
             });
 
             return res.status(201).json(menu);

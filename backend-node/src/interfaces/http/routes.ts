@@ -11,6 +11,9 @@ import { categoriesRouter } from './routes/categories.routes';
 import { customersRouter } from './routes/customers.routes';
 import { menuItemsRouter } from './routes/menu-items.routes';
 import { menusRouter } from './routes/menus.routes';
+import { analyticsRouter } from './routes/analytics.routes';
+import { systemParametersRouter } from './routes/system-parameters.routes';
+import { winesRouter } from './routes/wines.routes';
 import { ensureAuthenticated } from './middlewares/ensureAuthenticated';
 
 // Composition Root / Dependency Injection (Manual)
@@ -175,26 +178,8 @@ router.get('/restaurants/:restaurantId/categories', (req, res, next) =>
   menuController.listCategories(req, res, next),
 );
 
-/**
- * @swagger
- * /menu-items/{id}:
- *   get:
- *     summary: Get menu item details
- *     tags: [Menu]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *           format: uuid
- *     responses:
- *       200:
- *         description: Menu item details
- *       404:
- *         description: Item not found
- */
-router.get('/menu-items/:id', (req, res, next) => menuController.getItem(req, res, next));
+
+
 
 // Routes - Session
 
@@ -255,6 +240,8 @@ router.post('/sessions/end', (req, res, next) => sessionController.end(req, res,
 
 import { upsellRulesRouter } from './routes/upsell-rules.routes';
 
+import { pizzasRouter } from './routes/pizzas.routes';
+
 // Routes - Backoffice
 router.use('/auth', authRouter);
 router.use('/users', usersRouter);
@@ -267,5 +254,9 @@ router.use('/menu-items', menuItemsRouter);
 router.use('/menus', menusRouter);
 router.use('/customers', customersRouter);
 router.use('/upsell-rules', upsellRulesRouter);
+router.use('/analytics', analyticsRouter);
+router.use('/pizzas', pizzasRouter);
+router.use('/system-parameters', systemParametersRouter);
+router.use('/wines', winesRouter);
 
 export { router };

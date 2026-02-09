@@ -33,9 +33,12 @@ export class TypeOrmCategoryRepository implements ICategoryRepository {
         }
 
         return this.repository.find({
-            where,
-            relations: ['subcategories'],
-            order: { order: 'ASC' }
+            where: { restaurantId },
+            relations: { subcategories: true },
+            order: {
+                order: 'ASC',
+                subcategories: { order: 'ASC' }
+            }
         });
     }
 
@@ -48,6 +51,6 @@ export class TypeOrmCategoryRepository implements ICategoryRepository {
     }
 
     async delete(id: string): Promise<void> {
-        await this.repository.delete(id);
+        await this.repository.softDelete(id);
     }
 }

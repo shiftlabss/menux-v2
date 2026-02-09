@@ -5,6 +5,8 @@ export interface IMenuItemRepository {
     save(item: MenuItem): Promise<MenuItem>;
     findById(id: string): Promise<MenuItem | null>;
     findByCategoryId(categoryId: string): Promise<MenuItem[]>;
-    findByRestaurantId(restaurantId: string): Promise<MenuItem[]>;
+    findByRestaurantId(restaurantId: string, menuType?: string): Promise<MenuItem[]>;
+    findByTags(tags: string[], restaurantId: string): Promise<MenuItem[]>;
     delete(id: string): Promise<void>;
+    clearChoiceItems(menuItemId: string): Promise<void>;
 }

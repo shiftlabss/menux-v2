@@ -30,3 +30,8 @@ export const getRestaurantBySlug = async (slug: string) => {
     const response = await api.get(`/restaurants/${slug}`);
     return response.data;
 };
+
+export const getMenuItemDetails = async (itemId: string) => {
+    const response = await api.get(`/menu-items/getItem/${itemId}`);
+    return response.data;
+};

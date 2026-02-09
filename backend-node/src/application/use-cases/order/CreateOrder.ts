@@ -2,8 +2,10 @@ import { IOrderRepository } from '@domain/repositories/IOrderRepository';
 import { IMenuRepository } from '@domain/repositories/IMenuRepository';
 import { Order, OrderStatus } from '@domain/entities/Order';
 import { OrderItem } from '@domain/entities/OrderItem';
+import { OrderItemComposition } from '@domain/entities/OrderItemComposition';
 import { AppError } from '../../../shared/errors';
 import { ICachePort } from '@application/ports/ICachePort';
+import { UpdateRestaurantDailyMetrics } from '@application/use-cases/analytics/UpdateRestaurantDailyMetrics';
 
 interface ICreateOrderRequest {
     restaurantId: string;
@@ -11,22 +13,45 @@ interface ICreateOrderRequest {
         menuItemId: string;
         quantity: number;
         observation?: string;
+        decisionTime?: number;
+        isSuggestion?: boolean;
+        suggestionType?: string;
+        options?: any;
+        composition?: {
+            menuItemId: string;
+            groupKey: string;
+            quantity?: number;
+            name?: string;
+            priceRule?: string;
+            extraPrice?: number;
+        }[];
     }[];
+    kpis?: {
+        totalDecisionTime?: number;
+    };
     tableId?: string;
     waiterId?: string;
     customerName?: string;
     tableNumber?: string;
     transactionId?: string;
+    customerId?: string;
+    temporaryCustomerId?: string;
 }
+
 
 export class CreateOrder {
     constructor(
         private orderRepository: IOrderRepository,
         private menuRepository: IMenuRepository,
-        private cachePort: ICachePort
+        private cachePort: ICachePort,
+        private updateRestaurantDailyMetrics: UpdateRestaurantDailyMetrics
     ) { }
 
-    async execute({ restaurantId, items, tableId, waiterId, tableNumber, transactionId }: ICreateOrderRequest): Promise<Order> {
+    async execute({ restaurantId, items, tableId, waiterId, tableNumber, transactionId, customerId, temporaryCustomerId, kpis }: ICreateOrderRequest): Promise<Order> {
+
+        console.log('Itens Enviados no Pedido...')
+        console.log(JSON.stringify(items))
+
         // 1. Idempotency Check
         if (transactionId) {
             const existingOrder = await this.orderRepository.findByTransactionId(transactionId);
@@ -44,6 +69,13 @@ export class CreateOrder {
         order.status = OrderStatus.WAITING;
         order.tableNumber = tableNumber ? String(tableNumber) : null;
         order.transactionId = transactionId || null;
+        order.customerId = customerId || null;
+        order.customerId = customerId || null;
+        order.temporaryCustomerId = temporaryCustomerId || null;
+
+        if (kpis && kpis.totalDecisionTime) {
+            order.totalDecisionTime = kpis.totalDecisionTime;
+        }
 
         // 2. Atomic Order Code Generation via Redis
         // Key format: restaurant:{id}:order_counter
@@ -84,12 +116,80 @@ export class CreateOrder {
             orderItem.price = menuItem.price; // Use current price
             orderItem.observation = itemData.observation || '';
 
-            total += Number(menuItem.price) * itemData.quantity;
+            if (itemData.decisionTime) {
+                orderItem.decisionTime = itemData.decisionTime;
+            }
+
+            if (itemData.isSuggestion !== undefined) {
+                orderItem.isSuggestion = itemData.isSuggestion;
+            }
+
+            if (itemData.suggestionType) {
+                orderItem.suggestionType = itemData.suggestionType;
+            }
+
+            // --- Composite Item Logic ---
+            if (itemData.composition && itemData.composition.length > 0) {
+                orderItem.compositionItems = [];
+                const componentPrices: number[] = [];
+
+                for (const compData of itemData.composition) {
+                    const compItem = await this.menuRepository.findItemById(compData.menuItemId);
+                    if (!compItem) {
+                        throw new AppError(`Composition item not found: ${compData.menuItemId}`);
+                    }
+
+                    const compositionEntity = new OrderItemComposition();
+                    compositionEntity.menuItem = compItem;
+                    compositionEntity.menuItemId = compItem.id;
+                    compositionEntity.groupKey = compData.groupKey;
+                    compositionEntity.quantity = compData.quantity || 1;
+                    compositionEntity.name = compData.name || compItem.name;
+                    compositionEntity.priceRule = compData.priceRule || null;
+                    compositionEntity.extraPrice = compData.extraPrice || 0;
+
+                    const resolvedPrice = Number(compItem.price) + Number(compositionEntity.extraPrice);
+                    compositionEntity.price = resolvedPrice;
+
+                    componentPrices.push(resolvedPrice);
+
+                    orderItem.compositionItems.push(compositionEntity);
+                }
+
+                // The first composition item's priceRule is often the rule for the group
+                const pricingStrategy = itemData.composition[0]?.priceRule || 'SUM';
+                let finalPrice = 0;
+                if (componentPrices.length > 0) {
+                    if (pricingStrategy === 'HIGHEST') {
+                        finalPrice = Math.max(...componentPrices);
+                    } else if (pricingStrategy === 'AVERAGE') {
+                        const sum = componentPrices.reduce((a, b) => a + b, 0);
+                        finalPrice = sum / componentPrices.length;
+                    } else if (pricingStrategy === 'NONE') {
+                        finalPrice = 0;
+                    } else { // 'SUM' or default
+                        finalPrice = componentPrices.reduce((a, b) => a + b, 0);
+                    }
+                }
+
+                if (Number(menuItem.price) > 0) {
+                    finalPrice += Number(menuItem.price);
+                }
+
+                orderItem.price = finalPrice;
+            }
+
+            total += Number(orderItem.price) * itemData.quantity;
             order.items.push(orderItem);
         }
 
         order.total = total;
 
-        return await this.orderRepository.save(order);
+        const savedOrder = await this.orderRepository.save(order);
+
+        // User Request: Always recalculate for the order date
+        await this.updateRestaurantDailyMetrics.execute(restaurantId, savedOrder.createdAt);
+
+        return savedOrder;
     }
 }

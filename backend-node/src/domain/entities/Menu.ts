@@ -11,6 +11,13 @@ import { Restaurant } from './Restaurant';
 import { MenuItem } from './MenuItem';
 
 
+export enum MenuType {
+  PRODUCT = 'PRODUCT',
+  PIZZA = 'PIZZA',
+  WINE = 'WINE',
+  DESSERT = 'DESSERT'
+}
+
 @Entity('menus')
 export class Menu {
   @PrimaryGeneratedColumn('uuid')
@@ -24,6 +31,13 @@ export class Menu {
 
   @Column({ default: true })
   isActive: boolean;
+
+  @Column({
+    type: 'enum',
+    enum: MenuType,
+    default: MenuType.PRODUCT
+  })
+  type: MenuType;
 
   @ManyToOne(() => Restaurant, (restaurant) => restaurant.menus)
   restaurant: Restaurant;

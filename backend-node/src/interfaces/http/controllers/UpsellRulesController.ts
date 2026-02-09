@@ -5,6 +5,8 @@ import { UpdateUpsellRuleUseCase } from '../../../application/use-cases/UpdateUp
 import { ListUpsellRulesUseCase } from '../../../application/use-cases/ListUpsellRules';
 import { TypeOrmUpsellRulesRepository } from '../../../infrastructure/repositories/TypeOrmUpsellRulesRepository';
 
+import { logActivity } from '@shared/utils/auditLogger';
+
 export class UpsellRulesController {
     private createUseCase: CreateUpsellRuleUseCase;
     private updateUseCase: UpdateUpsellRuleUseCase;
@@ -23,6 +25,19 @@ export class UpsellRulesController {
             const { name, upsellType, triggerProductId, upgradeProductId } = req.body;
             const restaurantId = (req as any).user?.restaurantId;
             const rule = await this.createUseCase.execute({ name, upsellType, triggerProductId, upgradeProductId, restaurantId });
+
+            if ((req as any).user?.id) {
+                await logActivity(
+                    (req as any).user.id,
+                    'CREATE',
+                    'UpsellRule',
+                    `Created upsell rule: ${rule.name}`,
+                    rule.id,
+                    { ...rule },
+                    req
+                );
+            }
+
             res.status(201).json(rule);
         } catch (error) {
             next(error);
@@ -34,6 +49,9 @@ export class UpsellRulesController {
             const { id } = req.params;
             const { name, upsellType, triggerProductId, upgradeProductId, isActive } = req.body;
 
+            // Fetch old data for audit log
+            const oldRule = await this.repository.findById(id);
+
             const rule = await this.updateUseCase.execute({
                 id,
                 name,
@@ -42,6 +60,21 @@ export class UpsellRulesController {
                 upgradeProductId,
                 isActive
             });
+
+            if ((req as any).user?.id) {
+                await logActivity(
+                    (req as any).user.id,
+                    'UPDATE',
+                    'UpsellRule',
+                    `Updated upsell rule: ${rule.name}`,
+                    rule.id,
+                    {
+                        oldValue: oldRule,
+                        newValue: rule
+                    },
+                    req
+                );
+            }
 
             res.json(rule);
         } catch (error) {
@@ -66,6 +99,19 @@ export class UpsellRulesController {
         try {
             const { id } = req.params;
             await this.repository.delete(id);
+
+            if ((req as any).user?.id) {
+                await logActivity(
+                    (req as any).user.id,
+                    'DELETE',
+                    'UpsellRule',
+                    `Deleted upsell rule with ID: ${id}`,
+                    id,
+                    null,
+                    req
+                );
+            }
+
             res.status(204).send();
         } catch (error) {
             next(error);

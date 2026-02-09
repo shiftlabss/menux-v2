@@ -24,17 +24,25 @@ export class TypeOrmMenuRepository implements IMenuRepository {
 
     return this.categoryRepo.find({
       where,
-      relations: ['items', 'subcategories', 'subcategories.items'],
-      order: {
-        order: 'ASC'
-      },
+      relations: [
+        'items',
+        'subcategories',
+        'subcategories.items',
+        'subcategories.items.choiceItems',
+        'subcategories.items.choiceItems.choosenMenuItem',
+        'subcategories.items.choiceItems.choosenMenuItem.category',
+        'items.choiceItems',
+        'items.choiceItems.choosenMenuItem',
+        'items.choiceItems.choosenMenuItem.category'
+      ],
+      order: { name: 'ASC' }
     });
   }
 
   async findItemById(itemId: string): Promise<MenuItem | null> {
     return this.itemRepo.findOne({
       where: { id: itemId },
-      relations: ['category'],
+      relations: ['category', 'choiceItems'],
     });
   }
 

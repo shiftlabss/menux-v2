@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { UsersController } from '../controllers/UsersController';
+import { AuditLogsController } from '../controllers/AuditLogsController';
 import { ensureAuthenticated } from '../middlewares/ensureAuthenticated';
+import { asyncHandler } from '@shared/utils/asyncHandler';
 
 const usersRouter = Router();
 const usersController = new UsersController();
@@ -60,7 +62,7 @@ const usersController = new UsersController();
  *       400:
  *         description: Invalid input or user already exists
  */
-usersRouter.post('/', ensureAuthenticated, usersController.create);
+usersRouter.post('/', ensureAuthenticated, asyncHandler(usersController.create));
 
 /**
  * @swagger
@@ -80,7 +82,7 @@ usersRouter.post('/', ensureAuthenticated, usersController.create);
  *               items:
  *                 $ref: '#/components/schemas/UserResponse'
  */
-usersRouter.get('/', ensureAuthenticated, usersController.index);
+usersRouter.get('/', ensureAuthenticated, asyncHandler(usersController.index));
 
 /**
  * @swagger
@@ -108,7 +110,7 @@ usersRouter.get('/', ensureAuthenticated, usersController.index);
  *       404:
  *         description: User not found
  */
-usersRouter.get('/:id', ensureAuthenticated, usersController.show);
+usersRouter.get('/:id', ensureAuthenticated, asyncHandler(usersController.show));
 
 /**
  * @swagger
@@ -159,7 +161,7 @@ usersRouter.get('/:id', ensureAuthenticated, usersController.show);
  *       404:
  *         description: User not found
  */
-usersRouter.put('/:id', ensureAuthenticated, usersController.update);
+usersRouter.put('/:id', ensureAuthenticated, asyncHandler(usersController.update));
 
 /**
  * @swagger
@@ -183,6 +185,82 @@ usersRouter.put('/:id', ensureAuthenticated, usersController.update);
  *       404:
  *         description: User not found
  */
-usersRouter.delete('/:id', ensureAuthenticated, usersController.delete);
+usersRouter.delete('/:id', ensureAuthenticated, asyncHandler(usersController.delete));
+
+const auditLogsController = new AuditLogsController();
+
+/**
+ * @swagger
+ * /users/{id}/audit-logs:
+ *   get:
+ *     summary: Get user audit logs
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: User ID
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: actionType
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of audit logs
+ */
+usersRouter.get('/:id/audit-logs', ensureAuthenticated, asyncHandler(auditLogsController.index));
+
+/**
+ * @swagger
+ * /users/{id}/audit-logs:
+ *   post:
+ *     summary: Create an audit log
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - actionType
+ *               - entity
+ *               - description
+ *             properties:
+ *               actionType:
+ *                 type: string
+ *               entity:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               metadata:
+ *                 type: object
+ *     responses:
+ *       201:
+ *         description: Log created
+ */
+usersRouter.post('/:id/audit-logs', ensureAuthenticated, asyncHandler(auditLogsController.create));
 
 export { usersRouter };

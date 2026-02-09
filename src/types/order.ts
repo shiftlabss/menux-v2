@@ -38,10 +38,20 @@ export interface Order {
     updatedAt: string;
 }
 
+export interface CompositionItemDTO {
+    menuItemId: string;
+    groupKey: string;
+    quantity: number;
+    name: string;
+    priceRule: 'SUM' | 'AVERAGE' | 'HIGHEST' | 'NONE';
+    extraPrice: number;
+}
+
 export interface CreateOrderItemDTO {
     menuItemId: string;
     quantity: number;
     observation?: string;
+    composition?: CompositionItemDTO[];
 }
 
 export interface CreateOrderDTO {

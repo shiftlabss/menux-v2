@@ -2,6 +2,7 @@ import { IUserRepository } from '@domain/repositories/IUserRepository';
 import { User } from '@domain/entities/User';
 import { AppError } from '@shared/errors';
 import { IHashProvider } from '@domain/providers/IHashProvider';
+import { processImageField } from '@infrastructure/storage/S3Service';
 
 interface IRequest {
     id: string;
@@ -42,7 +43,11 @@ export class UpdateUser {
         if (restaurantId) user.restaurantId = restaurantId;
         if (jobTitle) user.jobTitle = jobTitle;
         if (phone) user.phone = phone;
-        if (avatarUrl) user.avatarUrl = avatarUrl;
+        if (avatarUrl) {
+            // Process avatar: upload to S3 if base64
+            const processedAvatarUrl = await processImageField(avatarUrl, 'users');
+            user.avatarUrl = processedAvatarUrl || '';
+        }
 
         if (password) {
             user.passwordHash = await this.hashProvider.generateHash(password);

@@ -34,6 +34,6 @@ export class TypeOrmWaiterRepository implements IWaiterRepository {
     }
 
     async delete(id: string): Promise<void> {
-        await this.repository.delete(id);
+        await this.repository.softDelete(id);
     }
 }

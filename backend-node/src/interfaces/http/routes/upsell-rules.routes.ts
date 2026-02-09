@@ -2,6 +2,7 @@
 import { Router } from 'express';
 import { UpsellRulesController } from '../controllers/UpsellRulesController';
 import { ensureAuthenticated } from '../middlewares/ensureAuthenticated';
+import { asyncHandler } from '@shared/utils/asyncHandler';
 
 const upsellRulesRouter = Router();
 const controller = new UpsellRulesController();
@@ -40,7 +41,7 @@ const controller = new UpsellRulesController();
  *       200:
  *         description: List of upsell rules
  */
-upsellRulesRouter.get('/', (req, res, next) => controller.index(req, res, next));
+upsellRulesRouter.get('/', asyncHandler((req, res, next) => controller.index(req, res, next)));
 
 /**
  * @swagger
@@ -77,7 +78,7 @@ upsellRulesRouter.get('/', (req, res, next) => controller.index(req, res, next))
  *       201:
  *         description: Upsell rule created
  */
-upsellRulesRouter.post('/', ensureAuthenticated, (req, res, next) => controller.create(req, res, next));
+upsellRulesRouter.post('/', ensureAuthenticated, asyncHandler((req, res, next) => controller.create(req, res, next)));
 
 /**
  * @swagger
@@ -117,7 +118,7 @@ upsellRulesRouter.post('/', ensureAuthenticated, (req, res, next) => controller.
  *       200:
  *         description: Upsell rule updated
  */
-upsellRulesRouter.put('/:id', ensureAuthenticated, (req, res, next) => controller.update(req, res, next));
+upsellRulesRouter.put('/:id', ensureAuthenticated, asyncHandler((req, res, next) => controller.update(req, res, next)));
 
 /**
  * @swagger
@@ -138,6 +139,6 @@ upsellRulesRouter.put('/:id', ensureAuthenticated, (req, res, next) => controlle
  *       204:
  *         description: Rule deleted
  */
-upsellRulesRouter.delete('/:id', ensureAuthenticated, (req, res, next) => controller.delete(req, res, next));
+upsellRulesRouter.delete('/:id', ensureAuthenticated, asyncHandler((req, res, next) => controller.delete(req, res, next)));
 
 export { upsellRulesRouter };

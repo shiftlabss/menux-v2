@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { RestaurantsController } from '../controllers/RestaurantsController';
 import { ensureAuthenticated } from '../middlewares/ensureAuthenticated';
+import { asyncHandler } from '@shared/utils/asyncHandler';
 
 const restaurantsRouter = Router();
 const restaurantsController = new RestaurantsController();
@@ -24,8 +25,7 @@ const restaurantsController = new RestaurantsController();
  *       200:
  *         description: Restaurant settings
  */
-restaurantsRouter.get('/:slug', restaurantsController.showBySlug);
-restaurantsRouter.get('/me', ensureAuthenticated, restaurantsController.show);
+restaurantsRouter.get('/me', ensureAuthenticated, asyncHandler(restaurantsController.show));
 
 /**
  * @swagger
@@ -52,6 +52,8 @@ restaurantsRouter.get('/me', ensureAuthenticated, restaurantsController.show);
  *                 type: string
  *               logoUrl:
  *                 type: string
+ *               headerUrl:
+ *                 type: string
  *               description:
  *                 type: string
  *               phone:
@@ -76,6 +78,27 @@ restaurantsRouter.get('/me', ensureAuthenticated, restaurantsController.show);
  *       200:
  *         description: Restaurant updated
  */
-restaurantsRouter.put('/me', ensureAuthenticated, restaurantsController.update);
+restaurantsRouter.put('/me', ensureAuthenticated, asyncHandler(restaurantsController.update));
+
+/**
+ * @swagger
+ * /restaurants/{slug}:
+ *   get:
+ *     summary: Get restaurant by slug
+ *     tags: [Restaurants]
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Restaurant slug
+ *     responses:
+ *       200:
+ *         description: Restaurant details
+ *       404:
+ *         description: Restaurant not found
+ */
+restaurantsRouter.get('/:slug', asyncHandler(restaurantsController.showBySlug));
 
 export { restaurantsRouter };

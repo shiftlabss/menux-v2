@@ -4,8 +4,10 @@ import {
     Column,
     CreateDateColumn,
     UpdateDateColumn,
+    DeleteDateColumn,
     ManyToOne,
     JoinColumn,
+    AfterLoad,
 } from 'typeorm';
 import { Restaurant } from './Restaurant';
 
@@ -47,4 +49,19 @@ export class User {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @DeleteDateColumn()
+    deletedAt: Date;
+
+    @Column({ default: true })
+    isActive: boolean;
+
+    @AfterLoad()
+    transformAvatarUrl() {
+        if (this.avatarUrl && !this.avatarUrl.startsWith('http')) {
+            const bucketUrl = process.env.AWS_S3_BUCKET_URL || 'https://menux-bucket.s3.us-east-2.amazonaws.com/';
+            this.avatarUrl = `${bucketUrl}${this.avatarUrl}`;
+        }
+    }
 }
+
