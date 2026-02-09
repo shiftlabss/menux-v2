@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import storage, { KEYS } from '../services/storageService';
-import { DEFAULT_BRANDING, DEFAULT_CATEGORIES, DEFAULT_PRODUCTS } from '../data/defaults';
+// import { DEFAULT_BRANDING, DEFAULT_CATEGORIES, DEFAULT_PRODUCTS } from '../data/defaults';
 import { generateId } from '../utils/generateId';
 import { safeParseBranding, safeParseCategories, safeParseProducts } from '../schemas';
 import { getMenuByRestaurantId } from '../services/api';

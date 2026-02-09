@@ -98,11 +98,12 @@ export default function ProductPizzaModal({ product, onClose, onAddToCart }) {
         others: []
     });
 
-    const doughOptions = [
-        { id: 'tradicional', name: 'Tradicional', price: 0 },
-        { id: 'fina', name: 'Massa Fina', price: 0 },
-        { id: 'integral', name: 'Massa integral', desc: 'Massa feita com farinha integral, mais leve e nutritiva.', price: 4.00 }
-    ];
+    // const doughOptions = [
+    //     { id: 'tradicional', name: 'Tradicional', price: 0 },
+    //     { id: 'fina', name: 'Massa Fina', price: 0 },
+    //     { id: 'integral', name: 'Massa integral', desc: 'Massa feita com farinha integral, mais leve e nutritiva.', price: 4.00 }
+    // ];
+
     // Dynamic State
     const [dynamicSelections, setDynamicSelections] = useState({});
 
@@ -294,7 +295,7 @@ export default function ProductPizzaModal({ product, onClose, onAddToCart }) {
         onClose();
     };
 
-    const canAdd = selections.dough && selections.flavors.length === selections.quantity && selections.flavors.every(Boolean) && selections.crust;
+    // const canAdd = selections.dough && selections.flavors.length === selections.quantity && selections.flavors.every(Boolean) && selections.crust;
 
     const getMissingHint = () => {
         if (!selections.dough) return 'Selecione o tipo de massa';
@@ -302,7 +303,8 @@ export default function ProductPizzaModal({ product, onClose, onAddToCart }) {
         if (!selections.crust) return 'Selecione a borda';
         return null;
     };
-    const canAdd = selections.dough && selections.flavors.filter(Boolean).length === selections.quantity && selections.crust;
+
+    // const canAdd = selections.dough && selections.flavors.filter(Boolean).length === selections.quantity && selections.crust;
 
     return (
         <motion.div
