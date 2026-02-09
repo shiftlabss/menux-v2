@@ -6,7 +6,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: white;
+  background: var(--surface);
   z-index: 2000;
   overflow-y: auto;
   /* padding-bottom: 20px; Removed to control spacing via content padding */
@@ -18,8 +18,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
-  border-bottom: 1px solid #E5E5E5;
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--border);
   flex-shrink: 0;
   /* Prevent header from shrinking */
 }
@@ -29,14 +29,14 @@
 }
 
 .btn-profile-back {
-  background: black;
-  color: white;
+  background: var(--primary-black);
+  color: var(--white);
   height: 29px;
   padding: 0 10px;
-  border-radius: 100px;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
   border: none;
   display: flex;
   align-items: center;
@@ -47,7 +47,7 @@
 .profile-content {
   display: flex;
   flex-direction: column;
-  padding: 24px;
+  padding: var(--space-6);
   align-items: center;
   flex: 1;
   /* Grow to fill remaining height */
@@ -57,16 +57,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 32px;
+  margin-bottom: var(--space-8);
   position: relative;
 }
 
 .profile-avatar {
   width: 100px;
   height: 100px;
-  background-color: #D9D9D9;
-  border-radius: 50%;
-  margin-bottom: 16px;
+  background-color: var(--gray-300);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-4);
   position: relative;
 }
 
@@ -76,8 +76,8 @@
   right: 0;
   width: 32px;
   height: 32px;
-  background: white;
-  border-radius: 50%;
+  background: var(--surface);
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,17 +85,17 @@
 }
 
 .profile-name {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 24px;
-  font-weight: 600;
-  color: black;
-  margin-bottom: 8px;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
 }
 
 .profile-since {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 14px;
-  color: #7D7D7D;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -103,33 +103,33 @@
 
 .profile-form-group {
   width: 100%;
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
 }
 
 .profile-label {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  color: black;
-  margin-bottom: 12px;
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
   display: block;
 }
 
 .profile-input-row {
   display: flex;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .profile-input-ddi {
   width: 80px;
   height: 56px;
-  background: #F5F5F5;
+  background: var(--surface-secondary);
   border: none;
-  border-radius: 12px;
-  padding: 0 16px;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  color: #7D7D7D;
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-4);
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  color: var(--text-secondary);
   text-align: center;
 }
 
@@ -137,54 +137,54 @@
   width: 100%;
   flex: 1;
   height: 56px;
-  background: #F5F5F5;
+  background: var(--surface-secondary);
   border: none;
-  border-radius: 12px;
-  padding: 0 16px;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  color: black;
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-4);
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  color: var(--text-primary);
 }
 
 .profile-danger-zone {
   width: 100%;
-  background: #F5F5F5;
-  border-radius: 12px;
+  background: var(--surface-secondary);
+  border-radius: var(--radius-md);
   height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--space-2);
   cursor: pointer;
-  margin-bottom: 40px;
+  margin-bottom: var(--space-10);
   border: none;
 }
 
 .text-danger {
-  color: #FF4444;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  font-weight: 500;
+  color: var(--color-danger);
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
 }
 
 .profile-actions-row {
   width: 100%;
   display: flex;
-  gap: 12px;
+  gap: var(--space-3);
   margin-top: auto;
 }
 
 .btn-save-profile {
   flex: 1;
   height: 59px;
-  background: #C4C4C4;
+  background: var(--gray-400);
   /* Matching the gray in the image */
-  color: #7A7A7A;
+  color: var(--text-disabled);
   border: none;
-  border-radius: 100px;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
   /* Increased weight slightly for better visibility */
   cursor: pointer;
   display: flex;
@@ -195,13 +195,13 @@
 .btn-logout-profile {
   flex: 1;
   height: 59px;
-  background: #FFECEC;
-  color: #FF4444;
+  background: var(--surface-danger);
+  color: var(--color-danger);
   border: none;
-  border-radius: 100px;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  font-weight: 500;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
   cursor: pointer;
   display: flex;
   align-items: center;

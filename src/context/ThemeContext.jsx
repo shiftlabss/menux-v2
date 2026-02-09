@@ -8,10 +8,9 @@ export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({ children }) => {
     const [theme, setThemeState] = useState(() => {
-        const saved = storage.get(THEME_KEY);
-        if (saved === 'dark' || saved === 'light') return saved;
-        // Respeitar preferência do sistema
-        return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        // Dark mode desabilitado — design atual é light-only.
+        // Quando dark mode for projetado, restaurar detecção do sistema aqui.
+        return 'light';
     });
 
     useEffect(() => {

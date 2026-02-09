@@ -4,7 +4,7 @@
   left: 0;
   width: 100%;
   height: 100dvh;
-  background: white;
+  background: var(--surface);
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -25,7 +25,7 @@
   top: 32px;
   left: 32px;
   display: flex;
-  gap: 8px;
+  gap: var(--space-2);
   align-items: center;
   z-index: 10;
 }
@@ -33,8 +33,8 @@
 .wine-back-circle {
   width: 40px;
   height: 40px;
-  background: white;
-  border-radius: 50%;
+  background: var(--surface);
+  border-radius: var(--radius-full);
   border: none;
   display: flex;
   align-items: center;
@@ -44,10 +44,10 @@
 }
 
 .wine-back-pill {
-  background: white;
+  background: var(--surface);
   height: 36px;
-  padding: 0 16px;
-  border-radius: 100px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-pill);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -56,10 +56,10 @@
 }
 
 .wine-back-text {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: black;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
 }
 
 .wine-image-wrapper {
@@ -69,33 +69,33 @@
 .wine-image-container {
   width: 100%;
   height: 300px;
-  background: #D9D9D9;
-  border-radius: 0 0 25px 25px;
+  background: var(--gray-300);
+  border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
   background-size: cover;
   background-position: center;
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
 }
 
 .wine-content {
   display: flex;
   flex-direction: column;
-  padding: 0 24px;
+  padding: 0 var(--space-6);
 }
 
 .wine-tags-row {
   display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
 }
 
 .wine-tag {
-  border: 1px solid #EDEDED;
-  padding: 4px 12px;
-  border-radius: 100px;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: #7D7D7D;
+  border: 1px solid var(--border-light);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -104,7 +104,7 @@
 .wine-tag-flag {
   width: 18px;
   height: 18px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -112,41 +112,41 @@
 }
 
 .wine-title {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 24px;
-  font-weight: 500;
-  color: black;
-  margin-bottom: 12px;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
   line-height: 1.2;
 }
 
 .wine-price {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 18px;
-  font-weight: 500;
-  color: black;
-  margin-bottom: 24px;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  margin-bottom: var(--space-6);
 }
 
 .wine-divider {
   height: 1px;
-  background: #F2F2F2;
+  background: var(--surface-secondary);
   width: 100%;
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
 }
 
 .wine-facts-section {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .wine-facts-title {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  color: black;
-  margin-bottom: 4px;
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
 }
 
 .wine-fact-row {
@@ -158,20 +158,20 @@
 .wine-fact-label-group {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .wine-fact-label {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  color: #7D7D7D;
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  color: var(--text-secondary);
 }
 
 .wine-fact-value {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  color: black;
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
 }
 
 .wine-footer-action {
@@ -184,7 +184,7 @@
 
 .wine-footer-row {
   display: flex;
-  gap: 12px;
+  gap: var(--space-3);
   align-items: center;
 }
 
@@ -193,13 +193,13 @@
   grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
   justify-items: center;
-  background: white;
-  border: 1px solid #EAEAEA;
-  border-radius: 100px;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-pill);
   height: 59px;
   width: 130px;
   flex-shrink: 0;
-  padding: 0 8px;
+  padding: 0 var(--space-2);
 }
 
 .wine-qty-btn {
@@ -209,26 +209,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  padding: var(--space-2);
 }
 
 .wine-qty-value {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  color: black;
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
 }
 
 .btn-wine-add {
   flex: 1;
   height: 59px;
-  background: black;
-  color: white;
+  background: var(--primary-black);
+  color: var(--white);
   border: none;
-  border-radius: 100px;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  font-weight: 500;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
   cursor: pointer;
   display: flex;
   align-items: center;

@@ -38,7 +38,7 @@ export const ProductSchema = z.object({
     country: z.string().optional(),
     countryFlag: z.string().optional(),
     year: z.string().optional(),
-    facts: z.record(z.string()).optional(),
+    facts: z.record(z.string(), z.string()).optional(),
 });
 export type Product = z.infer<typeof ProductSchema>;
 

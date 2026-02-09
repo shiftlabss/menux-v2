@@ -5,7 +5,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--overlay-light);
   z-index: 3000;
   display: flex;
   align-items: flex-end;
@@ -17,17 +17,17 @@
   width: 100%;
   max-width: 430px;
   height: calc(100% - 78px);
-  background: white;
-  border-radius: 15px 15px 0 0;
+  background: var(--surface);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 24px;
+  padding: var(--space-6);
   overflow: hidden;
 }
 
 .maestro-modal-container .modal-header {
-  margin: -24px -24px 24px -24px;
+  margin: -24px -24px var(--space-6) -24px;
   width: calc(100% + 48px);
 }
 
@@ -37,20 +37,20 @@
 .modal-header-nav-wrapper {
   display: flex;
   align-items: center;
-  margin: -24px -24px 24px -24px;
-  padding: 18px 24px;
+  margin: -24px -24px var(--space-6) -24px;
+  padding: 18px var(--space-6);
   width: calc(100% + 48px);
-  border-bottom: 1px solid #F2F2F2;
-  gap: 16px;
-  background: white;
+  border-bottom: 1px solid var(--surface-secondary);
+  gap: var(--space-4);
+  background: var(--surface);
 }
 
 .wizard-back-btn {
   width: 40px;
   height: 40px;
-  background: white;
-  border: 1px solid #EEEEEE;
-  border-radius: 100px;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-pill);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -71,7 +71,7 @@
 .modal-header-nav-wrapper .modal-header-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 /* Standard Modal Header - REUSABLE & EDGE-TO-EDGE */
@@ -84,14 +84,14 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  border-bottom: 1px solid #F2F2F2;
+  border-bottom: 1px solid var(--surface-secondary);
   flex-shrink: 0;
   position: relative;
 }
 
 .modal-header-back {
   justify-content: flex-start;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .modal-header-info {
@@ -106,11 +106,11 @@
   width: 35px;
   /* Bolinha de 35x35 conforme solicitado */
   height: 35px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
+  background: var(--surface);
   flex-shrink: 0;
 }
 
@@ -123,7 +123,7 @@
 .btn-modal-back {
   cursor: pointer;
   padding: 0;
-  color: black;
+  color: var(--text-primary);
   border: none;
 }
 
@@ -134,34 +134,34 @@
 }
 
 .modal-header-title {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
+  font-family: var(--font-display);
+  font-size: var(--text-base);
   /* Tamanho 16 solicitado */
-  font-weight: 500;
+  font-weight: var(--font-medium);
   /* Peso Medium solicitado */
-  color: #000000;
+  color: var(--text-primary);
   line-height: 1;
 }
 
 .modal-header-status {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .modal-header-status .status-text {
-  font-family: 'Geist', sans-serif;
-  font-size: 12px;
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
   /* Tamanho 12 solicitado */
-  color: #8A8A8A;
+  color: var(--text-secondary);
   line-height: 1;
 }
 
 .status-dot {
   width: 6px;
   height: 6px;
-  background: #10B981;
-  border-radius: 50%;
+  background: var(--color-success);
+  border-radius: var(--radius-full);
   flex-shrink: 0;
 }
 
@@ -169,12 +169,12 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px;
+  padding: var(--space-2);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 0;
-  color: #717171;
+  color: var(--text-tertiary);
 }
 
 /* Welcome View Restoration - VOLTANDO AO ORIGINAL */
@@ -203,74 +203,74 @@
   width: 64px;
   /* Tamanho original restaurado */
   height: 64px;
-  border-radius: 50%;
-  background: white;
-  border: 1px solid #E5E5E5;
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
 }
 
 .maestro-welcome-title {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 24px;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
   /* Tamanho original restaurado */
-  font-weight: 600;
-  color: black;
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
   line-height: 1.1;
   max-width: 220px;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
 }
 
 .maestro-welcome-desc {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 14px;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
   /* Tamanho original restaurado */
-  color: #8A8A8A;
+  color: var(--text-secondary);
   line-height: 1.4;
   max-width: 260px;
-  margin-bottom: 32px;
+  margin-bottom: var(--space-8);
 }
 
 .maestro-welcome-btn {
-  background: black;
-  color: white;
+  background: var(--primary-black);
+  color: var(--white);
   border: none;
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   width: 290px;
   height: 48px;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  font-weight: 500;
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
   cursor: pointer;
 }
 
 /* Footer & Input - Modernized ChatGPT Style */
 .maestro-footer-input {
-  padding-top: 24px;
-  background: white;
+  padding-top: var(--space-6);
+  background: var(--surface);
   width: 100%;
-  border-top: 1px solid #eeeeee;
+  border-top: 1px solid var(--border-light);
 }
 
 .maestro-input-wrapper {
   flex: 1;
-  background: #F4F4F4;
-  border-radius: 100px;
+  background: var(--surface-secondary);
+  border-radius: var(--radius-pill);
   /* Full capsule */
   height: 59px;
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
-  padding: 0 8px 0 20px;
+  padding: 0 var(--space-2) 0 var(--space-5);
   transition: all 0.2s ease;
   border: 1px solid transparent;
 }
 
 .maestro-input-wrapper:focus-within {
-  background: white;
-  border-color: #E5E5E5;
+  background: var(--surface);
+  border-color: var(--border);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
@@ -280,20 +280,20 @@
   background: transparent;
   border: none;
   outline: none;
-  font-family: 'Geist', sans-serif;
-  font-size: 15px;
-  color: black;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--text-primary);
 }
 
 .maestro-input-field::placeholder {
-  color: #A3A3A3;
+  color: var(--text-placeholder);
 }
 
 .maestro-send-btn {
   width: 45px;
   height: 45px;
-  background: black;
-  border-radius: 50%;
+  background: var(--primary-black);
+  border-radius: var(--radius-full);
   border: none;
   display: flex;
   align-items: center;
@@ -304,7 +304,7 @@
 }
 
 .maestro-send-btn:disabled {
-  background: #E5E5E5;
+  background: var(--border);
   cursor: not-allowed;
 }
 
@@ -325,14 +325,14 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--space-5);
   overflow-y: auto;
 }
 
 .chat-bubble-wrapper {
   display: flex;
   flex-direction: column;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
   width: 100%;
 }
 
@@ -346,28 +346,28 @@
 
 .chat-bubble {
   max-width: 85%;
-  padding: 12px 18px;
-  font-family: 'Geist', sans-serif;
-  font-size: 15px;
+  padding: var(--space-3) 18px;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
   line-height: 1.5;
 }
 
 .chat-bubble.user {
-  background: #000000;
-  color: white;
-  border-radius: 20px 20px 4px 20px;
+  background: var(--primary-black);
+  color: var(--white);
+  border-radius: var(--radius-xl) var(--radius-xl) 4px var(--radius-xl);
 }
 
 .chat-bubble.ai {
-  background: #F5F5F5;
-  color: black;
+  background: var(--surface-secondary);
+  color: var(--text-primary);
   border-radius: 18px 18px 18px 4px;
 }
 
 .chat-bubble.ai.typing {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
   min-height: 46.4px;
   /* Matches single-line bubble height */
 }
@@ -375,8 +375,8 @@
 .chat-bubble.ai.typing span {
   width: 6px;
   height: 6px;
-  background: #8A8A8A;
-  border-radius: 50%;
+  background: var(--text-secondary);
+  border-radius: var(--radius-full);
   animation: typing 1s infinite alternate;
 }
 
@@ -418,7 +418,7 @@
 
 .wizard-simple-header {
   width: 100%;
-  padding: 26px 24px 0;
+  padding: 26px var(--space-6) 0;
   display: flex;
   justify-content: flex-end;
 }
@@ -428,12 +428,12 @@
 }
 
 .wizard-question {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 20px;
-  font-weight: 500;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--font-medium);
   text-align: center;
-  margin-top: 40px;
-  margin-bottom: 40px;
+  margin-top: var(--space-10);
+  margin-bottom: var(--space-10);
   max-width: 200px;
   line-height: 1.2;
 }
@@ -442,69 +442,69 @@
 .wizard-counter {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: var(--space-8);
 }
 
 .wizard-counter-btn {
   width: 48px;
   height: 48px;
-  border-radius: 50%;
-  border: 1px solid #E5E5E5;
-  background: white;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 24px;
-  color: black;
+  font-size: var(--text-xl);
+  color: var(--text-primary);
 }
 
 .wizard-counter-value {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 48px;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: var(--text-jumbo);
+  font-weight: var(--font-bold);
 }
 
 /* Step 2 & 3: Options Grid */
 .wizard-options-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: var(--space-3);
   width: 100%;
 }
 
 .wizard-option-card {
   height: 56px;
-  border: 1px solid #E5E5E5;
-  border-radius: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: #7D7D7D;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
   cursor: pointer;
-  background: white;
+  background: var(--surface);
   transition: all 0.2s ease;
 }
 
 .wizard-option-card.active {
-  border-color: black;
-  color: black;
-  background: white;
-  box-shadow: inset 0 0 0 1px black;
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--text-primary);
 }
 
 .btn-wizard-action {
   width: 100%;
   height: 59px;
-  background: black;
-  color: white;
-  border-radius: 100px;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
+  background: var(--primary-black);
+  color: var(--white);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
   border: none;
   cursor: pointer;
 }
@@ -513,9 +513,9 @@
   width: 100%;
   background: none;
   border: none;
-  margin-top: 16px;
-  color: #8A8A8A;
-  font-size: 14px;
+  margin-top: var(--space-4);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
   cursor: pointer;
 }
 
@@ -531,7 +531,7 @@
 }
 
 .loading-icon-wrapper {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
   animation: pulse 1.5s ease-in-out infinite;
 }
 
@@ -553,10 +553,10 @@
 }
 
 .wizard-loading-text {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 20px;
-  font-weight: 500;
-  color: black;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
   width: 176px;
   margin: 0;
 }
@@ -572,23 +572,23 @@
 }
 
 .wizard-results-header {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
   flex-shrink: 0;
 }
 
 .wizard-results-title {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 20px;
-  font-weight: 500;
-  color: black;
-  margin-bottom: 4px;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
   line-height: 1.1;
 }
 
 .wizard-results-subtitle {
-  font-family: 'Geist', sans-serif;
-  font-size: 12px;
-  color: #858585;
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
   margin: 0;
   letter-spacing: -0.01em;
 }
@@ -598,15 +598,15 @@
   overflow-y: auto;
   min-height: 0;
   margin: 0 -24px;
-  padding: 0 24px 20px 24px;
+  padding: 0 var(--space-6) var(--space-5) var(--space-6);
   /* Added bottom padding */
   -webkit-overflow-scrolling: touch;
 }
 
 .wizard-result-item {
   display: flex;
-  gap: 20px;
-  padding: 16px 0;
+  gap: var(--space-5);
+  padding: var(--space-4) 0;
   align-items: flex-start;
 }
 
@@ -617,20 +617,20 @@
 }
 
 .wizard-result-name {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  color: black;
-  margin-bottom: 8px;
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
   line-height: 1.2;
 }
 
 .wizard-result-desc {
-  font-family: 'Geist', sans-serif;
-  font-size: 12px;
-  color: #858585;
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
   line-height: 1.5;
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   line-clamp: 3;
@@ -641,30 +641,30 @@
 .wizard-result-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .wizard-result-price-capsule {
   display: flex;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
   padding: 6px 10px;
   justify-content: center;
   align-items: center;
-  border-radius: 100px;
-  border: 1px solid #EDEDED;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-light);
 }
 
 .btn-wizard-add {
   display: flex;
   padding: 6px 10px;
-  font-family: 'Bricolage Grotesque', sans-serif;
+  font-family: var(--font-display);
   background: var(--primary-black);
-  color: white;
+  color: var(--white);
   border: none;
-  border-radius: 100px;
-  font-size: 14px;
-  font-weight: 500;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
   cursor: pointer;
   transition: transform 0.2s ease;
 }
@@ -674,80 +674,80 @@
 }
 
 .btn-wizard-add.remove {
-  background: #F5F5F5;
-  color: #FF3B30;
-  border: 1px solid #EDEDED;
+  background: var(--surface-secondary);
+  color: var(--color-danger);
+  border: 1px solid var(--border-light);
 }
 
 .wizard-result-image {
   width: 110px;
   height: 110px;
-  background: #E5E5E5;
-  border-radius: 15px;
+  background: var(--border);
+  border-radius: var(--radius-lg);
   flex-shrink: 0;
   object-fit: cover;
 }
 
 .wizard-result-divider {
   height: 1px;
-  background: #F0F0F0;
+  background: var(--border-light);
   width: 100%;
 }
 
 .wizard-results-footer {
-  padding: 24px 0 0px;
+  padding: var(--space-6) 0 0px;
   /* Adicionado padding bottom para desgrudar do final */
   display: flex;
-  background: white;
+  background: var(--surface);
   margin-top: auto;
 }
 
 .btn-back-to-menu-full {
   width: 100%;
   height: 59px;
-  background: black;
-  color: white;
+  background: var(--primary-black);
+  color: var(--white);
   border: none;
-  border-radius: 100px;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  font-weight: 500;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
   cursor: pointer;
 }
 
 .wizard-footer {
   margin-top: auto;
-  padding-top: 24px;
+  padding-top: var(--space-6);
   width: 100%;
 }
 
 .btn-wizard-next {
   width: 100%;
   height: 59px;
-  background: black;
-  color: white;
+  background: var(--primary-black);
+  color: var(--white);
   border: none;
-  border-radius: 100px;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  font-weight: 500;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
   cursor: pointer;
 }
 
 .btn-chat-with-maestro {
   flex: 1;
   height: 59px;
-  background: #F5F5F5;
+  background: var(--surface-secondary);
   border: none;
-  border-radius: 15px;
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  color: black;
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
   cursor: pointer;
 
   img {
@@ -758,8 +758,8 @@
 .menux-logo-text {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-weight: 600;
+  gap: var(--space-1);
+  font-weight: var(--font-semibold);
 }
 
 .menux-logo-text span {
@@ -772,9 +772,9 @@
 .btn-order-cloche {
   width: 59px;
   height: 59px;
-  border: 1px solid #E5E5E5;
-  background: white;
-  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -786,15 +786,15 @@
   position: absolute;
   top: -6px;
   right: -6px;
-  background: #7A55FD;
-  color: white;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
+  background: var(--brand-accent);
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
   padding: 0 7px;
   height: 23px;
   min-width: 23px;
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -807,5 +807,5 @@
 .wizard-result-price-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
 }
