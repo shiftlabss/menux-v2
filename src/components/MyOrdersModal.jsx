@@ -87,7 +87,7 @@ export default function MyOrdersModal({ onClose, userName, activeOrderCode, acti
                                 </div>
                                 <div className={`status-badge ${order.status}`}>
                                     {order.status === 'annotated' || order.status === 'completed' ? (
-                                        <span style={{ marginRight: 4, display: 'flex' }}>
+                                        <span className="status-icon">
                                             <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M1 4L3.5 6.5L9 1" stroke={order.status === 'completed' ? 'white' : '#2E7D32'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                             </svg>

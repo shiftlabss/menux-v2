@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import { useToast } from '../context/ToastContext';
 
 const MenuxLogo = ({ height = 24 }) => (
-    <img src="/logo-menux.svg" alt="Menux" style={{ height }} />
+    <img src="/logo-menux.svg" alt="Menux" height={height} />
 );
 
 const CameraIcon = () => (
@@ -187,7 +187,7 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
                                 ref={fileInputRef}
                                 onChange={handleFileChange}
                                 accept="image/*"
-                                style={{ display: 'none' }}
+                                className="profile-file-input"
                             />
                         </div>
                         <div className="profile-name">{editableName || "Visitante"}</div>

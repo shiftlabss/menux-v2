@@ -169,7 +169,7 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                         {BANNERS.map((b, i) => (
                             <div
                                 key={i}
-                                className="featured-card"
+                                className={`featured-card ${b.image ? 'has-image' : ''}`}
                                 style={{
                                     background: b.image
                                         ? `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), url('${b.image}') center/cover no-repeat`
@@ -183,10 +183,10 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                                     image: b.image
                                 })}
                             >
-                                <span className="featured-tag" style={{ color: b.image ? 'rgba(255,255,255,0.9)' : undefined }}>{b.tag}</span>
-                                <h3 className="featured-title" style={{ color: b.image ? 'white' : undefined }}>{b.title}</h3>
+                                <span className="featured-tag">{b.tag}</span>
+                                <h3 className="featured-title">{b.title}</h3>
                                 <div className="featured-footer">
-                                    <span className="featured-price" style={{ color: b.image ? 'white' : undefined }}>{b.price}</span>
+                                    <span className="featured-price">{b.price}</span>
                                     <button className="btn-order-now">Adicionar</button>
                                 </div>
                             </div>
@@ -212,9 +212,9 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                     sectionRefs={sectionRefs}
                 />
 
-                <footer style={{ padding: '40px 0 60px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                    <span style={{ fontFamily: 'Geist, sans-serif', fontSize: '13px', color: '#A3A3A3' }}>Desenvolvido por</span>
-                    <img src={imgLogo} alt="Menux" style={{ height: '18px', marginTop: '2px', filter: 'brightness(0)' }} />
+                <footer className="menu-footer">
+                    <span className="menu-footer-text">Desenvolvido por</span>
+                    <img src={imgLogo} alt="Menux" className="menu-footer-logo" />
                 </footer>
             </div>
 
@@ -227,7 +227,6 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                             setMaestroInitialView('welcome');
                             setIsMaestroOpen(true);
                         }}
-                        style={{ cursor: 'pointer' }}
                     >
                         <div className="maestro-icon-wrapper">
                             <img src="/icon-menux.svg" alt="Maestro" className="maestro-icon" />
@@ -240,7 +239,7 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
 
                     {cartCount > 0 && (
                         <div className="cart-floating-button" onClick={() => setIsOrderModalOpen(true)}>
-                            <img src="/icon-pedido.svg" alt="Pedido" style={{ width: '24px', height: '24px' }} />
+                            <img src="/icon-pedido.svg" alt="Pedido" className="cart-icon" />
                             <div className="cart-badge">{cartCount}</div>
                         </div>
                     )}

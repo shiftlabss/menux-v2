@@ -133,14 +133,14 @@ export default function StudioView({ onClose }) {
                             </div>
 
                             <div className="admin-row">
-                                <div className="admin-field" style={{ flex: 1 }}>
+                                <div className="admin-field flex-1">
                                     <label>Logo (Avatar)</label>
                                     <div className="admin-image-upload">
                                         <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e.target.files[0], (res) => setLocalBranding({ ...localBranding, restLogo: res }))} />
                                         {localBranding.restLogo ? <img src={localBranding.restLogo} alt="Logo Preview" /> : <span>Upload Logo</span>}
                                     </div>
                                 </div>
-                                <div className="admin-field" style={{ flex: 1 }}>
+                                <div className="admin-field flex-1">
                                     <label>Capa (Banner)</label>
                                     <div className="admin-image-upload">
                                         <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e.target.files[0], (res) => setLocalBranding({ ...localBranding, restCover: res }))} />
@@ -175,10 +175,10 @@ export default function StudioView({ onClose }) {
                                 </div>
                             </div>
 
-                            <div className="admin-section-box" style={{ marginTop: 16 }}>
+                            <div className="admin-section-box spaced-top">
                                 <label className="admin-section-title">2. Criar Subcategoria (Opcional)</label>
                                 <div className="admin-field">
-                                    <select value={selectedCatForSub} onChange={e => setSelectedCatForSub(e.target.value)} style={{ width: '100%', marginBottom: 12 }}>
+                                    <select value={selectedCatForSub} onChange={e => setSelectedCatForSub(e.target.value)} className="admin-select-full">
                                         <option value="">Vincular à Categoria...</option>
                                         {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</option>)}
                                     </select>
@@ -189,7 +189,7 @@ export default function StudioView({ onClose }) {
                                 </div>
                             </div>
 
-                            <div className="admin-list" style={{ marginTop: 24 }}>
+                            <div className="admin-list spaced-top">
                                 <label className="admin-section-title">Estrutura do Cardápio</label>
                                 <div className="admin-list-scroll full-list">
                                     {categories.length === 0 && <p className="admin-empty-text">Nenhuma categoria criada ainda.</p>}
@@ -198,8 +198,7 @@ export default function StudioView({ onClose }) {
                                             <div className="admin-list-item category-item">
                                                 <strong>{cat.name.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</strong>
                                                 <button
-                                                    className="admin-btn-remove"
-                                                    style={pendingDeleteCatId === cat.id ? { background: '#dc2626', color: '#fff', borderRadius: 6, padding: '2px 8px', fontSize: 11 } : {}}
+                                                    className={`admin-btn-remove ${pendingDeleteCatId === cat.id ? 'confirm' : ''}`}
                                                     onClick={() => {
                                                         if (pendingDeleteCatId === cat.id) {
                                                             setProducts(products.filter(p => p.categoryId !== cat.id));
@@ -244,11 +243,11 @@ export default function StudioView({ onClose }) {
                             )}
 
                             <div className="admin-row">
-                                <div className="admin-field" style={{ flex: 2 }}>
+                                <div className="admin-field flex-2">
                                     <label>Nome do Produto</label>
                                     <input type="text" value={newProd.name} onChange={e => setNewProd({ ...newProd, name: e.target.value })} />
                                 </div>
-                                <div className="admin-field" style={{ flex: 1 }}>
+                                <div className="admin-field flex-1">
                                     <label>Foto</label>
                                     <div className="admin-image-upload small">
                                         <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e.target.files[0], (res) => setNewProd({ ...newProd, image: res }))} />
@@ -258,14 +257,14 @@ export default function StudioView({ onClose }) {
                             </div>
 
                             <div className="admin-row">
-                                <div className="admin-field" style={{ flex: 1 }}>
+                                <div className="admin-field flex-1">
                                     <label>Categoria</label>
                                     <select value={newProd.categoryId} onChange={e => setNewProd({ ...newProd, categoryId: e.target.value, subcategoryId: '' })}>
                                         <option value="">Selecione...</option>
                                         {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</option>)}
                                     </select>
                                 </div>
-                                <div className="admin-field" style={{ flex: 1 }}>
+                                <div className="admin-field flex-1">
                                     <label>Subcategoria</label>
                                     <select value={newProd.subcategoryId} onChange={e => setNewProd({ ...newProd, subcategoryId: e.target.value })}>
                                         <option value="">Selecione...</option>
@@ -301,7 +300,7 @@ export default function StudioView({ onClose }) {
                                 {editingProductId ? 'Salvar Alterações' : 'Adicionar Produto'}
                             </button>
 
-                            <div className="admin-list" style={{ marginTop: 24 }}>
+                            <div className="admin-list spaced-top">
                                 <label className="admin-section-title">Produtos Cadastrados ({products.length})</label>
                                 <div className="admin-list-scroll full-list">
                                     {products.map(p => (
@@ -324,8 +323,7 @@ export default function StudioView({ onClose }) {
 
                 <div className="studio-footer-actions">
                     <button
-                        className="admin-reset-btn"
-                        style={pendingReset ? { background: '#dc2626', color: '#fff' } : {}}
+                        className={`admin-reset-btn ${pendingReset ? 'confirm' : ''}`}
                         onClick={() => {
                             if (pendingReset) {
                                 resetToDefault();

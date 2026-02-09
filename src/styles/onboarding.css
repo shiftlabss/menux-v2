@@ -352,3 +352,17 @@
   font-weight: var(--font-medium);
   cursor: pointer;
 }
+
+
+.onboarding-logo-icon {
+  width: 37px;
+  height: 41.39px;
+}
+
+.user-badge-icon {
+  height: 18px;
+}
+
+.avatar-image {
+  object-fit: cover;
+}

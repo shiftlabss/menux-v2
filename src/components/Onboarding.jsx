@@ -20,13 +20,13 @@ export default function Onboarding({ onStart, savedUser, userAvatar }) {
           transition={{ delay: 0.2, type: "spring" }}
           className="logo-icon-card"
         >
-          <img src={imgIconLarge} alt="Menux Icon" style={{ width: '37px', height: '41.39px' }} />
+          <img src={imgIconLarge} alt="Menux Icon" className="onboarding-logo-icon" />
         </motion.div>
 
         <div className="logo-text-group">
           <h1 className="welcome-title">
             Bem-vindo ao Menux
-            <img src={imgVerify} alt="Verificado" className="verified-icon" style={{ marginLeft: '6px' }} />
+            <img src={imgVerify} alt="Verificado" className="verified-icon" />
           </h1>
           <p className="welcome-subtitle">Veja o cardápio e monte seu pedido.</p>
         </div>
@@ -58,9 +58,9 @@ export default function Onboarding({ onStart, savedUser, userAvatar }) {
           >
             <span className="user-login-text">Entrar como</span>
             <div className="user-badge">
-              <img src={imgIconLarge} alt="Menux Icon" style={{ height: '18px' }} />
+              <img src={imgIconLarge} alt="Menux Icon" className="user-badge-icon" />
               {userAvatar ? (
-                <img src={userAvatar} alt="Avatar" className="avatar-circle" style={{ objectFit: 'cover' }} />
+                <img src={userAvatar} alt="Avatar" className="avatar-circle avatar-image" />
               ) : (
                 <div className="avatar-circle"></div>
               )}

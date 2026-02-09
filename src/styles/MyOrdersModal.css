@@ -182,3 +182,9 @@
     border: 1px solid var(--surface);
     border-radius: var(--radius-pill);
 }
+
+
+.status-icon {
+  margin-right: 4px;
+  display: flex;
+}

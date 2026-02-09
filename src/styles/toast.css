@@ -47,3 +47,20 @@
   color: var(--color-danger);
   border: 1px solid var(--border-light);
 }
+
+
+.toast-container.toast-success {
+  background: #1DB954;
+}
+
+.toast-container.toast-error {
+  background: #E53935;
+}
+
+.toast-container.toast-warning {
+  background: #FB8C00;
+}
+
+.toast-container.toast-info {
+  background: #0085FF;
+}

@@ -4,7 +4,7 @@ const imgLogo = "/logo-menux.svg";
 export default function MenuHeader({ userName, userAvatar, activeOrderCode, onProfileClick, onMyOrdersClick, onAuth }) {
     return (
         <header className="menu-header">
-            <img src={imgLogo} alt="Menux" style={{ height: '20px' }} />
+            <img src={imgLogo} alt="Menux" className="menu-header-logo" />
             <div className="header-right">
                 {userName && (
                     <div className="profile-trigger">
@@ -12,10 +12,10 @@ export default function MenuHeader({ userName, userAvatar, activeOrderCode, onPr
                             <img
                                 src={userAvatar}
                                 alt="Profile"
-                                style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
+                                className="profile-avatar-img"
                             />
                         ) : (
-                            <span style={{ fontSize: '12px' }}>{userName[0].toUpperCase()}</span>
+                            <span className="profile-initial">{userName[0].toUpperCase()}</span>
                         )}
                     </div>
                 )}

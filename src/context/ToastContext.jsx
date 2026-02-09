@@ -28,16 +28,10 @@ const ICONS = {
     ),
 };
 
-const COLORS = {
-    success: '#1DB954',
-    error: '#E53935',
-    warning: '#FB8C00',
-    info: '#0085FF',
-};
-
 export const ToastProvider = ({ children }) => {
     const [toast, setToast] = useState(null);
     const timerRef = useRef(null);
+    const toastVariant = toast?.variant || 'success';
 
     const showToast = useCallback((message, variant = 'success', duration = 3000) => {
         // retrocompat: se variant for número, é duration (chamada antiga)
@@ -57,14 +51,13 @@ export const ToastProvider = ({ children }) => {
                 {toast && (
                     <div className="toast-overlay">
                         <motion.div
-                            className="toast-container"
-                            style={{ background: COLORS[toast.variant] || COLORS.success }}
+                            className={`toast-container toast-${toastVariant}`}
                             initial={{ opacity: 0, y: -50, scale: 0.9 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
                         >
                             <div className="toast-icon">
-                                {ICONS[toast.variant] || ICONS.success}
+                                {ICONS[toastVariant] || ICONS.success}
                             </div>
                             <span className="toast-text">{toast.message}</span>
                         </motion.div>

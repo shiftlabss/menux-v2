@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 
 // Icons for DS use
 const TrashIcon = () => (
@@ -38,55 +37,27 @@ export default function DesignSystemView() {
     const groups = ['Atomic', 'Modules'];
 
     return (
-        <div style={{
-            display: 'flex',
-            width: '100%',
-            height: '100vh',
-            fontFamily: '"Bricolage Grotesque", sans-serif',
-            background: '#ffffff',
-            color: '#000000',
-            overflow: 'hidden'
-        }}>
+        <div className="ds-layout">
             {/* SIDEBAR */}
-            <div style={{
-                width: '280px',
-                height: '100%',
-                borderRight: '1px solid #E5E5E5',
-                padding: '24px',
-                display: 'flex',
-                flexDirection: 'column',
-                background: '#F9FAFB',
-                flexShrink: 0
-            }}>
-                <div style={{ marginBottom: '32px' }}>
-                    <h1 style={{ fontSize: '20px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <div style={{ width: '24px', height: '24px', background: 'black', borderRadius: '6px' }}></div>
+            <div className="ds-sidebar">
+                <div className="ds-sidebar-header">
+                    <h1 className="ds-title-row">
+                        <div className="ds-logo-square"></div>
                         Menux DS
                     </h1>
-                    <p style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>v2.2.0 • Live Library</p>
+                    <p className="ds-version">v2.2.0 • Live Library</p>
                 </div>
 
-                <nav style={{ display: 'flex', flexDirection: 'column', gap: '20px', overflowY: 'auto' }}>
+                <nav className="ds-nav">
                     {groups.map(group => (
                         <div key={group}>
-                            <p style={{ fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', color: '#999', marginBottom: '8px', letterSpacing: '0.05em' }}>{group}</p>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            <p className="ds-nav-group-title">{group}</p>
+                            <div className="ds-nav-list">
                                 {sections.filter(s => s.group === group).map(section => (
                                     <button
                                         key={section.id}
                                         onClick={() => setActiveSection(section.id)}
-                                        style={{
-                                            textAlign: 'left',
-                                            padding: '10px 12px',
-                                            borderRadius: '6px',
-                                            background: activeSection === section.id ? '#E8E8E8' : 'transparent',
-                                            color: activeSection === section.id ? '#000' : '#444',
-                                            border: 'none',
-                                            cursor: 'pointer',
-                                            fontSize: '14px',
-                                            fontWeight: activeSection === section.id ? '600' : '500',
-                                            transition: 'all 0.2s ease'
-                                        }}
+                                        className={`ds-nav-btn ${activeSection === section.id ? 'active' : ''}`}
                                     >
                                         {section.label}
                                     </button>
@@ -96,52 +67,52 @@ export default function DesignSystemView() {
                     ))}
                 </nav>
 
-                <div style={{ marginTop: 'auto' }}>
-                    <div style={{ padding: '12px', background: '#fff', borderRadius: '8px', border: '1px solid #eee' }}>
-                        <p style={{ fontSize: '12px', fontWeight: '600' }}>Active User</p>
-                        <p style={{ fontSize: '11px', color: '#666' }}>Admin View</p>
+                <div className="ds-sidebar-footer">
+                    <div className="ds-user-card">
+                        <p className="ds-user-title">Active User</p>
+                        <p className="ds-user-subtitle">Admin View</p>
                     </div>
                 </div>
             </div>
 
             {/* MAIN CONTENT AREA */}
-            <div style={{ flex: 1, height: '100%', overflowY: 'auto', background: '#ffffff' }}>
-                <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '60px' }}>
-                    <div style={{ marginBottom: '40px', paddingBottom: '20px', borderBottom: '1px solid #F0F0F0' }}>
-                        <h2 style={{ fontSize: '32px', fontWeight: '600', marginBottom: '8px' }}>
+            <div className="ds-content">
+                <div className="ds-content-inner">
+                    <div className="ds-section-header">
+                        <h2 className="ds-section-title">
                             {sections.find(s => s.id === activeSection)?.label}
                         </h2>
-                        <p style={{ color: '#666', fontSize: '16px' }}>
+                        <p className="ds-section-desc">
                             {activeSection === 'header' ? 'The main application header used in MenuHub.' : activeSection === 'qty' ? 'Standard selectors for item quantity control.' : 'Component definitions and usage examples.'}
                         </p>
                     </div>
 
-                    <div style={{ minHeight: '400px' }}>
+                    <div className="ds-section-body">
                         {activeSection === 'typography' && (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+                            <div className="ds-stack-32">
                                 <TypeSpecimen
                                     label="H1 Title Large"
                                     selector=".title-large / h1"
                                     font="24px Medium"
-                                    example={<h1 className="title-large" style={{ margin: 0 }}>The quick brown fox jumps over the lazy dog</h1>}
+                                    example={<h1 className="title-large ds-no-margin">The quick brown fox jumps over the lazy dog</h1>}
                                 />
                                 <TypeSpecimen
                                     label="H2 Restaurant Name"
                                     selector=".restaurant-name / h2"
                                     font="20px SemiBold"
-                                    example={<h2 className="restaurant-name" style={{ margin: 0 }}>L'Osteria di Giovanni</h2>}
+                                    example={<h2 className="restaurant-name ds-no-margin">L'Osteria di Giovanni</h2>}
                                 />
                                 <TypeSpecimen
                                     label="Body Medium"
                                     selector=".btn-primary"
                                     font="16px Medium"
-                                    example={<p style={{ fontSize: '16px', fontWeight: 500, margin: 0 }}>Experience the finest Italian cuisine.</p>}
+                                    example={<p className="ds-body-medium">Experience the finest Italian cuisine.</p>}
                                 />
                             </div>
                         )}
 
                         {activeSection === 'buttons' && (
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '30px' }}>
+                            <div className="ds-grid-300">
                                 <ComponentCard title="Primary Button" selector=".btn-primary">
                                     <button className="btn-primary">Continuar</button>
                                 </ComponentCard>
@@ -164,7 +135,7 @@ export default function DesignSystemView() {
                         )}
 
                         {activeSection === 'inputs' && (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', maxWidth: '500px' }}>
+                            <div className="ds-stack-32 ds-max-500">
                                 <ComponentCard title="Phone Input Group" selector=".phone-input-group">
                                     <div className="phone-input-group">
                                         <div className="country-code">🇧🇷 +55</div>
@@ -182,7 +153,7 @@ export default function DesignSystemView() {
                         )}
 
                         {activeSection === 'qty' && (
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '30px' }}>
+                            <div className="ds-grid-300">
                                 <ComponentCard title="Order Item Qty (1)" selector=".order-item-qty-control">
                                     <div className="order-item-qty-control">
                                         <button className="qty-btn"><TrashIcon /></button>
@@ -216,24 +187,24 @@ export default function DesignSystemView() {
                         )}
 
                         {activeSection === 'colors' && (
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '20px' }}>
-                                <ColorSwatch name="Black" hex="#000000" />
-                                <ColorSwatch name="White" hex="#FFFFFF" hasBorder />
-                                <ColorSwatch name="Gray 100" hex="#F5F5F5" />
-                                <ColorSwatch name="Gray 300" hex="#D9D9D9" />
-                                <ColorSwatch name="Accent Blue" hex="#0085FF" />
+                            <div className="ds-grid-150">
+                                <ColorSwatch name="Black" hex="#000000" swatchClass="ds-swatch-black" />
+                                <ColorSwatch name="White" hex="#FFFFFF" swatchClass="ds-swatch-white" hasBorder />
+                                <ColorSwatch name="Gray 100" hex="#F5F5F5" swatchClass="ds-swatch-gray-100" />
+                                <ColorSwatch name="Gray 300" hex="#D9D9D9" swatchClass="ds-swatch-gray-300" />
+                                <ColorSwatch name="Accent Blue" hex="#0085FF" swatchClass="ds-swatch-accent-blue" />
                             </div>
                         )}
 
                         {activeSection === 'header' && (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                            <div className="ds-stack-40">
                                 <ComponentCard title="Main Hub Header" selector=".menu-header">
-                                    <div style={{ width: '100%', background: '#fff', border: '1px solid #eee' }}>
-                                        <header className="menu-header" style={{ position: 'relative' }}>
-                                            <img src="/logo-menux.svg" alt="Menux" style={{ height: '20px' }} />
+                                    <div className="ds-frame ds-frame-border">
+                                        <header className="menu-header ds-relative">
+                                            <img src="/logo-menux.svg" alt="Menux" className="menu-header-logo" />
                                             <div className="header-right">
                                                 <div className="profile-trigger guest">
-                                                    <span style={{ fontSize: '12px' }}>?</span>
+                                                    <span className="profile-initial">?</span>
                                                 </div>
                                                 <button className="btn-my-orders">Pedidos</button>
                                                 <button className="btn-profile-short">Entrar</button>
@@ -243,8 +214,8 @@ export default function DesignSystemView() {
                                 </ComponentCard>
 
                                 <ComponentCard title="Module Header (Modal Style)" selector=".my-orders-header">
-                                    <div style={{ width: '100%', background: '#fff', border: '1px solid #eee' }}>
-                                        <div className="my-orders-header" style={{ position: 'relative' }}>
+                                    <div className="ds-frame ds-frame-border">
+                                        <div className="my-orders-header ds-relative">
                                             <button className="header-back-btn">
                                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                                                     <path d="M15 18L9 12L15 6" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -258,9 +229,9 @@ export default function DesignSystemView() {
                         )}
 
                         {activeSection === 'navigation' && (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                            <div className="ds-stack-40">
                                 <ComponentCard title="Category Tabs" selector=".category-tabs">
-                                    <div style={{ width: '100%', background: '#fff', borderBottom: '1px solid #eee' }}>
+                                    <div className="ds-frame ds-frame-border-bottom">
                                         <div className="category-tabs">
                                             <button className="category-tab active">Entradas</button>
                                             <button className="category-tab">Pratos Principais</button>
@@ -280,9 +251,9 @@ export default function DesignSystemView() {
                         )}
 
                         {activeSection === 'floating' && (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                            <div className="ds-stack-40">
                                 <ComponentCard title="Maestro Floating Tabbar" selector=".floating-tabbar-container">
-                                    <div className="floating-tabbar-container" style={{ position: 'relative', bottom: 0, left: 0, transform: 'none' }}>
+                                    <div className="floating-tabbar-container ds-floating-preview">
                                         <div className="maestro-icon-wrapper">
                                             <img src="/icon-menux.svg" alt="Maestro" className="maestro-icon" />
                                         </div>
@@ -294,8 +265,8 @@ export default function DesignSystemView() {
                                 </ComponentCard>
 
                                 <ComponentCard title="Floating Cart Button" selector=".cart-floating-button">
-                                    <div style={{ position: 'relative', width: '60px', height: '60px' }}>
-                                        <div className="cart-floating-button" style={{ position: 'absolute', bottom: 0, right: 0 }}>
+                                    <div className="ds-floating-preview-box">
+                                        <div className="cart-floating-button ds-floating-preview-button">
                                             <svg width="24" height="24" viewBox="0 -960 960 960" fill="black">
                                                 <path d="M480-200q-142 0-248.5-47T85-375q-4-2-6-5.5t-2-7.5q0-5 3.5-8.5T89-400h782q5 0 8.5 3.5t3.5 8.5q0 4-2 7.5t-6 5.5q-40 81-146.5 128Q582-200 480-200Zm0-240q-137 0-240.5-83T121-720q-1-4-1-6.5t1.5-4.5q1.5-2 4.5-3.5t6.5-1.5h693q4 0 6.5 1.5t4.5 3.5q2 2 1.5 4.5t-1.5 6.5q-15 114-118.5 197T480-440Zm0-320q-17 0-28.5-11.5T440-800q0-17 11.5-28.5T480-840q17 0 28.5 11.5T520-800q0 17-11.5 28.5T480-760Z" />
                                             </svg>
@@ -307,20 +278,20 @@ export default function DesignSystemView() {
                         )}
 
                         {activeSection === 'cards' && (
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '30px' }}>
+                            <div className="ds-grid-350">
                                 <ComponentCard title="Menu Item Row" selector=".menu-item">
-                                    <div className="menu-item" style={{ border: '1px solid #eee', padding: '16px', borderRadius: '12px' }}>
+                                    <div className="menu-item ds-menu-item-preview">
                                         <div className="item-info">
                                             <h4 className="item-name">Filé Mignon ao Poivre</h4>
                                             <p className="item-desc">Lâminas de filé mignon com crosta de pimenta preta e molho cremoso.</p>
                                             <div className="item-price">R$ 84,00</div>
                                         </div>
-                                        <div className="item-image" style={{ background: '#f5f5f5' }}></div>
+                                        <div className="item-image ds-item-image-preview"></div>
                                     </div>
                                 </ComponentCard>
 
                                 <ComponentCard title="Featured Banner Card" selector=".featured-card">
-                                    <div className="featured-card" style={{ minWidth: '100%', height: '180px', margin: 0 }}>
+                                    <div className="featured-card ds-featured-preview">
                                         <span className="featured-tag">Sugestão do Chef</span>
                                         <h3 className="featured-title">Prato Especial de Verão</h3>
                                         <div className="featured-footer">
@@ -331,7 +302,7 @@ export default function DesignSystemView() {
                                 </ComponentCard>
 
                                 <ComponentCard title="Order Summary Card" selector=".order-card-container">
-                                    <div className="order-card-container" style={{ margin: 0 }}>
+                                    <div className="order-card-container ds-order-card-preview">
                                         <div className="order-card-header">
                                             <div className="order-info-group">
                                                 <span className="order-number">#5872</span>
@@ -362,13 +333,13 @@ export default function DesignSystemView() {
 // Helper Components for the Storybook look
 function ComponentCard({ title, selector, children }) {
     return (
-        <div style={{ border: '1px solid #F0F0F0', borderRadius: '12px', overflow: 'hidden' }}>
-            <div style={{ padding: '32px', background: '#F9FAFB', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div className="ds-component-card">
+            <div className="ds-component-body">
                 {children}
             </div>
-            <div style={{ padding: '16px', borderTop: '1px solid #F0F0F0', background: '#fff' }}>
-                <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>{title}</h4>
-                <code style={{ fontSize: '12px', color: '#888', background: '#f4f4f4', padding: '2px 6px', borderRadius: '4px' }}>{selector}</code>
+            <div className="ds-component-footer">
+                <h4 className="ds-component-title">{title}</h4>
+                <code className="ds-component-code">{selector}</code>
             </div>
         </div>
     )
@@ -376,11 +347,11 @@ function ComponentCard({ title, selector, children }) {
 
 function TypeSpecimen({ label, selector, font, example }) {
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: '20px', alignItems: 'center', paddingBottom: '24px', borderBottom: '1px solid #f5f5f5' }}>
+        <div className="ds-type-row">
             <div>
-                <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>{label}</p>
-                <p style={{ fontSize: '12px', color: '#666', marginBottom: '2px' }}>{font}</p>
-                <code style={{ fontSize: '11px', color: '#999' }}>{selector}</code>
+                <p className="ds-type-label">{label}</p>
+                <p className="ds-type-font">{font}</p>
+                <code className="ds-type-selector">{selector}</code>
             </div>
             <div>
                 {example}
@@ -389,19 +360,13 @@ function TypeSpecimen({ label, selector, font, example }) {
     )
 }
 
-function ColorSwatch({ name, hex, hasBorder }) {
+function ColorSwatch({ name, hex, swatchClass, hasBorder }) {
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <div style={{
-                height: '80px',
-                borderRadius: '12px',
-                background: hex,
-                border: hasBorder ? '1px solid #eee' : 'none',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-            }}></div>
+        <div className="ds-swatch">
+            <div className={`ds-swatch-color ${swatchClass} ${hasBorder ? 'has-border' : ''}`}></div>
             <div>
-                <p style={{ fontSize: '14px', fontWeight: '600' }}>{name}</p>
-                <p style={{ fontSize: '12px', color: '#666', textTransform: 'uppercase' }}>{hex}</p>
+                <p className="ds-swatch-name">{name}</p>
+                <p className="ds-swatch-hex">{hex}</p>
             </div>
         </div>
     )

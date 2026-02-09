@@ -72,7 +72,7 @@ export default function ProductWineModal({ product, onClose, onAddToCart }) {
                         {product.country && (
                             <div className="wine-tag">
                                 <div className="wine-tag-flag">
-                                    <img src={product.countryFlag || "https://flagcdn.com/w20/br.png"} alt={product.country} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    <img src={product.countryFlag || "https://flagcdn.com/w20/br.png"} alt={product.country} className="wine-flag-img" />
                                 </div>
                                 {product.country}
                             </div>

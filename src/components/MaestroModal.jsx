@@ -304,7 +304,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
         <>
             <div className="maestro-welcome-content">
                 <div className="maestro-welcome-icon-circle">
-                    <img src="/icon-menux.svg" alt="Menux" style={{ width: '28px' }} />
+                    <img src="/icon-menux.svg" alt="Menux" className="maestro-icon-28" />
                 </div>
                 <h2 className="maestro-welcome-title">Sua experiência começa aqui!</h2>
                 <p className="maestro-welcome-desc">Descubra pratos que combinam com seu paladar. Em poucos passos, encontramos a escolha ideal para você.</p>
@@ -315,18 +315,6 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                     <button
                         className="maestro-welcome-btn secondary"
                         onClick={() => setView('chat')}
-                        style={{
-                            width: '100%',
-                            margin: 0,
-                            background: 'transparent',
-                            color: 'black',
-                            border: '1px solid black',
-                            borderRadius: '16px',
-                            height: '59px',
-                            fontSize: '16px',
-                            fontWeight: 500,
-                            fontFamily: 'Bricolage Grotesque, sans-serif'
-                        }}
                     >
                         Continuar conversa
                     </button>
@@ -356,7 +344,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
             <ModalHeader
                 title="Menux"
                 status="Sempre online"
-                icon={<img src="/icon-menux.svg" alt="Menux" style={{ width: '20px' }} />}
+                icon={<img src="/icon-menux.svg" alt="Menux" className="maestro-icon-20" />}
             />
             <div className="chat-messages-area">
                 {messages.map((msg, index) => (
@@ -440,7 +428,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                     <ModalHeader
                         title="Menux"
                         status="Sempre online"
-                        icon={<img src="/icon-menux.svg" alt="Menux" style={{ width: '20px' }} />}
+                        icon={<img src="/icon-menux.svg" alt="Menux" className="maestro-icon-20" />}
                     />
                 </div>
             )}
@@ -494,7 +482,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                 {step === 4 && (
                     <div className="wizard-loading">
                         <div className="loading-icon-wrapper">
-                            <img src="/icon-menux.svg" alt="Menux" style={{ width: '32px' }} />
+                            <img src="/icon-menux.svg" alt="Menux" className="maestro-icon-32" />
                         </div>
                         <p className="wizard-loading-text">Analisando suas preferências...</p>
                     </div>
@@ -544,7 +532,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                                                     )}
                                                 </div>
                                             </div>
-                                            <div className="wizard-result-image" style={{ backgroundImage: item.image ? `url(${item.image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
+                                            <div className="wizard-result-image" style={{ backgroundImage: item.image ? `url(${item.image})` : undefined }}></div>
                                         </div>
                                         {index < mockResults.length - 1 && <div className="wizard-result-divider" />}
                                     </div>

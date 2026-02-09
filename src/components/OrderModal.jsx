@@ -67,7 +67,7 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
                     ) : (
                         cartItems.map((item, index) => (
                             <div key={item.id || index} className="order-item-card">
-                                <div className="order-item-image" style={{ backgroundImage: item.image ? `url(${item.image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
+                                <div className="order-item-image" style={{ backgroundImage: item.image ? `url(${item.image})` : undefined }}></div>
                                 <div className="order-item-details">
                                     <span className="order-item-name">{item.name}</span>
                                     <span className="order-item-desc">{item.desc}</span>
@@ -117,7 +117,7 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
                 <div className="recommendations-wrapper">
                     <a href="#" className="maestro-suggestion-link" onClick={handleMaestroClick}>
                         <span className="maestro-link-text">Quer mais algo? Fale com o </span>
-                        <img src="/logo-menux.svg" alt="Menux" className="maestro-link-logo" style={{ filter: 'invert(29%) sepia(34%) saturate(7460%) hue-rotate(245deg) brightness(101%) contrast(101%)' }} />
+                        <img src="/logo-menux.svg" alt="Menux" className="maestro-link-logo maestro-link-logo-purple" />
                     </a>
 
                     <h3 className="rec-title">Peça também</h3>
@@ -132,7 +132,7 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
 
                             return (
                                 <div key={rec.id} className="rec-card">
-                                    <div className="rec-img" style={{ backgroundImage: `url(${rec.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                                    <div className="rec-img" style={{ backgroundImage: `url(${rec.image})` }}>
                                         <div className="rec-qty-overlay" onClick={(e) => e.stopPropagation()}>
                                             {qty > 0 ? (
                                                 <div className="rec-qty-controls">
@@ -164,7 +164,7 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
 
             <div className="order-footer-actions">
                 {!isEmpty && (
-                    <div style={{ textAlign: 'center', marginBottom: '10px', fontFamily: 'Geist, sans-serif', fontSize: '15px', fontWeight: '600', color: '#333' }}>
+                    <div className="order-total-text">
                         Total: {formattedTotal}
                     </div>
                 )}
@@ -172,7 +172,6 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
                     className="btn-finish-order"
                     onClick={onFinish}
                     disabled={isEmpty}
-                    style={isEmpty ? { opacity: 0.4, cursor: 'not-allowed' } : {}}
                 >
                     Concluir e Chamar Garçom
                 </button>

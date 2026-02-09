@@ -11,8 +11,7 @@ const ProductItem = ({ item, onClick }) => {
             <div
                 className="item-image"
                 style={{
-                    backgroundImage: item.image ? `url(${item.image})` : 'none',
-                    backgroundSize: 'cover'
+                    backgroundImage: item.image ? `url(${item.image})` : 'none'
                 }}
             ></div>
         </div>
@@ -50,7 +49,7 @@ export default function ProductGrid({
                                         />
                                     ))
                                 ) : (
-                                    <div style={{ padding: '20px 0', opacity: 0.3 }}>Nenhum item disponível no momento.</div>
+                                    <div className="menu-empty-state">Nenhum item disponível no momento.</div>
                                 )}
                             </div>
                         ))}

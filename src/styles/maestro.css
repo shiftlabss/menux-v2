@@ -246,6 +246,19 @@
   cursor: pointer;
 }
 
+.maestro-welcome-btn.secondary {
+  width: 100%;
+  margin: 0;
+  background: transparent;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 16px;
+  height: 59px;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: "Bricolage Grotesque", sans-serif;
+}
+
 /* Footer & Input - Modernized ChatGPT Style */
 .maestro-footer-input {
   padding-top: var(--space-6);
@@ -685,6 +698,9 @@
   border-radius: var(--radius-lg);
   flex-shrink: 0;
   object-fit: cover;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .wizard-result-divider {
@@ -807,4 +823,20 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+}
+
+
+.maestro-icon-20 {
+  width: 20px;
+  height: 20px;
+}
+
+.maestro-icon-28 {
+  width: 28px;
+  height: 28px;
+}
+
+.maestro-icon-32 {
+  width: 32px;
+  height: 32px;
 }

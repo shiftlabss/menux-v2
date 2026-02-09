@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useToast } from '../context/ToastContext';
 
 const MenuxLogo = ({ height = 24 }) => (
-    <img src="/logo-menux.svg" alt="Menux" style={{ height }} />
+    <img src="/logo-menux.svg" alt="Menux" height={height} />
 );
 
 export default function ProductDetailModal({ product, onClose, onAddToCart }) {
@@ -29,9 +29,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                 </div>
 
                 <div className="pd-image-container" style={{
-                    backgroundImage: product.image ? `url(${product.image})` : 'none',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center'
+                    backgroundImage: product.image ? `url(${product.image})` : 'none'
                 }}>
                 </div>
 

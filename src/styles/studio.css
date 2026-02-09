@@ -549,3 +549,38 @@
     overflow-x: auto;
   }
 }
+
+
+.admin-field.flex-1 {
+  flex: 1;
+}
+
+.admin-field.flex-2 {
+  flex: 2;
+}
+
+.admin-section-box.spaced-top {
+  margin-top: 16px;
+}
+
+.admin-select-full {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.admin-list.spaced-top {
+  margin-top: 24px;
+}
+
+.admin-btn-remove.confirm {
+  background: #dc2626;
+  color: #fff;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 11px;
+}
+
+.admin-reset-btn.confirm {
+  background: #dc2626;
+  color: #fff;
+}
