@@ -58,7 +58,7 @@ const DeleteAccountModal = ({ onClose, onConfirm }) => (
     </motion.div>
 );
 
-export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, userName, phone, onLogout, onSaveProfile }) {
+export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, userName, phone, onLogout, onDeleteAccount, onSaveProfile }) {
     const fileInputRef = useRef(null);
     const { showToast } = useToast();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -269,10 +269,10 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
                     <DeleteAccountModal
                         onClose={() => setShowDeleteConfirm(false)}
                         onConfirm={() => {
-                            onLogout();
+                            if (onDeleteAccount) onDeleteAccount();
                             setShowDeleteConfirm(false);
                             onClose();
-                            showToast("Sua conta foi removida.");
+                            showToast("Sua conta e todos os seus dados foram removidos.");
                         }}
                     />
                 )}

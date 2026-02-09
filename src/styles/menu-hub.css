@@ -1,0 +1,403 @@
+/* Menu hub, header, categories, items */
+/* Menu Hub Styles */
+.menu-hub-container {
+  width: 100%;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--white);
+  overflow: hidden;
+  /* GPU Acceleration */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.menu-header {
+  height: 60px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: white;
+  border-bottom: 1px solid #E5E5E5;
+  flex-shrink: 0;
+  z-index: 100;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.menu-section-visible-check {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 500px;
+  /* Placeholder size for faster initial calc */
+}
+
+.profile-trigger {
+  width: 29px;
+  height: 29px;
+  background: #D9D9D9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Geist', sans-serif;
+  color: #666;
+  font-weight: 600;
+  overflow: hidden;
+}
+
+.profile-trigger.guest {
+  background: #EEEEEE;
+  border: 1px dashed #CCCCCC;
+}
+
+.btn-profile-short {
+  background: black;
+  color: white;
+  height: 29px;
+  padding: 0 10px;
+  border-radius: 100px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.btn-my-orders-active {
+  background: #F0F0F0;
+  color: black;
+  height: 29px;
+  padding: 0 10px;
+  border-radius: 100px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.menu-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  /* Performance */
+  will-change: scroll-position;
+  contain: size layout style;
+}
+
+.restaurant-banner {
+  width: 100%;
+  height: 140px;
+  background: #D9D9D9;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.restaurant-info {
+  padding: 0 24px;
+  margin-top: -30px;
+  position: relative;
+  z-index: 5;
+}
+
+.restaurant-avatar {
+  width: 80px;
+  height: 80px;
+  background: #D9D9D9;
+  border: 4px solid white;
+  border-radius: 50%;
+  margin-bottom: 12px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.restaurant-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.restaurant-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary-black);
+}
+
+.restaurant-bio {
+  font-family: 'Geist', sans-serif;
+  font-size: 13px;
+  color: #7E7E7E;
+  margin-top: 4px;
+}
+
+.featured-section {
+  padding: 24px 0;
+}
+
+.featured-reel {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.featured-reel::-webkit-scrollbar {
+  display: none;
+}
+
+.featured-card {
+  min-width: 313px;
+  height: 213px;
+  background: #D9D9D9;
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 16px;
+  scroll-snap-align: start;
+  scroll-margin-left: 24px;
+  flex-shrink: 0;
+}
+
+.featured-card:first-child {
+  margin-left: 24px;
+}
+
+.featured-card:last-child {
+  margin-right: 24px;
+}
+
+.featured-tag {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.featured-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--primary-black);
+  margin: 4px 0 12px;
+}
+
+.featured-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.featured-price {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.btn-order-now {
+  background: white;
+  color: black;
+  height: 29px;
+  padding: 0 10px;
+  border-radius: 100px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.category-nav {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.category-tabs {
+  display: flex;
+  padding: 0 24px;
+  gap: 24px;
+  overflow-x: auto;
+  border-bottom: 1px solid #F0F0F0;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.category-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.category-tab {
+  display: inline-block;
+  background: none;
+  border: none;
+  padding: 16px 0;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  color: #7E7E7E;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.category-tab.active {
+  color: var(--primary-black);
+  border-bottom-color: var(--primary-black);
+}
+
+.filter-pills {
+  display: flex;
+  gap: 8px;
+  padding: 12px 24px;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.filter-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-pill {
+  background: #F5F5F5;
+  border: none;
+  height: 29px;
+  padding: 0 10px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  color: #7E7E7E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.filter-pill.active {
+  background: black;
+  color: white;
+}
+
+.menu-list {
+  padding: 24px;
+}
+
+.section-label {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.subcategory-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #7E7E7E;
+  padding: 16px 0 0px;
+}
+
+[id^="sub-"] {
+  scroll-margin-top: 130px;
+  /* Altura exata do menu fixo */
+}
+
+[id="entradas"],
+[id="pratos-principais"],
+[id="bebidas"],
+[id="sobremesas"],
+[id="vinhos"] {
+  scroll-margin-top: 130px;
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #F0F0F0;
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+  will-change: transform;
+}
+
+.menu-item:active {
+  transform: scale(0.98);
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.item-desc {
+  font-family: 'Geist', sans-serif;
+  font-size: 13px;
+  color: #7E7E7E;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.item-price {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.item-image {
+  width: 88px;
+  height: 88px;
+  background-color: #F5F5F5;
+  border-radius: 12px;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+  /* GPU Acceleration */
+  transform: translateZ(0);
+  will-change: transform;
+  background-repeat: no-repeat;
+}
+
+.menu-divider-large {
+  height: 12px;
+  background: #F5F5F5;
+  border-top: 1px solid #E5E5E5;
+  border-bottom: 1px solid #E5E5E5;
+  width: 100%;
+}

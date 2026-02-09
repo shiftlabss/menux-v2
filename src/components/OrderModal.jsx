@@ -23,11 +23,14 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
     const { showToast } = useToast();
     const isEmpty = cartItems.length === 0;
 
-    // Calculate cart total
+    // Calculate cart total — parse BRL format "R$ 1.234,56" -> 1234.56
+    const parseBRL = (str) => {
+        const cleaned = (str || '').replace(/[R$\s]/g, '').replace(/\./g, '').replace(',', '.');
+        return parseFloat(cleaned) || 0;
+    };
+
     const cartTotal = cartItems.reduce((sum, item) => {
-        const priceStr = (item.price || '').replace('R$', '').replace(/\s/g, '').replace('.', '').replace(',', '.');
-        const price = parseFloat(priceStr) || 0;
-        return sum + (price * item.qty);
+        return sum + (parseBRL(item.price) * item.qty);
     }, 0);
 
     const formattedTotal = cartTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });

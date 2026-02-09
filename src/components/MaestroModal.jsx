@@ -1,6 +1,9 @@
 import { motion } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
 import { useToast } from '../context/ToastContext';
+import { CONFIG } from '../config';
+import storage, { KEYS } from '../services/storageService';
+import { generateMsgId, generateId } from '../utils/generateId';
 const imgLogo = "/logo-menux.svg";
 
 const CloseIcon = () => (
@@ -124,28 +127,27 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
     const [inputValue, setInputValue] = useState('');
 
     const [messages, setMessages] = useState(() => {
-        const lastActivity = localStorage.getItem('maestro_last_activity');
+        const lastActivity = storage.get(KEYS.MAESTRO_ACTIVITY);
         const now = Date.now();
         const THREE_HOURS = 3 * 60 * 60 * 1000;
 
         // Se passaram mais de 3 horas, limpa tudo para uma nova conversa
         if (lastActivity && (now - parseInt(lastActivity)) > THREE_HOURS) {
-            localStorage.removeItem('maestro_messages');
-            localStorage.removeItem('maestro_current_view');
-            localStorage.removeItem('menux_user_id');
+            storage.remove(KEYS.MAESTRO_MESSAGES);
+            storage.remove(KEYS.MAESTRO_VIEW);
+            storage.remove(KEYS.USER_ID);
             return [];
         }
 
-        const saved = localStorage.getItem('maestro_messages');
-        return saved ? JSON.parse(saved) : [];
+        return storage.getJSON(KEYS.MAESTRO_MESSAGES, []);
     });
     const { showToast } = useToast();
 
     // Efeito para salvar o estado e atualizar o timer de atividade
     useEffect(() => {
-        localStorage.setItem('maestro_current_view', view);
-        localStorage.setItem('maestro_messages', JSON.stringify(messages));
-        localStorage.setItem('maestro_last_activity', Date.now().toString());
+        storage.set(KEYS.MAESTRO_VIEW, view);
+        storage.set(KEYS.MAESTRO_MESSAGES, messages);
+        storage.set(KEYS.MAESTRO_ACTIVITY, Date.now().toString());
     }, [view, messages]);
 
     const [isTyping, setIsTyping] = useState(false);
@@ -207,30 +209,34 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
 
         if (view === 'welcome') setView('chat');
 
-        const userMsg = { id: Date.now(), text: currentInput, sender: 'user' };
+        const userMsg = { id: generateMsgId(), text: currentInput, sender: 'user' };
         setMessages(prev => [...prev, userMsg]);
 
         setIsTyping(true);
 
         // Get or create a persistent userId for memory context
-        let userId = localStorage.getItem('menux_user_id');
+        let userId = storage.get(KEYS.USER_ID);
         if (!userId) {
-            userId = 'user_' + Math.random().toString(36).substring(2, 11);
-            localStorage.setItem('menux_user_id', userId);
+            userId = 'user_' + generateId();
+            storage.set(KEYS.USER_ID, userId);
         }
 
         try {
-            const response = await fetch('https://lottoluck.app.n8n.cloud/webhook/menux', {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+            const response = await fetch(CONFIG.WEBHOOK_MAESTRO, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     text: currentInput,
                     userId: userId
-                })
+                }),
+                signal: controller.signal
             });
 
+            clearTimeout(timeoutId);
             const data = await response.json();
-            console.log('Maestro Webhook Response:', data);
 
             // Extract response with more flexibility
             let aiResponse = "";
@@ -277,7 +283,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
             }
 
             const aiMsg = {
-                id: Date.now() + 1,
+                id: generateMsgId(),
                 text: aiResponse,
                 sender: 'ai',
                 suggestions: recommendedIds
@@ -285,7 +291,10 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
             setMessages(prev => [...prev, aiMsg]);
         } catch (error) {
             console.error('Error calling webhook:', error);
-            const errorMsg = { id: Date.now() + 1, text: "Ocorreu um erro de rede ao falar com o Maestro. Verifique se o webhook está aceitando requisições POST e o CORS está configurado.", sender: 'ai' };
+            const errorText = error.name === 'AbortError'
+                ? "O Maestro demorou demais para responder. Tente novamente em instantes."
+                : "Ocorreu um erro de rede ao falar com o Maestro. Tente novamente.";
+            const errorMsg = { id: generateMsgId(), text: errorText, sender: 'ai' };
             setMessages(prev => [...prev, errorMsg]);
         } finally {
             setIsTyping(false);

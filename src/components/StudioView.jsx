@@ -2,11 +2,15 @@ import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useStudio } from '../context/StudioContext';
 import { useToast } from '../context/ToastContext';
+import { generateId } from '../utils/generateId';
 
 export default function StudioView({ onClose }) {
     const { branding, updateBranding, categories, setCategories, products, setProducts, addSubcategory, resetToDefault } = useStudio();
     const [activeTab, setActiveTab] = useState('branding');
     const { showToast } = useToast();
+    const [pendingDeleteCatId, setPendingDeleteCatId] = useState(null);
+    const [pendingReset, setPendingReset] = useState(false);
+    const confirmTimerRef = useRef(null);
 
     // Branding State
     const [localBranding, setLocalBranding] = useState(branding);
@@ -25,7 +29,7 @@ export default function StudioView({ onClose }) {
 
         // Validação de tamanho (max 2MB para evitar erro de LocalStorage)
         if (file.size > 2 * 1024 * 1024) {
-            showToast("Imagem muito grande! Escolha uma menor que 2MB.");
+            showToast("Imagem muito grande! Escolha uma menor que 2MB.", 'warning');
             return;
         }
 
@@ -66,7 +70,7 @@ export default function StudioView({ onClose }) {
             setEditingProductId(null);
             showToast('Produto atualizado!');
         } else {
-            setProducts([...products, { ...newProd, id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}` }]);
+            setProducts([...products, { ...newProd, id: generateId() }]);
             showToast('Produto adicionado!');
         }
 
@@ -193,13 +197,23 @@ export default function StudioView({ onClose }) {
                                         <div key={cat.id} className="category-group-preview">
                                             <div className="admin-list-item category-item">
                                                 <strong>{cat.name.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</strong>
-                                                <button className="admin-btn-remove" onClick={() => {
-                                                    if (confirm(`Remover "${cat.name}"? Os produtos desta categoria também serão removidos.`)) {
-                                                        setProducts(products.filter(p => p.categoryId !== cat.id));
-                                                        setCategories(categories.filter(c => c.id !== cat.id));
-                                                        showToast('Categoria e produtos removidos.');
-                                                    }
-                                                }}>&times;</button>
+                                                <button
+                                                    className="admin-btn-remove"
+                                                    style={pendingDeleteCatId === cat.id ? { background: '#dc2626', color: '#fff', borderRadius: 6, padding: '2px 8px', fontSize: 11 } : {}}
+                                                    onClick={() => {
+                                                        if (pendingDeleteCatId === cat.id) {
+                                                            setProducts(products.filter(p => p.categoryId !== cat.id));
+                                                            setCategories(categories.filter(c => c.id !== cat.id));
+                                                            setPendingDeleteCatId(null);
+                                                            clearTimeout(confirmTimerRef.current);
+                                                            showToast('Categoria e produtos removidos.');
+                                                        } else {
+                                                            setPendingDeleteCatId(cat.id);
+                                                            clearTimeout(confirmTimerRef.current);
+                                                            confirmTimerRef.current = setTimeout(() => setPendingDeleteCatId(null), 3000);
+                                                        }
+                                                    }}
+                                                >{pendingDeleteCatId === cat.id ? 'Confirmar?' : '×'}</button>
                                             </div>
                                             <div className="subcategory-list-preview">
                                                 {cat.subcategories?.length === 0 && <span className="admin-hint-text">Sem subcategorias</span>}
@@ -309,12 +323,22 @@ export default function StudioView({ onClose }) {
                 </div>
 
                 <div className="studio-footer-actions">
-                    <button className="admin-reset-btn" onClick={() => {
-                        if (confirm("Isso apagará todas as suas alterações e carregará os dados padrão. Deseja continuar?")) {
-                            resetToDefault();
-                            showToast("Dados redefinidos com sucesso.");
-                        }
-                    }}>Redefinir Dados Atuais</button>
+                    <button
+                        className="admin-reset-btn"
+                        style={pendingReset ? { background: '#dc2626', color: '#fff' } : {}}
+                        onClick={() => {
+                            if (pendingReset) {
+                                resetToDefault();
+                                setPendingReset(false);
+                                clearTimeout(confirmTimerRef.current);
+                                showToast("Dados redefinidos com sucesso.");
+                            } else {
+                                setPendingReset(true);
+                                clearTimeout(confirmTimerRef.current);
+                                confirmTimerRef.current = setTimeout(() => setPendingReset(false), 3000);
+                            }
+                        }}
+                    >{pendingReset ? 'Clique novamente para confirmar' : 'Redefinir Dados Atuais'}</button>
                     <p>Cuidado: esta ação reverte todas as edições para o cardápio padrão.</p>
                 </div>
             </div>

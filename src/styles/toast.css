@@ -1,0 +1,49 @@
+/* Toast notifications */
+/* Toast Styles */
+.toast-overlay {
+  position: fixed;
+  top: 40px;
+  /* Moved to top */
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.toast-container {
+  padding: 12px 16px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  pointer-events: auto;
+}
+
+.toast-icon {
+  width: 18px;
+  height: 18px;
+  background: transparent;
+  border: 1.5px solid white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.toast-text {
+  color: white;
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.chat-card-add-btn.remove {
+  background: #F5F5F5;
+  color: #FF3B30;
+  border: 1px solid #EDEDED;
+}

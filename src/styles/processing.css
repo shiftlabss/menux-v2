@@ -1,0 +1,166 @@
+/* Processing & order code modals */
+/* Processing Modal Styles */
+.processing-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  z-index: 2000;
+  /* Highest z-index to cover everything */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.processing-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 250px;
+}
+
+.processing-logo {
+  width: 42px;
+  /* Adjust based on exact visual perception */
+  margin-bottom: 24px;
+}
+
+.processing-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: black;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+
+.processing-subtitle {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  color: #7D7D7D;
+  line-height: 1.4;
+}
+
+/* Order Code Modal Styles - NEW PIXEL PERFECT DESIGN */
+.order-code-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100dvh;
+  background: white;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px;
+}
+
+.order-code-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.order-code-header {
+  margin-top: -60px;
+  /* Alinha com o logo-center do print */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.order-code-icon {
+  width: 27px;
+  margin-bottom: 16px;
+}
+
+.order-code-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+  line-height: 1.25;
+}
+
+.order-code-info-card {
+  width: 100%;
+  background: #F4F4F4;
+  border-radius: 15px;
+  padding: 16px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: space-around;
+}
+
+.order-code-digits {
+  display: flex;
+  flex: auto;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.order-code-digit-box {
+  width: 74px;
+  height: 74px;
+  background: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 32px;
+  font-weight: 500;
+  color: black;
+}
+
+.order-code-instructions {
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.order-instructions-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+  margin-bottom: 8px;
+}
+
+.order-instructions-desc {
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  color: #505050;
+  line-height: 1.35;
+  margin: 0 auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.order-code-footer {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.btn-view-orders {
+  width: 100%;
+  height: 59px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 100px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Profile Modal Styles */

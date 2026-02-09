@@ -2,8 +2,8 @@ import { CONFIG } from '../config';
 
 class OTPVerification {
     constructor() {
-        this.generateUrl = 'https://lottoluck.app.n8n.cloud/webhook/74de1fb3-5e1d-4866-a824-a58d5db47407';
-        this.verifyUrl = 'https://lottoluck.app.n8n.cloud/webhook/verify-otp';
+        this.generateUrl = CONFIG.WEBHOOK_OTP;
+        this.verifyUrl = CONFIG.WEBHOOK_VERIFY_OTP;
     }
 
     /**

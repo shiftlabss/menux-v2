@@ -1,0 +1,211 @@
+/* Profile modal */
+/* Profile Modal Styles */
+.profile-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  z-index: 2000;
+  overflow-y: auto;
+  /* padding-bottom: 20px; Removed to control spacing via content padding */
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid #E5E5E5;
+  flex-shrink: 0;
+  /* Prevent header from shrinking */
+}
+
+.profile-header-logo {
+  height: 24px;
+}
+
+.btn-profile-back {
+  background: black;
+  color: white;
+  height: 29px;
+  padding: 0 10px;
+  border-radius: 100px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  align-items: center;
+  flex: 1;
+  /* Grow to fill remaining height */
+}
+
+.profile-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  background-color: #D9D9D9;
+  border-radius: 50%;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.profile-camera-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: black;
+  margin-bottom: 8px;
+}
+
+.profile-since {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  color: #7D7D7D;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile-form-group {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.profile-label {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.profile-input-row {
+  display: flex;
+  gap: 12px;
+}
+
+.profile-input-ddi {
+  width: 80px;
+  height: 56px;
+  background: #F5F5F5;
+  border: none;
+  border-radius: 12px;
+  padding: 0 16px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  color: #7D7D7D;
+  text-align: center;
+}
+
+.profile-input {
+  width: 100%;
+  flex: 1;
+  height: 56px;
+  background: #F5F5F5;
+  border: none;
+  border-radius: 12px;
+  padding: 0 16px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  color: black;
+}
+
+.profile-danger-zone {
+  width: 100%;
+  background: #F5F5F5;
+  border-radius: 12px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  margin-bottom: 40px;
+  border: none;
+}
+
+.text-danger {
+  color: #FF4444;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.profile-actions-row {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.btn-save-profile {
+  flex: 1;
+  height: 59px;
+  background: #C4C4C4;
+  /* Matching the gray in the image */
+  color: #7A7A7A;
+  border: none;
+  border-radius: 100px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  /* Increased weight slightly for better visibility */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-logout-profile {
+  flex: 1;
+  height: 59px;
+  background: #FFECEC;
+  color: #FF4444;
+  border: none;
+  border-radius: 100px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Maestro Modal Styles */

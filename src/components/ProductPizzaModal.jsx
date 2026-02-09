@@ -17,7 +17,7 @@ export default function ProductPizzaModal({ product, onClose, onAddToCart }) {
     const doughOptions = [
         { id: 'tradicional', name: 'Tradicional', price: 0 },
         { id: 'fina', name: 'Massa Fina', price: 0 },
-        { id: 'integral', name: 'Massa integral', desc: 'Molho de tomate, mussarela, azeitonas e orégano.', price: 4.00 }
+        { id: 'integral', name: 'Massa integral', desc: 'Massa feita com farinha integral, mais leve e nutritiva.', price: 4.00 }
     ];
 
     const flavorOptions = [

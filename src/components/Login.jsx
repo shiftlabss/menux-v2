@@ -65,7 +65,7 @@ export default function Login({ onBack, onNext, checkUser, savedName }) {
                 if (result.success) {
                     onNext(phoneNumber);
                 } else {
-                    showToast(result.error || "Erro ao enviar código. Tente novamente.");
+                    showToast(result.error || "Erro ao enviar código. Tente novamente.", 'error');
                 }
             } else {
                 // New user
@@ -75,7 +75,7 @@ export default function Login({ onBack, onNext, checkUser, savedName }) {
                     if (result.success) {
                         onNext(phoneNumber);
                     } else {
-                        showToast(result.error || "Erro ao enviar código.");
+                        showToast(result.error || "Erro ao enviar código.", 'error');
                     }
                 } else {
                     // No name saved, go to Register screen (skip OTP here)
@@ -84,7 +84,7 @@ export default function Login({ onBack, onNext, checkUser, savedName }) {
             }
         } catch (error) {
             console.error(error);
-            showToast("Erro inesperado. Tente novamente.");
+            showToast("Erro inesperado. Tente novamente.", 'error');
         } finally {
             setIsLoading(false);
         }
@@ -128,12 +128,12 @@ export default function Login({ onBack, onNext, checkUser, savedName }) {
 
             <div className="action-buttons">
                 <motion.button
-                    whileTap={phoneNumber.length === 15 ? { scale: 0.96 } : {}}
+                    whileTap={rawDigits.length === 11 ? { scale: 0.96 } : {}}
                     className="btn-primary"
                     onClick={handleNextStep}
-                    disabled={phoneNumber.length !== 15 || isLoading}
+                    disabled={rawDigits.length !== 11 || isLoading}
                 >
-                    {isLoading ? "Enviando..." : "Continua"}
+                    {isLoading ? "Enviando..." : "Continuar"}
                 </motion.button>
             </div>
         </motion.div>

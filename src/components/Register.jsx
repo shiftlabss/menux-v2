@@ -21,7 +21,7 @@ export default function Register({ onBack, onNext, phone, initialName = '' }) {
 
             if (!rawPhone) {
                 console.error("Phone number missing in Register");
-                showToast("Erro: Número de telefone não encontrado.");
+                showToast("Erro: Número de telefone não encontrado.", 'error');
                 return;
             }
 
@@ -29,11 +29,11 @@ export default function Register({ onBack, onNext, phone, initialName = '' }) {
             if (result.success) {
                 onNext(name);
             } else {
-                showToast(result.error || "Erro ao solicitar código. Tente novamente.");
+                showToast(result.error || "Erro ao solicitar código. Tente novamente.", 'error');
             }
         } catch (error) {
             console.error(error);
-            showToast("Erro inesperado. Tente novamente.");
+            showToast("Erro inesperado. Tente novamente.", 'error');
         } finally {
             setIsLoading(false);
         }

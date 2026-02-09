@@ -6,7 +6,7 @@ import { useToast } from '../context/ToastContext';
 
 const imgLogo = "/logo-menux.svg";
 
-export default function Verification({ phone, onBack, onChangePhone, onFinish, isReturningUser }) {
+export default function Verification({ phone, userName, onBack, onChangePhone, onFinish, isReturningUser }) {
     const { showToast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
     const [code, setCode] = useState(['', '', '', '']);
@@ -57,14 +57,14 @@ export default function Verification({ phone, onBack, onChangePhone, onFinish, i
                 showToast("Código verificado com sucesso!");
                 onFinish();
             } else {
-                showToast(result.message || "Código incorreto.");
+                showToast(result.message || "Código incorreto.", 'error');
                 // Limpar código para retentar? Opcional
                 setCode(['', '', '', '']);
                 inputRefs[0].current.focus();
             }
         } catch (error) {
             console.error(error);
-            showToast("Erro na verificação.");
+            showToast("Erro na verificação.", 'error');
         } finally {
             setIsLoading(false);
         }
@@ -78,21 +78,15 @@ export default function Verification({ phone, onBack, onChangePhone, onFinish, i
         setIsLoading(true);
 
         try {
-            // If returning user, we might not have the name handy here easily unless passed down.
-            // Using empty name for returning users or if generic resend.
-            const nameToUse = isReturningUser ? '' : '';
-            // Ideally we would want the name if it's a new registration, but usually safe to send empty for resend if backend handles it.
-            // Or we could pass 'name' prop to Verification if available from Register.
-
-            const result = await otpService.reenviarCodigo(rawPhone, nameToUse, '+55');
+            const result = await otpService.reenviarCodigo(rawPhone, userName || '', '+55');
             if (result.success) {
                 showToast("Código reenviado!");
                 setTimer(30);
             } else {
-                showToast("Erro ao reenviar código.");
+                showToast("Erro ao reenviar código.", 'error');
             }
         } catch (error) {
-            showToast("Erro ao processar solicitação.");
+            showToast("Erro ao processar solicitação.", 'error');
         } finally {
             setIsLoading(false);
         }
