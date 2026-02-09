@@ -362,3 +362,75 @@
   flex-shrink: 0;
   border-top: 1px solid var(--surface-secondary);
 }
+
+/* Empty Cart */
+.empty-cart-message {
+  text-align: center;
+  padding: var(--space-10) var(--space-5);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+}
+
+.empty-cart-btn {
+  margin-top: var(--space-4);
+  padding: var(--space-2-5) var(--space-6);
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+/* Order Item Observations */
+.order-item-obs-list {
+  margin-top: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.obs-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.obs-number {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background: var(--surface-secondary);
+  color: var(--text-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--font-body);
+}
+
+.obs-text {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Maestro Link Logo */
+.maestro-link-logo-purple {
+  filter: invert(29%) sepia(34%) saturate(7460%) hue-rotate(245deg) brightness(101%) contrast(101%);
+}
+
+/* Order Total */
+.order-total-text {
+  text-align: center;
+  margin-bottom: var(--space-2-5);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}

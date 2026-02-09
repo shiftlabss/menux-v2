@@ -290,7 +290,6 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
             };
             setMessages(prev => [...prev, aiMsg]);
         } catch (error) {
-            console.error('Error calling webhook:', error);
             const errorText = error.name === 'AbortError'
                 ? "O Maestro demorou demais para responder. Tente novamente em instantes."
                 : "Ocorreu um erro de rede ao falar com o Maestro. Tente novamente.";

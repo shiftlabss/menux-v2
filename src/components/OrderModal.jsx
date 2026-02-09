@@ -58,23 +58,9 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
             <div className="order-scroll-content">
                 <div className="order-items-list">
                     {isEmpty ? (
-                        <div className="empty-cart-message" style={{ textAlign: 'center', padding: '40px 20px', color: '#8A8A8A', fontFamily: 'Geist, sans-serif' }}>
+                        <div className="empty-cart-message">
                             <p>Seu carrinho está vazio. Adicione algum item do cardápio!</p>
-                            <button
-                                onClick={onClose}
-                                style={{
-                                    marginTop: '16px',
-                                    padding: '10px 24px',
-                                    borderRadius: '10px',
-                                    border: '1.5px solid #E0E0E0',
-                                    background: '#fff',
-                                    fontFamily: 'Geist, sans-serif',
-                                    fontSize: '14px',
-                                    fontWeight: '500',
-                                    cursor: 'pointer',
-                                    color: '#333'
-                                }}
-                            >
+                            <button className="empty-cart-btn" onClick={onClose}>
                                 Voltar ao cardápio
                             </button>
                         </div>
@@ -88,29 +74,11 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
                                     <span className="order-item-price">{item.price}</span>
 
                                     {item.obs && (
-                                        <div className="order-item-obs" style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                        <div className="order-item-obs-list">
                                             {item.obs.split('\n').map((line, i) => (
-                                                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                                                    <div style={{
-                                                        width: '20px',
-                                                        height: '20px',
-                                                        borderRadius: '50%',
-                                                        backgroundColor: '#F2F2F2',
-                                                        color: '#000',
-                                                        fontSize: '12px',
-                                                        fontWeight: '600',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center',
-                                                        flexShrink: 0,
-                                                        fontFamily: 'Geist, sans-serif'
-                                                    }}>{i + 1}</div>
-                                                    <span style={{
-                                                        fontFamily: 'Geist, sans-serif',
-                                                        fontSize: '14px',
-                                                        color: '#8A8A8A',
-                                                        lineHeight: '1.4'
-                                                    }}>
+                                                <div key={i} className="obs-item">
+                                                    <div className="obs-number">{i + 1}</div>
+                                                    <span className="obs-text">
                                                         {line}
                                                     </span>
                                                 </div>

@@ -14,7 +14,7 @@ const CameraIcon = () => (
 );
 
 const MenuxFaceIcon = () => (
-    <img src="/icon-menux.svg" alt="Menux Face" style={{ width: 20, height: 20 }} />
+    <img src="/icon-menux.svg" alt="Menux Face" className="icon-menux-face" />
 );
 
 const DeleteAccountModal = ({ onClose, onConfirm }) => (
@@ -171,12 +171,12 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
 
                 <div className="profile-content">
                     <div className="profile-avatar-section">
-                        <div className="profile-avatar" onClick={triggerFileInput} style={{ cursor: 'pointer' }}>
+                        <div className="profile-avatar" onClick={triggerFileInput}>
                             {currentAvatar && (
                                 <img
                                     src={currentAvatar}
                                     alt="Profile"
-                                    style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
+                                    className="profile-avatar-img"
                                 />
                             )}
                             <div className="profile-camera-icon">
@@ -236,12 +236,6 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
                     <div className="profile-actions-row">
                         <button
                             className={`btn-save-profile ${hasChanges ? 'active' : ''}`}
-                            style={{
-                                backgroundColor: hasChanges ? '#000' : undefined,
-                                color: hasChanges ? '#fff' : undefined,
-                                cursor: hasChanges ? 'pointer' : 'not-allowed',
-                                opacity: hasChanges ? 1 : undefined
-                            }}
                             onClick={() => {
                                 if (onSaveProfile) {
                                     onSaveProfile(editableName, editablePhone);

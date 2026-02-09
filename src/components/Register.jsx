@@ -20,7 +20,6 @@ export default function Register({ onBack, onNext, phone, initialName = '' }) {
             const rawPhone = phoneStr.replace(/[^\d]/g, '');
 
             if (!rawPhone) {
-                console.error("Phone number missing in Register");
                 showToast("Erro: Número de telefone não encontrado.", 'error');
                 return;
             }
@@ -32,7 +31,6 @@ export default function Register({ onBack, onNext, phone, initialName = '' }) {
                 showToast(result.error || "Erro ao solicitar código. Tente novamente.", 'error');
             }
         } catch (error) {
-            console.error(error);
             showToast("Erro inesperado. Tente novamente.", 'error');
         } finally {
             setIsLoading(false);

@@ -53,7 +53,6 @@ export default function Verification({ phone, userName, onBack, onChangePhone, o
             const result = await otpService.verificarCodigo(codeString, rawPhone, '+55');
 
             if (result.success) {
-                console.log("Chamando onFinish com sucesso (Navigation trigger)");
                 showToast("Código verificado com sucesso!");
                 onFinish();
             } else {
@@ -63,7 +62,6 @@ export default function Verification({ phone, userName, onBack, onChangePhone, o
                 inputRefs[0].current.focus();
             }
         } catch (error) {
-            console.error(error);
             showToast("Erro na verificação.", 'error');
         } finally {
             setIsLoading(false);

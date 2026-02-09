@@ -83,7 +83,6 @@ export default function Login({ onBack, onNext, checkUser, savedName }) {
                 }
             }
         } catch (error) {
-            console.error(error);
             showToast("Erro inesperado. Tente novamente.", 'error');
         } finally {
             setIsLoading(false);
