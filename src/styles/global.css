@@ -54,9 +54,26 @@
   --overlay-heavy: rgba(0, 0, 0, 0.8);
 
   /* === Sombras === */
+  --shadow-xs: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.3);
+
+  /* === Z-Index === */
+  --z-base: 1;
+  --z-raised: 2;
+  --z-dropdown: 5;
+  --z-sticky: 10;
+  --z-header: 100;
+  --z-overlay: 500;
+  --z-modal: 1000;
+  --z-drawer: 2000;
+  --z-toast: 9999;
+  --z-studio: 10000;
+
+  /* === Focus === */
+  --focus-ring: 0 0 0 2px #000000;
 
   /* === Tipografia — Famílias === */
   --font-display: 'Bricolage Grotesque', sans-serif;
@@ -109,6 +126,18 @@
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus acessível — substitui o outline padrão do browser */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Remove focus ring em cliques (apenas teclado mostra) */
+:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
 }
 
 html,

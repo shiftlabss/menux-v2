@@ -13,7 +13,7 @@
   display: flex;
   align-items: end;
   /* Generally center content vertically */
-  z-index: 2000;
+  z-index: var(--z-drawer);
   padding: var(--space-6) var(--space-6) var(--space-6) var(--space-6);
 }
 

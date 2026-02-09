@@ -8,7 +8,7 @@
   right: 0;
   display: flex;
   justify-content: center;
-  z-index: 9999;
+  z-index: var(--z-toast);
   pointer-events: none;
 }
 

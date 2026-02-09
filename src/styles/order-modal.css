@@ -1,10 +1,10 @@
 /* Order modal, recommendations */
 /* Order Modal Styles */
 .order-modal-container {
-  display: flex !important;
-  flex-direction: column !important;
-  height: 100dvh !important;
-  background: var(--surface) !important;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background: var(--surface);
 }
 
 .order-scroll-content {
@@ -22,7 +22,7 @@
   padding: var(--space-6) var(--space-6) var(--space-6);
   flex-shrink: 0;
   background: var(--surface);
-  z-index: 10;
+  z-index: var(--z-sticky);
 }
 
 .order-back-btn {
@@ -244,7 +244,7 @@
   position: absolute;
   bottom: 8px;
   right: 8px;
-  z-index: 5;
+  z-index: var(--z-dropdown);
 }
 
 .rec-qty-controls {
@@ -254,7 +254,7 @@
   background: var(--surface);
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-pill);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   height: 32px;
 }
 
@@ -286,7 +286,7 @@
   align-items: center;
   justify-content: center;
   border: none;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   cursor: pointer;
   color: var(--text-primary);
 }

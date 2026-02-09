@@ -198,22 +198,19 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
                     </div>
 
                     <div className="profile-form-group">
-                        <label className="profile-label">Seu Telefone*</label>
+                        <label className="profile-label">Telefone</label>
                         <div className="profile-input-row">
-                            <input type="text" className="profile-input-ddi" defaultValue="+55" readOnly />
+                            <input type="text" className="profile-input-ddi disabled" defaultValue="+55" readOnly disabled />
                             <input
                                 type="tel"
-                                className="profile-input"
+                                className="profile-input disabled"
                                 value={editablePhone || ''}
                                 readOnly
-                                style={{ opacity: 0.6, cursor: 'not-allowed' }}
+                                disabled
                                 placeholder="(00) 00000-0000"
                                 maxLength={15}
                             />
                         </div>
-                        <span style={{ fontSize: '11px', color: '#999', marginTop: '4px', display: 'block' }}>
-                            Para alterar o telefone, saia da conta e faça login com o novo número.
-                        </span>
                     </div>
 
                     <div className="profile-form-group">

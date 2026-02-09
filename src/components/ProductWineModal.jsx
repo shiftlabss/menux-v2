@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import './ProductWineModal.css';
+import '../styles/ProductWineModal.css';
 
 const FactoryIcon = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7D7D7D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

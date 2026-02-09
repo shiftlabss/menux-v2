@@ -5,7 +5,7 @@
   inset: 0;
   background: var(--overlay-heavy);
   backdrop-filter: blur(8px);
-  z-index: 10000;
+  z-index: var(--z-studio);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,7 +21,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-xl);
 }
 
 .admin-header {
@@ -200,7 +200,7 @@
   inset: 0;
   opacity: 0;
   cursor: pointer;
-  z-index: 2;
+  z-index: var(--z-raised);
 }
 
 .admin-image-upload img {
@@ -208,7 +208,7 @@
   height: 100%;
   object-fit: cover;
   position: absolute;
-  z-index: 1;
+  z-index: var(--z-base);
 }
 
 .admin-image-upload span {
@@ -242,9 +242,9 @@
 }
 
 .category-item {
-  background: var(--surface-secondary) !important;
-  border-radius: 0 !important;
-  border-bottom: 1px solid var(--border-light) !important;
+  background: var(--surface-secondary);
+  border-radius: 0;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .subcategory-list-preview {
@@ -255,9 +255,9 @@
 }
 
 .sub-item {
-  background: transparent !important;
-  padding: 4px 0 !important;
-  margin: 0 !important;
+  background: transparent;
+  padding: 4px 0;
+  margin: 0;
 }
 
 .sub-item span {
@@ -301,9 +301,9 @@
 }
 
 .admin-btn-add {
-  padding: 0 var(--space-4) !important;
-  font-size: var(--text-sm) !important;
-  font-weight: var(--font-medium) !important;
+  padding: 0 var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
 }
 
 /* ADMIN PANEL FOOTER & RESET */
@@ -410,7 +410,7 @@
   position: fixed;
   inset: 0;
   background: var(--surface-secondary);
-  z-index: 10000;
+  z-index: var(--z-studio);
   display: flex;
   flex-direction: column;
   overflow: hidden;

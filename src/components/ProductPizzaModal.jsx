@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import './ProductPizzaModal.css';
+import '../styles/ProductPizzaModal.css';
 
 
 

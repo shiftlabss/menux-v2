@@ -185,7 +185,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  z-index: 10;
+  z-index: var(--z-sticky);
 }
 
 .maestro-welcome-content {
@@ -271,7 +271,7 @@
 .maestro-input-wrapper:focus-within {
   background: var(--surface);
   border-color: var(--border);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
 }
 
 .maestro-input-field {
@@ -279,7 +279,6 @@
   min-width: 0;
   background: transparent;
   border: none;
-  outline: none;
   font-family: var(--font-body);
   font-size: var(--text-base);
   color: var(--text-primary);
@@ -310,7 +309,7 @@
 
 .maestro-send-btn:not(:disabled):hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Chat View Container Refinements */

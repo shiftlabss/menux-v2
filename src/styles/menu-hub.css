@@ -22,7 +22,7 @@
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
-  z-index: 100;
+  z-index: var(--z-header);
 }
 
 .header-right {
@@ -112,7 +112,7 @@
   padding: 0 var(--space-6);
   margin-top: -30px;
   position: relative;
-  z-index: 5;
+  z-index: var(--z-dropdown);
 }
 
 .restaurant-avatar {
@@ -233,7 +233,7 @@
   position: sticky;
   top: 0;
   background: var(--surface);
-  z-index: 10;
+  z-index: var(--z-sticky);
   border-bottom: 1px solid var(--border-light);
 }
 
@@ -263,7 +263,6 @@
   white-space: nowrap;
   border-bottom: 2px solid transparent;
   cursor: pointer;
-  outline: none;
 }
 
 .category-tab.active {
@@ -299,7 +298,6 @@
   justify-content: center;
   white-space: nowrap;
   cursor: pointer;
-  outline: none;
   transition: all 0.2s ease;
 }
 
