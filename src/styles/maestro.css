@@ -306,6 +306,7 @@
   width: 45px;
   height: 45px;
   background: var(--primary-black);
+  color: var(--primary-white, #fff);
   border-radius: var(--radius-full);
   border: none;
   display: flex;

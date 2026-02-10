@@ -14,17 +14,17 @@ const CloseIcon = () => (
 
 const MaestroFaceIcon = ({ size = 32 }) => (
     <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10 14C10 14 10.5 16 12.5 16C14.5 16 15 14 15 14" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M17 14C17 14 17.5 16 19.5 16C21.5 16 22 14 22 14" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M11 21C11 21 13 24 16 24C19 24 21 21 21 21" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M16 17V19" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M10 14C10 14 10.5 16 12.5 16C14.5 16 15 14 15 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M17 14C17 14 17.5 16 19.5 16C21.5 16 22 14 22 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M11 21C11 21 13 24 16 24C19 24 21 21 21 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M16 17V19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
 );
 
 
 const SendIcon = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 17.5V6.5M12 6.5L7.5 11M12 6.5L16.5 11" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M12 17.5V6.5M12 6.5L7.5 11M12 6.5L16.5 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
 );
 
@@ -51,17 +51,17 @@ const ModalHeader = ({ title, status, icon }) => (
 
 const ClocheIcon = () => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22 19H2C2 19 3 13 4 10C5 7 8 4 12 4C16 4 19 7 20 10C21 13 22 19 22 19Z" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M12 4V2" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M2 19C2 20.1046 2.89543 21 4 21H20C21.1046 21 22 20.1046 22 19H2Z" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M22 19H2C2 19 3 13 4 10C5 7 8 4 12 4C16 4 19 7 20 10C21 13 22 19 22 19Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M12 4V2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M2 19C2 20.1046 2.89543 21 4 21H20C21.1046 21 22 20.1046 22 19H2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
 );
 
 const MaestroLogo = ({ size = 20 }) => (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M4 14C4 14 4.5 16 6.5 16C8.5 16 9 14 9 14" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M11 14C11 14 11.5 16 13.5 16C15.5 16 16 14 16 14" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <circle cx="12" cy="12" r="10" stroke="black" strokeWidth="1.5" />
+        <path d="M4 14C4 14 4.5 16 6.5 16C8.5 16 9 14 9 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M11 14C11 14 11.5 16 13.5 16C15.5 16 16 14 16 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
     </svg>
 );
 
@@ -410,7 +410,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                     />
                     <button className="maestro-send-btn" onClick={handleSendMessage} disabled={!inputValue.trim()} aria-label="Enviar mensagem">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 11L12 6L17 11M12 18V7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M7 11L12 6L17 11M12 18V7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     </button>
                 </div>

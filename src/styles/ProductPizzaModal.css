@@ -200,6 +200,7 @@
 /* Active State */
 .pizza-option-row.active .pizza-selection-box {
     background: var(--primary-black);
+    color: var(--primary-white, #fff);
     /* Active Black */
 }
 

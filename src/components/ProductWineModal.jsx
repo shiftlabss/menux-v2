@@ -56,7 +56,7 @@ export default function ProductWineModal({ product, onClose, onAddToCart }) {
             <div className="wine-detail-container">
                 <div className="wine-header-nav">
                     <button className="wine-back-circle" onClick={onClose} aria-label="Voltar">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                     </button>
                 </div>
 
@@ -140,11 +140,11 @@ export default function ProductWineModal({ product, onClose, onAddToCart }) {
                     <div className="wine-footer-row">
                         <div className="wine-qty-selector">
                             <button className="wine-qty-btn" onClick={() => setQuantity(Math.max(1, quantity - 1))} aria-label="Diminuir quantidade">
-                                <svg width="12" height="2" viewBox="0 0 12 2" fill="none"><path d="M1 1H11" stroke="black" strokeWidth="2" strokeLinecap="round" /></svg>
+                                <svg width="12" height="2" viewBox="0 0 12 2" fill="none"><path d="M1 1H11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
                             </button>
                             <span className="wine-qty-value">{quantity}</span>
                             <button className="wine-qty-btn" onClick={() => setQuantity(quantity + 1)} aria-label="Aumentar quantidade">
-                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1V11M1 6H11" stroke="black" strokeWidth="2" strokeLinecap="round" /></svg>
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1V11M1 6H11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
                             </button>
                         </div>
                         <button className="btn-wine-add" onClick={() => { onAddToCart(product, '', quantity); }}>

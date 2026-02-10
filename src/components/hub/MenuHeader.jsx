@@ -7,7 +7,7 @@ export default function MenuHeader({ userName, userAvatar, activeOrderCode, onPr
             <img src={imgLogo} alt="Menux" className="menu-header-logo" />
             <div className="header-right">
                 {userName && (
-                    <div className="profile-trigger">
+                    <div className="profile-trigger" role="img" aria-label={`Avatar de ${userName}`}>
                         {userAvatar ? (
                             <img
                                 src={userAvatar}
