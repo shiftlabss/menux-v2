@@ -21,6 +21,7 @@ export const KEYS = {
     MAESTRO_VIEW: 'maestro_current_view',
     MAESTRO_ACTIVITY: 'maestro_last_activity',
     USER_ID: 'menux_user_id',
+    REGISTERED_AT: 'menux_registered_at',
 
     // Studio (admin)
     STUDIO_BRANDING: 'menux_studio_branding',

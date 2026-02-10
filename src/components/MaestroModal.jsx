@@ -8,7 +8,7 @@ const imgLogo = "/logo-menux.svg";
 
 const CloseIcon = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M18 6L6 18M6 6L18 18" stroke="#717171" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
 );
 
@@ -423,7 +423,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
             {(step <= 3) && (
                 <div className="modal-header-nav-wrapper">
                     <button className="wizard-back-btn" onClick={handlePrevStep}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                     </button>
                     <ModalHeader
                         title="Menux"

@@ -213,8 +213,8 @@
 }
 
 .btn-save-profile.active {
-  background-color: #000;
-  color: #fff;
+  background-color: var(--primary-black);
+  color: var(--white);
   cursor: pointer;
   opacity: 1;
 }

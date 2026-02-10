@@ -89,7 +89,7 @@ export default function MyOrdersModal({ onClose, userName, activeOrderCode, acti
                                     {order.status === 'annotated' || order.status === 'completed' ? (
                                         <span className="status-icon">
                                             <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M1 4L3.5 6.5L9 1" stroke={order.status === 'completed' ? 'white' : '#2E7D32'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M1 4L3.5 6.5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                             </svg>
                                         </span>
                                     ) : null}

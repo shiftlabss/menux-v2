@@ -25,7 +25,7 @@ const imgLogo = "/logo-menux.svg";
 const imgVerify = "/verify-icon.svg";
 
 export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccount }) {
-    const { userName, phone, userAvatar, updateAvatar, updateProfile } = useUser();
+    const { userName, phone, userAvatar, updateAvatar, updateProfile, registeredAt } = useUser();
     const reelRef = useRef(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -290,6 +290,7 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                         onLogout={onLogout}
                         onDeleteAccount={onDeleteAccount}
                         onSaveProfile={updateProfile}
+                        registeredAt={registeredAt}
                     />
                 )}
                 {isMyOrdersOpen && (

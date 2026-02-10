@@ -12,12 +12,17 @@ export const UserProvider = ({ children }) => {
     const [isReturningUser, setIsReturningUser] = useState(() => {
         return storage.get(KEYS.IS_RETURNING) === 'true';
     });
+    const [registeredAt] = useState(() => storage.get(KEYS.REGISTERED_AT) || null);
 
     const persistUser = useCallback((name, phoneVal, avatar, returning) => {
         if (phoneVal) storage.set(KEYS.PHONE, phoneVal);
         if (name) storage.set(KEYS.USER, name);
         if (avatar) storage.set(KEYS.AVATAR, avatar);
         storage.set(KEYS.IS_RETURNING, returning ? 'true' : 'false');
+        // Salva data de registro apenas no primeiro cadastro
+        if (!storage.get(KEYS.REGISTERED_AT)) {
+            storage.set(KEYS.REGISTERED_AT, new Date().toISOString());
+        }
     }, []);
 
     const updateProfile = useCallback((newName, newPhone) => {
@@ -61,6 +66,7 @@ export const UserProvider = ({ children }) => {
             userName, setUserName,
             userAvatar, setUserAvatar,
             isReturningUser, setIsReturningUser,
+            registeredAt,
             persistUser,
             updateProfile,
             updateAvatar,

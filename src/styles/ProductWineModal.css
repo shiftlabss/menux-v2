@@ -159,6 +159,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  color: var(--text-secondary);
 }
 
 .wine-fact-label {

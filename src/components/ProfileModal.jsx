@@ -58,7 +58,27 @@ const DeleteAccountModal = ({ onClose, onConfirm }) => (
     </motion.div>
 );
 
-export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, userName, phone, onLogout, onDeleteAccount, onSaveProfile }) {
+function getTimeSince(isoDate) {
+    if (!isoDate) return 'usando menuxIA';
+    const now = new Date();
+    const registered = new Date(isoDate);
+    const diffMs = now - registered;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 1) return 'Hoje começou a usar menuxIA';
+    if (diffDays === 1) return 'Há 1 dia usando menuxIA';
+    if (diffDays < 30) return `Há ${diffDays} dias usando menuxIA`;
+
+    const diffMonths = Math.floor(diffDays / 30);
+    if (diffMonths === 1) return 'Há 1 mês usando menuxIA';
+    if (diffMonths < 12) return `Há ${diffMonths} meses usando menuxIA`;
+
+    const diffYears = Math.floor(diffMonths / 12);
+    if (diffYears === 1) return 'Há 1 ano usando menuxIA';
+    return `Há ${diffYears} anos usando menuxIA`;
+}
+
+export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, userName, phone, onLogout, onDeleteAccount, onSaveProfile, registeredAt }) {
     const fileInputRef = useRef(null);
     const { showToast } = useToast();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -193,7 +213,7 @@ export default function ProfileModal({ onClose, currentAvatar, onUpdateAvatar, u
                         <div className="profile-name">{editableName || "Visitante"}</div>
                         <div className="profile-since">
                             <MenuxFaceIcon />
-                            <span>Há 3 meses usando menuxIA</span>
+                            <span>{getTimeSince(registeredAt)}</span>
                         </div>
                     </div>
 
