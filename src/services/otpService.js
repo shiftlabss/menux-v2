@@ -24,8 +24,7 @@ class OTPVerification {
             });
 
             if (!response.ok) {
-                const text = await response.text();
-                throw new Error(`HTTP ${response.status}: ${text || response.statusText}`);
+                throw new Error('Não conseguimos enviar o código. Verifique sua conexão e tente novamente.');
             }
 
             const data = await response.json();
@@ -68,7 +67,7 @@ class OTPVerification {
             } catch (e) {
                 return {
                     success: false,
-                    message: 'Erro no servidor: Resposta inválida.'
+                    message: 'Algo deu errado ao verificar o código. Tente novamente.'
                 };
             }
 
@@ -79,7 +78,7 @@ class OTPVerification {
                 if (result && result.message === 'Workflow was started') {
                     return {
                         success: false,
-                        message: 'Erro de configuração: O servidor não validou o código (Retorno Async).'
+                        message: 'Não foi possível validar o código agora. Tente novamente em instantes.'
                     };
                 }
 

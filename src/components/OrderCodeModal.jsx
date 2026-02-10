@@ -1,8 +1,20 @@
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 export default function OrderCodeModal({ code, onViewOrders }) {
+    const [copied, setCopied] = useState(false);
     // Split code into array of characters, handle number or string
     const codeChars = String(code).split('');
+
+    const handleCopyCode = async () => {
+        try {
+            await navigator.clipboard.writeText(String(code));
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch {
+            // fallback silencioso
+        }
+    };
 
     return (
         <motion.div
@@ -18,11 +30,14 @@ export default function OrderCodeModal({ code, onViewOrders }) {
                 </div>
 
                 <div className="order-code-info-card">
-                    <div className="order-code-digits">
+                    <div className="order-code-digits" onClick={handleCopyCode} role="button" aria-label="Copiar código">
                         {codeChars.map((char, i) => (
                             <div key={i} className="order-code-digit-box">{char}</div>
                         ))}
                     </div>
+                    <span className="order-code-copy-hint">
+                        {copied ? 'Copiado!' : 'Toque para copiar'}
+                    </span>
 
                     <div className="order-code-instructions">
                         <h3 className="order-instructions-title">O que você precisa fazer agora?</h3>

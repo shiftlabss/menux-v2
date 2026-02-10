@@ -293,7 +293,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
             const errorText = error.name === 'AbortError'
                 ? "O Maestro demorou demais para responder. Tente novamente em instantes."
                 : "Ocorreu um erro de rede ao falar com o Maestro. Tente novamente.";
-            const errorMsg = { id: generateMsgId(), text: errorText, sender: 'ai' };
+            const errorMsg = { id: generateMsgId(), text: errorText, sender: 'ai', isError: true };
             setMessages(prev => [...prev, errorMsg]);
         } finally {
             setIsTyping(false);
@@ -349,8 +349,19 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
             <div className="chat-messages-area">
                 {messages.map((msg, index) => (
                     <div key={msg.id || index} className={`chat-bubble-wrapper ${msg.sender}`}>
-                        <div className={`chat-bubble ${msg.sender}`}>
+                        <div className={`chat-bubble ${msg.sender}${msg.isError ? ' error' : ''}`}>
                             {msg.text}
+                            {msg.isError && (
+                                <button className="chat-retry-btn" onClick={() => {
+                                    setMessages(prev => prev.filter(m => m.id !== msg.id));
+                                    const lastUserMsg = [...messages].reverse().find(m => m.sender === 'user');
+                                    if (lastUserMsg) {
+                                        setInputValue(lastUserMsg.text);
+                                    }
+                                }}>
+                                    Tentar novamente
+                                </button>
+                            )}
                         </div>
                         {msg.sender === 'ai' && msg.suggestions && msg.suggestions.length > 0 && (
                             <div className="chat-suggestions-grid">

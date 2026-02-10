@@ -95,6 +95,13 @@ export default function ProductPizzaModal({ product, onClose, onAddToCart }) {
 
     const canAdd = selections.dough && selections.flavors.length === selections.quantity && selections.flavors.every(Boolean) && selections.crust;
 
+    const getMissingHint = () => {
+        if (!selections.dough) return 'Selecione o tipo de massa';
+        if (selections.flavors.length < selections.quantity) return `Selecione ${selections.quantity === 1 ? 'o sabor' : 'os sabores'}`;
+        if (!selections.crust) return 'Selecione a borda';
+        return null;
+    };
+
     return (
         <motion.div
             className="product-modal-overlay"
@@ -421,6 +428,9 @@ export default function ProductPizzaModal({ product, onClose, onAddToCart }) {
                 </div>
 
                 <div className="pizza-footer-bar">
+                    {!canAdd && getMissingHint() && (
+                        <span className="pizza-footer-hint">{getMissingHint()}</span>
+                    )}
                     <button
                         className="pizza-footer-btn"
                         onClick={handleAddToCart}

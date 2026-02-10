@@ -120,7 +120,12 @@ export default function MyOrdersModal({ onClose, userName, activeOrderCode, acti
                     );
                 })}
 
-                {/* Removed usage of MOCK_HISTORY as real history is now used above */}
+                {!activeOrderCode && orderHistory.length === 0 && (
+                    <div className="orders-empty-state">
+                        <img src="/icon-menux.svg" alt="Menux" className="orders-empty-icon" />
+                        <p className="orders-empty-text">Você ainda não fez nenhum pedido.</p>
+                    </div>
+                )}
             </div>
         </motion.div >
     );

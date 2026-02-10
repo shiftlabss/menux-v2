@@ -6,8 +6,16 @@ export default function MenuHeader({ userName, userAvatar, activeOrderCode, onPr
         <header className="menu-header">
             <img src={imgLogo} alt="Menux" className="menu-header-logo" />
             <div className="header-right">
+                {activeOrderCode && (
+                    <button className="btn-my-orders-active" onClick={onMyOrdersClick}>
+                        Pedidos
+                    </button>
+                )}
+                <button className="btn-profile-short" onClick={() => userName ? onProfileClick() : onAuth()}>
+                    {userName ? "Meu perfil" : "Entrar"}
+                </button>
                 {userName && (
-                    <div className="profile-trigger" role="img" aria-label={`Avatar de ${userName}`}>
+                    <div className="profile-trigger" role="img" aria-label={`Avatar de ${userName}`} onClick={onProfileClick}>
                         {userAvatar ? (
                             <img
                                 src={userAvatar}
@@ -19,14 +27,6 @@ export default function MenuHeader({ userName, userAvatar, activeOrderCode, onPr
                         )}
                     </div>
                 )}
-                {activeOrderCode && (
-                    <button className="btn-my-orders-active" onClick={onMyOrdersClick}>
-                        Pedidos
-                    </button>
-                )}
-                <button className="btn-profile-short" onClick={() => userName ? onProfileClick() : onAuth()}>
-                    {userName ? "Meu perfil" : "Entrar"}
-                </button>
             </div>
         </header>
     );

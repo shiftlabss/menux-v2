@@ -223,6 +223,8 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                 <>
                     <div
                         className={`floating-tabbar-container ${cartCount > 0 ? 'has-cart' : ''}`}
+                        role="button"
+                        aria-label="Abrir assistente Menux"
                         onClick={() => {
                             setMaestroInitialView('welcome');
                             setIsMaestroOpen(true);

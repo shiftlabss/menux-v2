@@ -32,17 +32,20 @@ export default function useCart() {
     useEffect(() => { if (activeOrderCode) storage.set(KEYS.ACTIVE_ORDER, activeOrderCode); }, [activeOrderCode]);
     useEffect(() => { storage.set(KEYS.ORDER_HISTORY, orderHistory); }, [orderHistory]);
 
+    const normalizeObs = (text) => (text || '').trim().replace(/\s+/g, ' ');
+
     const addToCart = (product, obs, qty = 1) => {
+        const cleanObs = normalizeObs(obs);
         setCart(prev => {
-            const existing = prev.find(item => item.id === product.id && item.obs === obs);
+            const existing = prev.find(item => item.id === product.id && item.obs === cleanObs);
             if (existing) {
                 return prev.map(item =>
-                    (item.id === product.id && item.obs === obs)
+                    (item.id === product.id && item.obs === cleanObs)
                         ? { ...item, qty: item.qty + qty }
                         : item
                 );
             }
-            return [...prev, { ...product, qty, obs }];
+            return [...prev, { ...product, qty, obs: cleanObs }];
         });
     };
 

@@ -33,11 +33,15 @@ export const ToastProvider = ({ children }) => {
     const timerRef = useRef(null);
     const toastVariant = toast?.variant || 'success';
 
-    const showToast = useCallback((message, variant = 'success', duration = 3000) => {
+    const showToast = useCallback((message, variant = 'success', duration) => {
         // retrocompat: se variant for número, é duration (chamada antiga)
         if (typeof variant === 'number') {
             duration = variant;
             variant = 'success';
+        }
+        // Erros e warnings ficam mais tempo visíveis
+        if (!duration) {
+            duration = (variant === 'error' || variant === 'warning') ? 5000 : 3000;
         }
         if (timerRef.current) clearTimeout(timerRef.current);
         setToast({ message, variant });

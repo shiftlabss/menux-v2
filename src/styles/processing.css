@@ -103,7 +103,15 @@
   display: flex;
   flex: auto;
   gap: var(--space-3);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-2);
+  cursor: pointer;
+}
+
+.order-code-copy-hint {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-5);
 }
 
 .order-code-digit-box {

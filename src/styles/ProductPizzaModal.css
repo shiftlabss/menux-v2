@@ -280,14 +280,23 @@
     bottom: 24px;
     left: 24px;
     right: 24px;
-    height: 59px;
+    min-height: 59px;
     z-index: 100;
     border-radius: var(--radius-pill);
     background: var(--primary-black);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    padding: var(--space-2) 0;
+}
+
+.pizza-footer-hint {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    color: rgba(255, 255, 255, 0.6);
+    padding-bottom: var(--space-1);
 }
 
 .pizza-footer-btn {

@@ -188,3 +188,26 @@
   margin-right: 4px;
   display: flex;
 }
+
+/* Empty State */
+.orders-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-10) var(--space-5);
+  gap: var(--space-3);
+}
+
+.orders-empty-icon {
+  width: 48px;
+  height: 48px;
+  opacity: 0.4;
+}
+
+.orders-empty-text {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--text-tertiary);
+  text-align: center;
+}
