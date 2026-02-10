@@ -329,7 +329,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                                 onChange={(e) => setInputValue(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                             />
-                            <button className="maestro-send-btn" onClick={handleSendMessage}>
+                            <button className="maestro-send-btn" onClick={handleSendMessage} aria-label="Enviar mensagem">
                                 <SendIcon />
                             </button>
                         </div>
@@ -408,7 +408,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                     />
-                    <button className="maestro-send-btn" onClick={handleSendMessage} disabled={!inputValue.trim()}>
+                    <button className="maestro-send-btn" onClick={handleSendMessage} disabled={!inputValue.trim()} aria-label="Enviar mensagem">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M7 11L12 6L17 11M12 18V7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
@@ -422,7 +422,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
         <div className="wizard-step-content">
             {(step <= 3) && (
                 <div className="modal-header-nav-wrapper">
-                    <button className="wizard-back-btn" onClick={handlePrevStep}>
+                    <button className="wizard-back-btn" onClick={handlePrevStep} aria-label="Voltar">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                     </button>
                     <ModalHeader
@@ -438,9 +438,9 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                     <>
                         <h2 className="wizard-question">Quantas pessoas vão comer?</h2>
                         <div className="wizard-counter">
-                            <button className="wizard-counter-btn" onClick={() => setPeopleCount(Math.max(1, peopleCount - 1))}>−</button>
+                            <button className="wizard-counter-btn" onClick={() => setPeopleCount(Math.max(1, peopleCount - 1))} aria-label="Diminuir pessoas">−</button>
                             <span className="wizard-counter-value">{peopleCount}</span>
-                            <button className="wizard-counter-btn" onClick={() => setPeopleCount(peopleCount + 1)}>+</button>
+                            <button className="wizard-counter-btn" onClick={() => setPeopleCount(peopleCount + 1)} aria-label="Aumentar pessoas">+</button>
                         </div>
                     </>
                 )}
@@ -579,7 +579,7 @@ export default function MaestroModal({ onClose, initialView = 'welcome', product
                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
                 onClick={(e) => e.stopPropagation()}
             >
-                <button className="maestro-close-btn" onClick={onClose}>
+                <button className="maestro-close-btn" onClick={onClose} aria-label="Fechar">
                     <CloseIcon />
                 </button>
                 {renderContent()}

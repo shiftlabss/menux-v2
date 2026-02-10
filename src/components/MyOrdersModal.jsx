@@ -23,7 +23,7 @@ export default function MyOrdersModal({ onClose, userName, activeOrderCode, acti
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
         >
             <div className="my-orders-header">
-                <button className="header-back-btn" onClick={onClose}>
+                <button className="header-back-btn" onClick={onClose} aria-label="Voltar">
                     <ChevronLeft />
                 </button>
                 <span className="header-title-text">Meus pedidos</span>

@@ -1,4 +1,4 @@
-import React from 'react';
+
 const imgLogo = "/logo-menux.svg";
 
 export default function MenuHeader({ userName, userAvatar, activeOrderCode, onProfileClick, onMyOrdersClick, onAuth }) {

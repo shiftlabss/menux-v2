@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useStudio } from '../context/StudioContext';
 import { useToast } from '../context/ToastContext';
@@ -219,7 +219,7 @@ export default function StudioView({ onClose }) {
                                                 {cat.subcategories?.map(sub => (
                                                     <div key={sub.id} className="admin-list-item sub-item">
                                                         <span>— {sub.name}</span>
-                                                        <button className="admin-btn-remove" onClick={() => {
+                                                        <button className="admin-btn-remove" aria-label="Remover subcategoria" onClick={() => {
                                                             const updated = categories.map(c => c.id === cat.id ? { ...c, subcategories: c.subcategories.filter(s => s.id !== sub.id) } : c);
                                                             setCategories(updated);
                                                         }}>&times;</button>
@@ -312,7 +312,7 @@ export default function StudioView({ onClose }) {
                                                     <span>{p.price}</span>
                                                 </div>
                                             </div>
-                                            <button className="admin-btn-remove" onClick={() => setProducts(products.filter(item => item.id !== p.id))}>&times;</button>
+                                            <button className="admin-btn-remove" onClick={() => setProducts(products.filter(item => item.id !== p.id))} aria-label="Remover produto">&times;</button>
                                         </div>
                                     ))}
                                 </div>

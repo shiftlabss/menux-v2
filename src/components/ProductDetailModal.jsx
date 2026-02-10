@@ -23,7 +23,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
         >
             <div className="product-detail-container">
                 <div className="pd-header-nav">
-                    <button className="pd-back-circle" onClick={onClose}>
+                    <button className="pd-back-circle" onClick={onClose} aria-label="Voltar">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                     </button>
                 </div>
@@ -64,14 +64,14 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                         <div className="pd-quantity-selector">
                             <div className="pd-qty-slot">
                                 {quantity > 1 && (
-                                    <button className="pd-qty-btn" onClick={() => setQuantity(quantity - 1)}>
+                                    <button className="pd-qty-btn" onClick={() => setQuantity(quantity - 1)} aria-label="Diminuir quantidade">
                                         <svg width="12" height="2" viewBox="0 0 12 2" fill="none"><path d="M1 1H11" stroke="black" strokeWidth="2" strokeLinecap="round" /></svg>
                                     </button>
                                 )}
                             </div>
                             <span className="pd-qty-value">{quantity}</span>
                             <div className="pd-qty-slot">
-                                <button className="pd-qty-btn" onClick={() => setQuantity(quantity + 1)}>
+                                <button className="pd-qty-btn" onClick={() => setQuantity(quantity + 1)} aria-label="Aumentar quantidade">
                                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1V11M1 6H11" stroke="black" strokeWidth="2" strokeLinecap="round" /></svg>
                                 </button>
                             </div>

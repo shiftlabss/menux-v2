@@ -49,7 +49,7 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
         >
             <div className="modal-header-back">
-                <button className="btn-modal-back" onClick={onClose}>
+                <button className="btn-modal-back" onClick={onClose} aria-label="Voltar">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                 </button>
                 <span className="order-title">Seu pedido</span>
@@ -98,14 +98,14 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
                                     )}
                                 </div>
                                 <div className="order-item-qty-control">
-                                    <button className="qty-btn" onClick={() => {
+                                    <button className="qty-btn" aria-label={item.qty === 1 ? "Remover item" : "Diminuir quantidade"} onClick={() => {
                                         if (item.qty === 1) showToast("Item removido do pedido.");
                                         onUpdateQty(item.id, item.obs, -1);
                                     }}>
                                         {item.qty === 1 ? <TrashIcon /> : <MinusIcon />}
                                     </button>
                                     <span className="qty-val">{item.qty}</span>
-                                    <button className="qty-btn" onClick={() => onUpdateQty(item.id, item.obs, 1)}>
+                                    <button className="qty-btn" onClick={() => onUpdateQty(item.id, item.obs, 1)} aria-label="Aumentar quantidade">
                                         <PlusIcon />
                                     </button>
                                 </div>
@@ -136,16 +136,16 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
                                         <div className="rec-qty-overlay" onClick={(e) => e.stopPropagation()}>
                                             {qty > 0 ? (
                                                 <div className="rec-qty-controls">
-                                                    <button className="rec-qty-btn" onClick={() => onUpdateQty(rec.id, '', -1)}>
+                                                    <button className="rec-qty-btn" onClick={() => onUpdateQty(rec.id, '', -1)} aria-label={qty === 1 ? "Remover item" : "Diminuir quantidade"}>
                                                         {qty === 1 ? <TrashIcon /> : <MinusIcon />}
                                                     </button>
                                                     <span className="rec-qty-val">{qty}</span>
-                                                    <button className="rec-qty-btn" onClick={() => onUpdateQty(rec.id, '', 1)}>
+                                                    <button className="rec-qty-btn" onClick={() => onUpdateQty(rec.id, '', 1)} aria-label="Aumentar quantidade">
                                                         <PlusIcon />
                                                     </button>
                                                 </div>
                                             ) : (
-                                                <button className="rec-add-btn" onClick={() => { onAddToCart(rec, ''); showToast("Item adicionado ao pedido!"); }}>
+                                                <button className="rec-add-btn" onClick={() => { onAddToCart(rec, ''); showToast("Item adicionado ao pedido!"); }} aria-label={`Adicionar ${rec.name}`}>
                                                     <PlusIcon />
                                                 </button>
                                             )}

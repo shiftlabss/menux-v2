@@ -37,7 +37,7 @@ const DeleteAccountModal = ({ onClose, onConfirm }) => (
                 <p className="delete-modal-desc">
                     Isso vai desconectar todos os dispositivos vinculados à sua conta e excluir permanentemente seus dados do Menux.
                 </p>
-                <a href="#" className="delete-modal-link">Saiba mais sobre a exclusão da conta</a>
+                <span className="delete-modal-link">Saiba mais sobre a exclusão da conta</span>
             </div>
 
             <div className="delete-modal-actions">

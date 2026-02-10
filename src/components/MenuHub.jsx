@@ -238,7 +238,7 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                     </div>
 
                     {cartCount > 0 && (
-                        <div className="cart-floating-button" onClick={() => setIsOrderModalOpen(true)}>
+                        <div className="cart-floating-button" onClick={() => setIsOrderModalOpen(true)} role="button" aria-label="Ver pedido">
                             <img src="/icon-pedido.svg" alt="Pedido" className="cart-icon" />
                             <div className="cart-badge">{cartCount}</div>
                         </div>

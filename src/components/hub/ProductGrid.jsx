@@ -1,5 +1,3 @@
-import React from 'react';
-
 const ProductItem = ({ item, onClick }) => {
     return (
         <div className="menu-item" onClick={() => onClick(item)}>
