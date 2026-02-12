@@ -89,6 +89,36 @@ export default function Login({ onBack, onNext, checkUser, savedName }) {
         }
     };
 
+    const handleLogin = async () => {
+        setIsLoading(true);
+        try {
+            const cleanPhone = phoneNumber.replace(/[^\d]/g, '');
+            const fullPhone = `55${cleanPhone}`;
+
+            const { authService } = await import('../services/authService');
+
+            const restaurantId = import.meta.env.VITE_RESTAURANT_ID || "UUID_DO_RESTAURANTE";
+
+            const response = await authService.loginOrRegister({
+                phone: fullPhone,
+                restaurantId
+            });
+
+            if (response && response.token) {
+                const { customer } = response;
+                onNext(fullPhone, customer);
+            } else {
+                alert("Falha na autenticação. Tente novamente.");
+            }
+
+        } catch (error) {
+            console.error("Login call failed", error);
+            alert("Erro ao conectar ao servidor.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -120,6 +150,7 @@ export default function Login({ onBack, onNext, checkUser, savedName }) {
                         onKeyDown={handleKeyDown}
                         maxLength={15}
                         autoFocus
+                        disabled={isLoading}
                     />
                 </div>
                 <span className="helper-text">Só para verificação. Sem spam.</span>
@@ -129,10 +160,10 @@ export default function Login({ onBack, onNext, checkUser, savedName }) {
                 <motion.button
                     whileTap={rawDigits.length === 11 ? { scale: 0.96 } : {}}
                     className="btn-primary"
-                    onClick={handleNextStep}
-                    disabled={rawDigits.length !== 11 || isLoading}
+                    onClick={handleLogin}
+                    disabled={phoneNumber.length !== 15 || isLoading}
                 >
-                    {isLoading ? "Enviando..." : "Continuar"}
+                    {isLoading ? "Verificando..." : "Finalizar cadastro"}
                 </motion.button>
             </div>
         </motion.div>

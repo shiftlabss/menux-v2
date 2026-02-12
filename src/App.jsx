@@ -12,6 +12,8 @@ import { ToastProvider } from './context/ToastContext'
 import { UserProvider, useUser } from './context/UserContext'
 import { ThemeProvider } from './context/ThemeContext'
 import './index.css'
+import { onMessageListener, requestForToken } from './services/firebaseConfig'
+import { useToast } from './context/ToastContext'
 
 const generateUUID = () => {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -29,24 +31,20 @@ function AppContent() {
     if (params.get('page') === 'design') return 'design-system';
     return 'onboarding';
   })
-
-  const {
-    phone, setPhone,
-    userName, setUserName,
-    userAvatar,
-    isReturningUser, setIsReturningUser,
-    persistUser,
-    logout,
-    deleteAccount,
-    reloadFromStorage,
-  } = useUser();
+  const [phone, setPhone] = useState('')
+  const [userName, setUserName] = useState('')
+  const [isReturningUser, setIsReturningUser] = useState(false)
+  const { showToast } = useToast();
 
   useEffect(() => {
-    if (step === 'onboarding') {
-      reloadFromStorage();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step]);
+    requestForToken();
+    onMessageListener().then(payload => {
+      console.log('Message received. ', payload);
+      if (payload && payload.notification) {
+        showToast(`${payload.notification.title}: ${payload.notification.body}`);
+      }
+    }).catch(err => console.log('failed: ', err));
+  }, []);
 
   return (
     <main className="app-container" style={step === 'design-system' ? { maxWidth: '100%', height: 'auto', borderRadius: 0, boxShadow: 'none' } : {}}>
@@ -74,6 +72,8 @@ function AppContent() {
               setUserName('');
               setPhone('');
               localStorage.removeItem('menux_customer_id');
+              localStorage.removeItem('menux_token');
+              localStorage.removeItem('menux_session_id');
               setStep('onboarding');
             }}
           />
@@ -92,12 +92,17 @@ function AppContent() {
             onBack={() => setStep('onboarding')}
             checkUser={(phoneValue) => phoneValue === '(11) 99999-9999'}
             savedName={userName}
-            onNext={(phoneValue) => {
+            // onNext={(phoneValue) => {
+            //   setPhone(phoneValue)
+
+            //   if (phoneValue === '(11) 99999-9999') {
+            onNext={(phoneValue, customer) => {
               setPhone(phoneValue)
 
-              if (phoneValue === '(11) 99999-9999') {
+              if (customer && customer.name) {
+                setUserName(customer.name)
                 setIsReturningUser(true)
-                setStep('verification')
+                setStep('hub')
               } else {
                 setIsReturningUser(false)
                 if (userName && userName.trim() !== '') {
@@ -105,6 +110,7 @@ function AppContent() {
                 } else {
                   setStep('register')
                 }
+                setStep('register')
               }
             }}
           />
@@ -116,9 +122,20 @@ function AppContent() {
             phone={phone}
             initialName={userName}
             onBack={() => setStep('login')}
-            onNext={(nameValue) => {
+            onNext={async (nameValue) => {
               setUserName(nameValue)
-              setStep('verification')
+              try {
+                const { authService } = await import('./services/authService');
+                const restaurantId = import.meta.env.VITE_RESTAURANT_ID || "UUID_DO_RESTAURANTE";
+                await authService.loginOrRegister({
+                  phone,
+                  restaurantId,
+                  name: nameValue
+                });
+              } catch (e) {
+                console.error("Failed to update name", e);
+              }
+              setStep('hub')
             }}
           />
         )}
@@ -146,15 +163,10 @@ function AppContent() {
               // For simulation, we generate a stable ID for the "User" or random.
               // To make "history" work meaningfully in mock, let's persist one if returning.
               let userId = generateUUID();
-
               if (isReturningUser) {
-                setUserName("Usuário Retorno"); // Simulated name fetch
-                // Simulate a fixed ID for the returning user so we can see history if we had backend
-                // userId = "fixed-returning-user-id"; 
+                setUserName("Usuário Retorno");
               }
-
               localStorage.setItem('menux_customer_id', userId);
-
               setStep('hub');
             }}
 
