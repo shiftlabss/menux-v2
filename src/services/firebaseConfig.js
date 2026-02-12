@@ -16,11 +16,7 @@ const messaging = getMessaging(app);
 export const requestForToken = async () => {
     try {
         const currentToken = await getToken(messaging, {
-            vapidKey: 'BMc22m0n-4-J_4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4' // Placeholder or remove if not using VAPID
-            // Note: usually vapidKey is required for web push. 
-            // The prompt didn't provide one, so I'll try without it or check if I need to generate one.
-            // Actually, `getToken` needs a vapidKey if not configured in manifest? 
-            // I'll leave it empty for now and see if prompt implies it works without.
+            vapidKey: 'BFDhaBjfZEtMAdlKymSYUljNNK7ObyDmWZCCiwabJturz77YuW9qA185uu4fZFmyP4mERwW78c0ehu0QT2XmoBk',
         });
         if (currentToken) {
             console.log('current token for client: ', currentToken);
