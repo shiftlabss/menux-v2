@@ -31,67 +31,71 @@ export default function OrderModal({ cartItems = [], onUpdateQty, onAddToCart, o
 
 
 
-    const fetchRecommendations = async () => {
-        // Avoid fetching if using Mock Auth (unless user wants it, but standard practice in this project seems to be checking it)
-        // However, the request didn't specify mock auth check for this specific feature, but earlier code does. 
-        // To be safe, I'll assume we want this to work with real API primarily.
-        if (import.meta.env.VITE_USE_MOCK_AUTH === 'false') {
-            try {
-                // Fetch rules for all items in cart
-                const promises = cartItems.map(item =>
-                    getUpsellRules(item.id, 'cross-sell').catch(err => {
-                        console.error(`Error fetching upsell for ${item.id}:`, err);
-                        return [];
-                    })
-                );
+    useEffect(() => {
+        const fetchRecommendations = async () => {
+            // Avoid fetching if using Mock Auth
+            if (import.meta.env.VITE_USE_MOCK_AUTH === 'false') {
+                try {
+                    // Fetch rules for all items in cart
+                    const promises = cartItems.map(item =>
+                        getUpsellRules(item.id, 'cross-sell').catch(err => {
+                            console.error(`Error fetching upsell for ${item.id}:`, err);
+                            return [];
+                        })
+                    );
 
-                const results = await Promise.all(promises);
+                    const results = await Promise.all(promises);
 
-                // Results is array of arrays of rules
-                // We need to extract upgradeProduct from each rule
-                const allRules = results.flat();
+                    // Results is array of arrays of rules
+                    // We need to extract upgradeProduct from each rule
+                    const allRules = results.flat();
 
-                const suggestions = allRules
-                    .filter(rule => rule && rule.isActive && rule.upgradeProduct)
-                    .map(rule => rule.upgradeProduct);
+                    const suggestions = allRules
+                        .filter(rule => rule && rule.isActive && rule.upgradeProduct)
+                        .map(rule => rule.upgradeProduct);
 
-                // Deduplicate by ID
-                const uniqueSuggestions = Array.from(new Map(suggestions.map(item => [item.id, item])).values());
+                    // Deduplicate by ID
+                    const uniqueSuggestions = Array.from(new Map(suggestions.map(item => [item.id, item])).values());
 
-                // Filter out items already in cart or the item itself (though cart check covers it usually)
-                // The prompt says "show recommended items... where trigger is the inserted item".
-                // It doesn't explicitly say "hide if already in cart", but UI logic usually does or just shows quantity. 
-                // The existing UI logic handles "inCart" quantity display, so we can keep them even if in cart.
+                    // Transform to match UI expectation
+                    const formattedSuggestions = uniqueSuggestions.map(p => ({
+                        id: p.id,
+                        name: p.name,
+                        desc: p.description,
+                        price: `R$ ${Number(p.price).toFixed(2).replace('.', ',')}`,
+                        image: p.imageUrl
+                    }));
 
-                // Transform to match UI expectation if needed (fields: id, name, price, desc, image/imageUrl)
-                const formattedSuggestions = uniqueSuggestions.map(p => ({
-                    id: p.id,
-                    name: p.name,
-                    desc: p.description,
-                    price: `R$ ${Number(p.price).toFixed(2).replace('.', ',')}`,
-                    image: p.imageUrl
-                }));
+                    setRecommendations(formattedSuggestions);
 
-                setRecommendations(formattedSuggestions);
-
-            } catch (error) {
-                console.error("Error fetching recommendations:", error);
+                } catch (error) {
+                    console.error("Error fetching recommendations:", error);
+                }
+            } else {
+                setRecommendations([]);
             }
-        } else {
-            // Fallback to empty or keep static if needed? User asked to show "items suggested in rules".
-            // If mocking or no rules, maybe show nothing or keep the static list as "default"?
-            // The prompt implies we MUST show rule-based items. I'll default to empty if not real auth/api.
-            setRecommendations([]);
-        }
-    };
+        };
 
-    fetchRecommendations();
-    // }, [cartItems]);
+        if (cartItems.length > 0) {
+            fetchRecommendations();
+        }
+    }, [cartItems]);
 
     // Calculate cart total — parse BRL format "R$ 1.234,56" -> 1234.56
-    const parseBRL = (str) => {
-        const cleaned = (str || '').replace(/[R$\s]/g, '').replace(/\./g, '').replace(',', '.');
-        return parseFloat(cleaned) || 0;
+    const parseBRL = (value) => {
+        if (typeof value === 'number') return value;
+        if (!value) return 0;
+
+        const str = String(value);
+
+        // Handle BRL format (contains currency symbol or comma decimal separator)
+        if (str.includes('R$') || str.includes(',')) {
+            const cleaned = str.replace(/[R$\s]/g, '').replace(/\./g, '').replace(',', '.');
+            return parseFloat(cleaned) || 0;
+        }
+
+        // Handle potential US strings like "49.90"
+        return parseFloat(str) || 0;
     };
 
     const cartTotal = cartItems.reduce((sum, item) => {

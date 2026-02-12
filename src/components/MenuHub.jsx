@@ -210,10 +210,11 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
     ];
 
     // export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogout }) {
-    const scrollAreaRef = useRef(null);
+    // const scrollAreaRef = useRef(null);
     const tabsRef = useRef(null);
     const pillsRef = useRef(null);
     const reelRef = useRef(null);
+    const isProgrammaticScroll = useRef(false);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selectedProduct, setSelectedProductState] = useState(null);
 
@@ -462,10 +463,10 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
         });
     }, [dynamicCategories, dynamicProducts]);
 
-    // const {
-    //     scrollAreaRef, categoryRefs, subcategoryRefs, sectionRefs,
-    //     activeCategory, activeSubcategory, scrollToSection
-    // } = useScrollSpy(currentCategories);
+    const {
+        scrollAreaRef, categoryRefs, subcategoryRefs, sectionRefs,
+        activeCategory, activeSubcategory,
+    } = useScrollSpy(currentCategories);
 
     const { onLongPressStart, onLongPressEnd } = useAdminPin({
         onSuccess: onOpenStudio,
@@ -815,10 +816,10 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                         // onTouchStart={onLongPressStart}
                         // onTouchEnd={onLongPressEnd}
                         style={{ backgroundImage: (restaurantInfo?.logoUrl) ? `url(${restaurantInfo.logoUrl})` : (branding.restLogo ? `url(${branding.restLogo})` : 'none') }}
-                        onMouseDown={handleLongPressStart}
-                        onMouseUp={handleLongPressEnd}
-                        onTouchStart={handleLongPressStart}
-                        onTouchEnd={handleLongPressEnd}
+                        onMouseDown={onLongPressStart}
+                        onMouseUp={onLongPressEnd}
+                        onTouchStart={onLongPressStart}
+                        onTouchEnd={onLongPressEnd}
                     ></div>
                     <div className="restaurant-name-row">
                         <h2 className="restaurant-name">{restaurantInfo?.name || branding.restName}</h2>

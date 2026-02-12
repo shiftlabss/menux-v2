@@ -362,31 +362,31 @@ export const StudioProvider = ({ children }) => {
     // Migration logic removed to prevent infinite loops and ID conflicts.
     // The data reset logic in useState initialization handles consistency now.
     // Lógica para corrigir imagens em dados antigos persistidos (Migration)
-    useEffect(() => {
-        // Verifica se existem produtos com imagem vazia, caminho antigo de entrada, ou caminho antigo de bebidas com espaço
-        const needsFix = products.some(p =>
-            p.image === '' ||
-            (p.image || '').includes('/imgs-entrada/') ||
-            (p.image || '').includes('bebidas e drinks')
-        );
+    // useEffect(() => {
+    //     // Verifica se existem produtos com imagem vazia, caminho antigo de entrada, ou caminho antigo de bebidas com espaço
+    //     const needsFix = products.some(p =>
+    //         p.image === '' ||
+    //         (p.image || '').includes('/imgs-entrada/') ||
+    //         (p.image || '').includes('bebidas e drinks')
+    //     );
 
-        if (needsFix) {
-            console.log("Migrando imagens dos produtos para o novo padrão (Entradas e Bebidas)...");
-            const updatedProducts = products.map(p => {
-                const defaultProd = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
-                // Se encontrar o produto padrão e o atual estiver com problemas, atualiza
-                if (defaultProd && (
-                    p.image === '' ||
-                    (p.image || '').includes('/imgs-entrada/') ||
-                    (p.image || '').includes('bebidas e drinks')
-                )) {
-                    return { ...p, image: defaultProd.image };
-                }
-                return p;
-            });
-            setProducts(updatedProducts);
-        }
-    }, [products]);
+    //     if (needsFix) {
+    //         console.log("Migrando imagens dos produtos para o novo padrão (Entradas e Bebidas)...");
+    //         const updatedProducts = products.map(p => {
+    //             const defaultProd = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
+    //             // Se encontrar o produto padrão e o atual estiver com problemas, atualiza
+    //             if (defaultProd && (
+    //                 p.image === '' ||
+    //                 (p.image || '').includes('/imgs-entrada/') ||
+    //                 (p.image || '').includes('bebidas e drinks')
+    //             )) {
+    //                 return { ...p, image: defaultProd.image };
+    //             }
+    //             return p;
+    //         });
+    //         setProducts(updatedProducts);
+    //     }
+    // }, [products]);
 
     // Fetch from API if not using Mock Auth
     useEffect(() => {

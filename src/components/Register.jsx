@@ -26,6 +26,7 @@ export default function Register({ onBack, onNext, phone, initialName = '' }) {
 
             const result = await otpService.solicitarCodigo(rawPhone, name, '+55');
             if (result.success) {
+                // Modificado: Passa o nome para o App.jsx, que vai mudar o step para 'verification'
                 onNext(name);
             } else {
                 showToast(result.error || "Erro ao solicitar código. Tente novamente.", 'error');

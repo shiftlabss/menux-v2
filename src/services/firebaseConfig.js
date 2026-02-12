@@ -26,7 +26,11 @@ export const requestForToken = async () => {
             return null;
         }
     } catch (err) {
-        console.log('An error occurred while retrieving token. ', err);
+        console.error('An error occurred while retrieving token. ', err);
+        // Add specific handling for permission blocked
+        if (err.code === 'messaging/permission-blocked') {
+            console.warn('Notification permission was blocked.');
+        }
         return null;
     }
 };

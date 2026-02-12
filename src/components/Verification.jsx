@@ -72,7 +72,8 @@ export default function Verification({ phone, userName, onBack, onChangePhone, o
         if (timer > 0) return;
 
         // Remove phone formatting
-        const rawPhone = phone.replace(/[^\d]/g, '');
+        const phoneStr = phone || '';
+        const rawPhone = phoneStr.replace(/[^\d]/g, '');
         setIsLoading(true);
 
         try {

@@ -11,13 +11,21 @@ class OTPVerification {
      */
     async solicitarCodigo(numeroDoCliente, nome, ddi = '+55') {
         try {
+            // Remove o prefixo DDI se estiver presente no início da string
+            const ddiNumerico = ddi.replace(/\D/g, ''); // Remove o '+' e outros não-números
+            let numeroSanitizado = numeroDoCliente;
+
+            if (numeroSanitizado.startsWith(ddiNumerico)) {
+                numeroSanitizado = numeroSanitizado.substring(ddiNumerico.length);
+            }
+
             const response = await fetch(this.generateUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    numeroDoCliente: numeroDoCliente,
+                    numeroDoCliente: numeroSanitizado,
                     nome: nome,
                     ddi: ddi
                 })
@@ -47,13 +55,22 @@ class OTPVerification {
      */
     async verificarCodigo(codigoDigitado, numeroDoCliente, ddi = '+55') {
         try {
+            // Remove o prefixo DDI se estiver presente no início da string
+            const ddiNumerico = ddi.replace(/\D/g, ''); // Remove o '+' e outros não-números
+            let numeroSanitizado = numeroDoCliente;
+
+
+            if (numeroSanitizado.startsWith(ddiNumerico)) {
+                numeroSanitizado = numeroSanitizado.substring(ddiNumerico.length);
+            }
+
             const response = await fetch(this.verifyUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    numeroDoCliente: numeroDoCliente,
+                    numeroDoCliente: numeroSanitizado,
                     ddi: ddi,
                     otpCode: codigoDigitado
                 })

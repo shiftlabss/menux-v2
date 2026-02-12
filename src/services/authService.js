@@ -5,12 +5,14 @@ export const authService = {
     async loginOrRegister({ phone, restaurantId, name, email }) {
         try {
             // Get FCM Token
+            console.log('Attempting to retrieve FCM Token...');
             const fcmToken = await requestForToken();
+            console.log('FCM Token retrieved:', fcmToken);
 
             const payload = {
                 phone,
                 restaurantId,
-                fcmToken, // Can be null if permission denied
+                fcmToken: fcmToken || null, // Ensure explicitly null if undefined
             };
 
             if (name) payload.name = name;
