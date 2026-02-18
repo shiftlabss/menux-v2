@@ -2,12 +2,12 @@ import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyApZn3w6X0UNPJ4j_1PwEmPpR8Ri6IHpY8",
-    authDomain: "fitzy-e12a2.firebaseapp.com", // Inferido do projectId
-    projectId: "fitzy-e12a2",
-    storageBucket: "fitzy-e12a2.appspot.com", // Inferido
-    messagingSenderId: "132088066105",
-    appId: "1:132088066105:web:7b9aadef750a0bdc82dde8"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
@@ -38,7 +38,7 @@ export const requestForToken = async () => {
     if (!msg) return null;
     try {
         const currentToken = await getToken(msg, {
-            vapidKey: 'BFDhaBjfZEtMAdlKymSYUljNNK7ObyDmWZCCiwabJturz77YuW9qA185uu4fZFmyP4mERwW78c0ehu0QT2XmoBk'
+            vapidKey: import.meta.env.VITE_FIREBASE_VAPID_PUBLIC_KEY
         });
         if (currentToken) {
             console.log('current token for client: ', currentToken);
