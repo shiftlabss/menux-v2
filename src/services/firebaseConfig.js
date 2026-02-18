@@ -37,8 +37,14 @@ export const requestForToken = async () => {
     const msg = await messagingInitialized;
     if (!msg) return null;
     try {
+        const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_PUBLIC_KEY;
+        if (!vapidKey || vapidKey.length < 50 || vapidKey.length > 200) {
+            console.error('Invalid VAPID Key in environment variables. Please check VITE_FIREBASE_VAPID_PUBLIC_KEY.');
+            return null;
+        }
+
         const currentToken = await getToken(msg, {
-            vapidKey: import.meta.env.VITE_FIREBASE_VAPID_PUBLIC_KEY
+            vapidKey: vapidKey
         });
         if (currentToken) {
             console.log('current token for client: ', currentToken);

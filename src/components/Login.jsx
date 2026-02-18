@@ -3,6 +3,7 @@ import { ChevronLeft } from 'lucide-react';
 import { useState } from 'react';
 import otpService from '../services/otpService';
 import { useToast } from '../context/ToastContext';
+import { authService } from '../services/authService';
 
 const imgLogo = "/logo-menux.svg";
 
@@ -95,7 +96,7 @@ export default function Login({ onBack, onNext, checkUser, savedName }) {
             const cleanPhone = phoneNumber.replace(/[^\d]/g, '');
             const fullPhone = `55${cleanPhone}`;
 
-            const { authService } = await import('../services/authService');
+
 
             const restaurantId = import.meta.env.VITE_RESTAURANT_ID || "UUID_DO_RESTAURANTE";
 

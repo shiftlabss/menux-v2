@@ -30,6 +30,14 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
-    allowedHosts: true,
+    allowedHosts: [
+      'cardapio.menux.co',
+      'localhost',
+      '.menux.co'
+    ],
+    hmr: {
+      host: 'cardapio.menux.co',
+      clientPort: 443,
+    },
   },
 })
