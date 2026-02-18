@@ -211,12 +211,9 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
 
     // export default function MenuHub({ onOpenStudio, userName, phone, onAuth, onLogout }) {
     // const scrollAreaRef = useRef(null);
-    const tabsRef = useRef(null);
-    const pillsRef = useRef(null);
     const reelRef = useRef(null);
-    const isProgrammaticScroll = useRef(false);
-    const [currentIndex, setCurrentIndex] = useState(0);
     const [selectedProduct, setSelectedProductState] = useState(null);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     // Wrapper para rastrear visualizações de produto
     const setSelectedProduct = (product) => {
@@ -465,7 +462,7 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
 
     const {
         scrollAreaRef, categoryRefs, subcategoryRefs, sectionRefs,
-        activeCategory, activeSubcategory,
+        activeCategory, activeSubcategory, scrollToSection
     } = useScrollSpy(currentCategories);
 
     const { onLongPressStart, onLongPressEnd } = useAdminPin({
@@ -706,57 +703,9 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
         }
     };
 
-    const scrollToSection = (id, type, value, event) => {
-        isProgrammaticScroll.current = true;
 
-        if (type === 'category') {
-            setActiveCategory(value);
-            setActiveSubcategory('');
-            const tabButton = tabsRef.current?.querySelector(`[data-id="${value}"]`);
-            if (tabButton) centerNavButton(tabsRef, tabButton);
-        } else {
-            setActiveSubcategory(value);
-            if (event) centerNavButton(pillsRef, event.currentTarget);
-        }
 
-        const element = document.getElementById(id);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
 
-        setTimeout(() => {
-            isProgrammaticScroll.current = false;
-        }, 800);
-    };
-
-    useEffect(() => {
-        const observerOptions = {
-            root: scrollAreaRef.current,
-            rootMargin: '-10% 0px -80% 0px', // Trigger when section is near the top
-            threshold: 0
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            if (isProgrammaticScroll.current) return;
-
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const categoryId = entry.target.id;
-                    setActiveCategory(categoryId);
-                    setActiveSubcategory('');
-                    const tabButton = tabsRef.current?.querySelector(`[data-id="${categoryId}"]`);
-                    if (tabButton) centerNavButton(tabsRef, tabButton);
-                }
-            });
-        }, observerOptions);
-
-        const sections = currentCategories.map(cat => document.getElementById(cat.id)).filter(Boolean);
-        sections.forEach(section => observer.observe(section));
-
-        return () => {
-            sections.forEach(section => observer.unobserve(section));
-        };
-    }, [currentCategories]);
 
     // Analytics: Tracker de Impressões (Banners)
     useEffect(() => {
@@ -886,7 +835,7 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
                 />
 
                 {currentCategories.map(category => (
-                    <div key={category.id} id={category.id} className="menu-section-visible-check">
+                    <div key={category.id} id={`cat-${category.id}`} ref={el => sectionRefs.current[category.id] = el} className="menu-section-visible-check">
                         <div className="menu-list">
                             <h3 className="section-label">{category.name.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</h3>
                             {category.subcategories.map(subcategory => (

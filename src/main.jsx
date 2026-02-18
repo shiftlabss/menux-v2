@@ -13,13 +13,23 @@ createRoot(document.getElementById('root')).render(
 )
 
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+  console.log('[SW] Service Worker is supported.');
+  const registerServiceWorker = () => {
+    console.log('[SW] Attempting to register...');
+    navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' })
       .then(registration => {
-        console.log('Service Worker registered with scope:', registration.scope);
+        console.log('[SW] Service Worker registered with scope:', registration.scope);
       })
       .catch(err => {
-        console.error('Service Worker registration failed:', err);
+        console.error('[SW] Service Worker registration failed:', err);
       });
-  });
+  };
+
+  if (document.readyState === 'complete') {
+    registerServiceWorker();
+  } else {
+    window.addEventListener('load', registerServiceWorker);
+  }
+} else {
+  console.warn('[SW] Service Worker is NOT supported in this browser.');
 }

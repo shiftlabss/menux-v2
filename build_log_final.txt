@@ -1,0 +1,15 @@
+
+> menux-v3@0.0.0 build
+> vite build
+
+vite v7.3.1 building client environment for production...
+transforming...
+✓ 2276 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                       1.37 kB │ gzip:   0.71 kB
+dist/assets/index-C9Bt9KsX.css      150.27 kB │ gzip:  21.69 kB
+dist/assets/validation-BCRM2R-u.js   65.79 kB │ gzip:  17.77 kB
+dist/assets/vendor-fk_kvrAk.js      130.14 kB │ gzip:  43.08 kB
+dist/assets/index-C2zpCVIc.js       405.32 kB │ gzip: 123.48 kB
+✓ built in 8.80s

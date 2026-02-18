@@ -11,12 +11,34 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
+
+let messaging = null;
+let messagingResolve;
+const messagingInitialized = new Promise(resolve => {
+    messagingResolve = resolve;
+});
+
+const initMessaging = async () => {
+    try {
+        const { isSupported } = await import('firebase/messaging');
+        if (typeof window !== 'undefined' && await isSupported()) {
+            messaging = getMessaging(app);
+        }
+    } catch (error) {
+        console.error('Firebase Messaging failed to initialize:', error);
+    } finally {
+        messagingResolve(messaging);
+    }
+};
+
+initMessaging();
 
 export const requestForToken = async () => {
+    const msg = await messagingInitialized;
+    if (!msg) return null;
     try {
-        const currentToken = await getToken(messaging, {
-            vapidKey: 'BFDhaBjfZEtMAdlKymSYUljNNK7ObyDmWZCCiwabJturz77YuW9qA185uu4fZFmyP4mERwW78c0ehu0QT2XmoBk',
+        const currentToken = await getToken(msg, {
+            vapidKey: 'BFDhaBjfZEtMAdlKymSYUljNNK7ObyDmWZCCiwabJturz77YuW9qA185uu4fZFmyP4mERwW78c0ehu0QT2XmoBk'
         });
         if (currentToken) {
             console.log('current token for client: ', currentToken);
@@ -26,20 +48,20 @@ export const requestForToken = async () => {
             return null;
         }
     } catch (err) {
-        console.error('An error occurred while retrieving token. ', err);
-        // Add specific handling for permission blocked
-        if (err.code === 'messaging/permission-blocked') {
-            console.warn('Notification permission was blocked.');
-        }
+        console.log('An error occurred while retrieving token. ', err);
         return null;
     }
 };
 
 export const onMessageListener = () =>
-    new Promise((resolve) => {
-        onMessage(messaging, (payload) => {
-            resolve(payload);
-        });
+    new Promise(async (resolve) => {
+        const msg = await messagingInitialized;
+        if (msg) {
+            onMessage(msg, (payload) => {
+                resolve(payload);
+            });
+        }
     });
 
 export { messaging };
+

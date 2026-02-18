@@ -1,0 +1,29 @@
+
+> menux-v3@0.0.0 build
+> vite build
+
+vite v7.3.1 building client environment for production...
+transforming...
+✓ 2276 modules transformed.
+✗ Build failed in 10.05s
+error during build:
+src/components/MenuHub.jsx (18:9): "useAdminPin" is not exported by "src/hooks/useAdminPin.js", imported by "src/components/MenuHub.jsx".
+file: /Users/pamplonicade/ShiftLabs/menux-v2/src/components/MenuHub.jsx:18:9
+
+16: import { useStudio } from '../context/StudioContext';
+17: import { useToast } from '../context/ToastContext';
+18: import { useAdminPin } from '../hooks/useAdminPin';
+             ^
+19: 
+20: import { orderService } from '../services/orderService';
+
+    at getRollupError (file:///Users/pamplonicade/ShiftLabs/menux-v2/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
+    at error (file:///Users/pamplonicade/ShiftLabs/menux-v2/node_modules/rollup/dist/es/shared/parseAst.js:397:42)
+    at Module.error (file:///Users/pamplonicade/ShiftLabs/menux-v2/node_modules/rollup/dist/es/shared/node-entry.js:17022:16)
+    at Module.traceVariable (file:///Users/pamplonicade/ShiftLabs/menux-v2/node_modules/rollup/dist/es/shared/node-entry.js:17478:29)
+    at ModuleScope.findVariable (file:///Users/pamplonicade/ShiftLabs/menux-v2/node_modules/rollup/dist/es/shared/node-entry.js:15141:39)
+    at FunctionScope.findVariable (file:///Users/pamplonicade/ShiftLabs/menux-v2/node_modules/rollup/dist/es/shared/node-entry.js:5688:38)
+    at FunctionBodyScope.findVariable (file:///Users/pamplonicade/ShiftLabs/menux-v2/node_modules/rollup/dist/es/shared/node-entry.js:5688:38)
+    at Identifier.bind (file:///Users/pamplonicade/ShiftLabs/menux-v2/node_modules/rollup/dist/es/shared/node-entry.js:5462:40)
+    at CallExpression.bind (file:///Users/pamplonicade/ShiftLabs/menux-v2/node_modules/rollup/dist/es/shared/node-entry.js:2829:23)
+    at CallExpression.bind (file:///Users/pamplonicade/ShiftLabs/menux-v2/node_modules/rollup/dist/es/shared/node-entry.js:12172:15)
