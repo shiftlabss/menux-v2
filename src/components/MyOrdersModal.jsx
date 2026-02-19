@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import '../styles/MyOrdersModal.css';
 import { useEffect, useState } from 'react';
 import { orderService } from '../services/orderService';
+import { useUser } from '../context/UserContext';
 // import './MyOrdersModal.css';
 
 const ChevronLeft = () => (
@@ -11,6 +12,7 @@ const ChevronLeft = () => (
 );
 
 export default function MyOrdersModal({ onClose, userName, activeOrderCode, activeOrderItems = [], orderHistory = [], onReorder }) {
+    const { restaurantId } = useUser();
     // Current date formatted
     const todayDate = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' });
     const [orders, setOrders] = useState([]);
@@ -38,7 +40,8 @@ export default function MyOrdersModal({ onClose, userName, activeOrderCode, acti
 
             setLoading(true);
             try {
-                const restaurantId = import.meta.env.VITE_RESTAURANT_ID;
+                // const restaurantId = import.meta.env.VITE_RESTAURANT_ID;
+                if (!restaurantId) return; // Should not happen if app is loaded
                 let data;
 
                 if (userName) {

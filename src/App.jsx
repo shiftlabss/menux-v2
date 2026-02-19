@@ -9,12 +9,14 @@ import StudioView from './components/StudioView'
 import DesignSystemView from './components/DesignSystemView'
 import ErrorBoundary from './components/ErrorBoundary'
 import { ToastProvider } from './context/ToastContext'
-import { UserProvider, useUser } from './context/UserContext'
+import { useUser } from './context/UserContext'
 import { ThemeProvider } from './context/ThemeContext'
 import './index.css'
 import { onMessageListener, requestForToken } from './services/firebaseConfig'
 import { useToast } from './context/ToastContext'
 import otpService from './services/otpService'
+import InvalidAddress from './components/InvalidAddress'
+import { getMenuByRestaurantId } from './services/api'
 
 const generateUUID = () => {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -41,7 +43,38 @@ function AppContent() {
     logout,
     deleteAccount,
     reloadFromStorage,
+    setRestaurantId, // Added from context
+    restaurantId, // Added for usage in onFinish
   } = useUser();
+
+  const [isValidating, setIsValidating] = useState(true);
+  const [validRestaurant, setValidRestaurant] = useState(false);
+
+  useEffect(() => {
+    const validateRestaurant = async () => {
+      const pathSegment = window.location.pathname.split('/')[1]; // Get first segment
+
+      if (!pathSegment) {
+        setValidRestaurant(false);
+        setIsValidating(false);
+        return;
+      }
+
+      try {
+        // Validate by fetching menu (or lightweight endpoint if available)
+        await getMenuByRestaurantId(pathSegment);
+        setRestaurantId(pathSegment);
+        setValidRestaurant(true);
+      } catch (error) {
+        console.error("Invalid restaurant ID:", pathSegment, error);
+        setValidRestaurant(false);
+      } finally {
+        setIsValidating(false);
+      }
+    };
+
+    validateRestaurant();
+  }, [setRestaurantId]);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -60,6 +93,18 @@ function AppContent() {
       }
     }).catch(err => console.log('failed: ', err));
   }, []);
+
+  if (isValidating) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+      </div>
+    );
+  }
+
+  if (!validRestaurant) {
+    return <InvalidAddress />;
+  }
 
   return (
     <main className="app-container" style={step === 'design-system' ? { maxWidth: '100%', height: 'auto', borderRadius: 0, boxShadow: 'none' } : {}}>
@@ -152,7 +197,12 @@ function AppContent() {
             onFinish={async () => {
               try {
                 const { authService } = await import('./services/authService');
-                const restaurantId = import.meta.env.VITE_RESTAURANT_ID || "UUID_DO_RESTAURANTE";
+                // const restaurantId = import.meta.env.VITE_RESTAURANT_ID || "UUID_DO_RESTAURANTE";
+                if (!restaurantId) {
+                  showToast("Erro: ID do restaurante não identificado. Recarregue a página.", 'error');
+                  return;
+                }
+
                 await authService.loginOrRegister({
                   phone,
                   restaurantId,
@@ -191,9 +241,7 @@ function App() {
     <ErrorBoundary>
       <ThemeProvider>
         <ToastProvider>
-          <UserProvider>
-            <AppContent />
-          </UserProvider>
+          <AppContent />
         </ToastProvider>
       </ThemeProvider>
     </ErrorBoundary>

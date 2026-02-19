@@ -31,7 +31,7 @@ const imgLogo = "/logo-menux.svg";
 const imgVerify = "/verify-icon.svg";
 
 export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccount }) {
-    const { userName, phone, userAvatar, updateAvatar, updateProfile, registeredAt } = useUser();
+    const { userName, phone, userAvatar, updateAvatar, updateProfile, registeredAt, restaurantId } = useUser();
     // const RoomServiceIcon = () => (
     //     <svg width="24" height="24" viewBox="0 -960 960 960" fill="black">
     //         <path d="M480-200q-142 0-248.5-47T85-375q-4-2-6-5.5t-2-7.5q0-5 3.5-8.5T89-400h782q5 0 8.5 3.5t3.5 8.5q0 4-2 7.5t-6 5.5q-40 81-146.5 128Q582-200 480-200Zm0-240q-137 0-240.5-83T121-720q-1-4-1-6.5t1.5-4.5q1.5-2 4.5-3.5t6.5-1.5h693q4 0 6.5 1.5t4.5 3.5q2 2 1.5 4.5t-1.5 6.5q-15 114-118.5 197T480-440Zm0-320q-17 0-28.5-11.5T440-800q0-17 11.5-28.5T480-840q17 0 28.5 11.5T520-800q0 17-11.5 28.5T480-760Z" />
@@ -265,7 +265,7 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
 
             const fetchHighlights = async () => {
                 try {
-                    const restaurantId = import.meta.env.VITE_RESTAURANT_ID;
+                    // const restaurantId = import.meta.env.VITE_RESTAURANT_ID;
                     if (!restaurantId) return;
                     const data = await getMenuHighlights(restaurantId);
                     if (data && Array.isArray(data) && data.length > 0) {
@@ -286,7 +286,7 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
             };
             fetchHighlights();
         }
-    }, []);
+    }, [restaurantId]);
 
     // Session Management (Guest ID)
     useEffect(() => {
@@ -602,7 +602,12 @@ export default function MenuHub({ onOpenStudio, onAuth, onLogout, onDeleteAccoun
         setIsProcessing(true);
 
         try {
-            const restaurantId = import.meta.env.VITE_RESTAURANT_ID;
+            // const restaurantId = import.meta.env.VITE_RESTAURANT_ID;
+            if (!restaurantId) {
+                alert("Erro: Restaurante não identificado.");
+                setIsProcessing(false);
+                return;
+            }
             const transactionId = generateUUID();
 
             // Assume customerId might be stored, otherwise anonymous

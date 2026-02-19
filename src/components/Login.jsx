@@ -4,12 +4,14 @@ import { useState } from 'react';
 import otpService from '../services/otpService';
 import { useToast } from '../context/ToastContext';
 import { authService } from '../services/authService';
+import { useUser } from '../context/UserContext';
 
 const imgLogo = "/logo-menux.svg";
 
 export default function Login({ onBack, onNext, checkUser, savedName }) {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [rawDigits, setRawDigits] = useState(''); // Store raw digits separately
+    const { restaurantId } = useUser();
 
     const { showToast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
@@ -98,7 +100,12 @@ export default function Login({ onBack, onNext, checkUser, savedName }) {
 
 
 
-            const restaurantId = import.meta.env.VITE_RESTAURANT_ID || "UUID_DO_RESTAURANTE";
+            // const { restaurantId } = useUser(); // Moved to top level
+
+            if (!restaurantId) {
+                alert("ID do restaurante não encontrado. Tente recarregar a página.");
+                return;
+            }
 
             const response = await authService.loginOrRegister({
                 phone: fullPhone,

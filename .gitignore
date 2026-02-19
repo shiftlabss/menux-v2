@@ -30,4 +30,4 @@ vite.config.js
 # backend
 backend-node
 
-.env
+*.env

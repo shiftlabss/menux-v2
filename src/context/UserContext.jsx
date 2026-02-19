@@ -73,6 +73,8 @@ export const UserProvider = ({ children }) => {
             logout,
             deleteAccount,
             reloadFromStorage,
+            restaurantId: storage.get('menux_restaurant_id'),
+            setRestaurantId: (id) => storage.set('menux_restaurant_id', id),
         }}>
             {children}
         </UserContext.Provider>

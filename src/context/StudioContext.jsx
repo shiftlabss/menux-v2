@@ -4,6 +4,7 @@ import storage, { KEYS } from '../services/storageService';
 import { generateId } from '../utils/generateId';
 import { safeParseBranding, safeParseCategories, safeParseProducts } from '../schemas';
 import { getMenuByRestaurantId } from '../services/api';
+import { useUser } from './UserContext';
 
 const StudioContext = createContext();
 
@@ -198,6 +199,7 @@ const DEFAULT_PRODUCTS = [
 ];
 
 export const StudioProvider = ({ children }) => {
+    const { restaurantId } = useUser();
     const [branding, setBranding] = useState(() => {
         const saved = storage.getJSON(KEYS.STUDIO_BRANDING);
         const validated = saved ? safeParseBranding({ ...DEFAULT_BRANDING, ...saved }) : null;
@@ -393,9 +395,10 @@ export const StudioProvider = ({ children }) => {
         const fetchMenu = async () => {
             if (import.meta.env.VITE_USE_MOCK_AUTH === 'false') {
                 try {
-                    const restaurantId = import.meta.env.VITE_RESTAURANT_ID;
+                    // const restaurantId = import.meta.env.VITE_RESTAURANT_ID;
                     if (!restaurantId) {
-                        console.warn("VITE_RESTAURANT_ID not found in .env");
+                        // console.warn("VITE_RESTAURANT_ID not found in .env"); 
+                        // Now we wait for restaurantId from context
                         return;
                     }
 
@@ -470,7 +473,7 @@ export const StudioProvider = ({ children }) => {
         };
 
         fetchMenu();
-    }, []);
+    }, [restaurantId]);
 
     const resetToDefault = () => {
         setBranding(DEFAULT_BRANDING);
